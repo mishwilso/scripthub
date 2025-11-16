@@ -1,9 +1,5 @@
-import Button from "../components/ui/Button";
-
-export default function Home() {
-  return (
-    <main>
-      This is Home!
-    </main>
-  );
+export default function HomePage(){
+    return (
+        <h1>This is the Home Page</h1>
+    )
 }
