@@ -20,10 +20,11 @@ module.exports = {
           rose: "#A46278",
         },
         neutral: {
-          light: "#E6DBCD",
+          base: "#E6DBCD",
+          light: "#F6F2ED",
           dark: "#7E7065",
         },
-        background: {
+        white: {
           light: "#FEFCF9",
           dark: "#FEFBF8",
           input: "#E2D9CE",
@@ -32,7 +33,7 @@ module.exports = {
           light: "#EDE7E5",
         },
       },
-      fontFamilly: {
+      fontFamily: {
         sans: ["Poppins", "sans-serif"],
       },
     },
