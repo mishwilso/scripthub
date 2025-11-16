@@ -37,34 +37,34 @@ export default function Button({
 
   const colorStyles = {
     primary: {
-      contained: "bg-primary-base hover:bg-primary-dark text-white",
+      contained: "bg-primary-base text-white-base hover:bg-primary-dark",
       outlined:
-        "bg-transparent border-2 border-primary-base text-primary-base hover:bg-primary-base hover:text-white",
+        "bg-transparent border-2 border-primary-base text-primary-base hover:bg-primary-base hover:text-white-base",
       text: "bg-transparent text-primary-base hover:bg-primary-base/10",
     },
     secondary: {
       contained:
-        "bg-neutral-light text-neutral-dark hover:bg-secondary-base hover:text-white",
+        "bg-neutral-base text-secondary-dark hover:bg-secondary-base hover:text-white-base",
       outlined:
-        "bg-transparent border-2 border-secondary-base text-secondary-base hover:bg-secondary-base hover:text-white",
+        "bg-transparent border-2 border-secondary-base text-secondary-base hover:bg-secondary-base hover:text-white-base",
       text: "bg-transparent text-secondary-base hover:bg-secondary-base/10",
     },
     tertiary: {
-      contained: "bg-neutral-dark hover:bg-secondary-dark text-white",
+      contained: "bg-neutral-dark hover:bg-secondary-dark text-white-base",
       outlined:
-        "bg-neutral-dark/10 border-2 border-neutral-dark text-neutral-dark hover:bg-neutral-dark hover:text-white",
+        "bg-neutral-light border-2 border-neutral-dark text-secondary-dark hover:bg-neutral-dark hover:text-white-base",
       text: "bg-transparent text-neutral-dark hover:bg-neutral-dark/10",
     },
     success: {
-      contained: "bg-green-600 hover:bg-green-700 text-white",
+      contained: "bg-green-600 hover:bg-green-700 text-white-base",
       outlined:
-        "bg-transparent border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white",
+        "bg-transparent border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white-base",
       text: "bg-transparent text-green-600 hover:bg-green-600/10",
     },
     error: {
-      contained: "bg-red-600 hover:bg-red-700 text-white",
+      contained: "bg-red-600 hover:bg-red-700 text-white-base",
       outlined:
-        "bg-transparent border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white",
+        "bg-transparent border-2 border-red-600 text-red-600 hover:bg-red-600 hover:text-white-base",
       text: "bg-transparent text-red-600 hover:bg-red-600/10",
     },
   };

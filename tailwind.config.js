@@ -1,4 +1,4 @@
-/** @type {import('tailwindcss')} */
+/** @type {import('tailwindcss').Config} */ // Also fixed the type hint
 module.exports = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -14,7 +14,7 @@ module.exports = {
         },
         secondary: {
           base: "#617767",
-          dark: "#7A6757",
+          dark: "#5e4c3b",
         },
         accent: {
           rose: "#A46278",
@@ -25,16 +25,25 @@ module.exports = {
           dark: "#7E7065",
         },
         white: {
+          base: "#FFFFFF",
           light: "#FEFCF9",
           dark: "#FEFBF8",
-          input: "#E2D9CE",
+          input: "#FAF7F2",
         },
         outline: {
           light: "#EDE7E5",
+          input: "#E2D9CE",
+        },
+        negative: {
+          base: "#C93218",
+          light: "#FEF8F4",
         },
       },
       fontFamily: {
         sans: ["Poppins", "sans-serif"],
+      },
+      dropShadow: {
+        primary: "0 0px 5px 5px rgba(241, 137, 102, 0.5)",
       },
     },
   },

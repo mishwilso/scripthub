@@ -18,7 +18,7 @@ interface IconButtonProps {
   type?: ButtonType;
   children?: React.ReactNode;
   shape?: "round" | "square";
-  altText?: string;
+  altText: string;
 }
 
 export default function IconButton({
@@ -42,9 +42,9 @@ export default function IconButton({
     primary: {
       standard: "bg-transparent text-secondary-dark hover:bg-neutral-dark/10",
       tonal:
-        "bg-neutral-dark/10 text-secondary-dark hover:secondary-dark hover:text-white",
+        "bg-neutral-dark/10 text-secondary-dark hover:secondary-dark hover:text-white-base",
       filled:
-        "bg-neutral-light text-secondary-dark hover:secondary-dark hover:text-white",
+        "bg-neutral-light text-secondary-dark hover:secondary-dark hover:text-white-base",
       outlined:
         "bg-transparent border-2 border-secondary-dark text-secondary-dark hover:bg-neutral-dark/10 hover:text-secondary-dark",
     },
@@ -52,17 +52,17 @@ export default function IconButton({
     secondary: {
       standard: "bg-transparent text-primary-base hover:bg-primary-dark/10",
       tonal:
-        "bg-primary-dark/10 text-primary-base hover:primary-dark hover:text-white",
+        "bg-primary-dark/10 text-primary-base hover:primary-dark hover:text-white-base",
       filled:
-        "bg-primary-base text-text-white hover:primary-dark hover:text-white",
+        "bg-primary-base text-text-white-base hover:primary-dark",
       outlined:
         "bg-transparent border-2 border-primary-base text-primary-base hover:text-primary-dark",
     },
 
     error: {
       standard: "bg-transparent text-red-600 hover:bg-red-700/10",
-      tonal: "bg-red-700/10 text-red-600 hover:red-700 hover:text-white",
-      filled: "bg-red-600 text-text-white hover:red-700 hover:text-white",
+      tonal: "bg-red-700/10 text-red-600 hover:red-700 hover:text-white-base",
+      filled: "bg-red-600 text-white-base hover:red-700",
       outlined:
         "bg-transparent border-2 border-red-600 text-red-600 hover:text-red-700",
     },
@@ -70,7 +70,7 @@ export default function IconButton({
 
   const shapeStyles = {
     round: "rounded-full",
-    square: "rounded-sm",
+    square: "rounded-lg",
   };
 
   const sizeStyles = {
