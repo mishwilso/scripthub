@@ -18,6 +18,7 @@ interface IconButtonProps {
   type?: ButtonType;
   children?: React.ReactNode;
   shape?: "round" | "square";
+  altText?: string;
 }
 
 export default function IconButton({
@@ -30,6 +31,7 @@ export default function IconButton({
   disabled = false,
   type = "button",
   children,
+  altText
 }: IconButtonProps) {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log("Button Clicked", e.currentTarget);
@@ -120,6 +122,7 @@ export default function IconButton({
       onClick={handleClick}
       type={type}
       disabled={disabled}
+      aria-label={altText}
     >
       <span className={`${iconSizeClasses[size]}`}>{children}</span>
     </button>
