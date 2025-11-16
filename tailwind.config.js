@@ -33,7 +33,7 @@ module.exports = {
         },
       },
       fontFamilly: {
-        sands: ["Poppins", "sans-serif"],
+        sans: ["Poppins", "sans-serif"],
       },
     },
   },
