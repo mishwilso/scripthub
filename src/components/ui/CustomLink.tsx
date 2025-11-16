@@ -15,6 +15,7 @@ interface LinkProps {
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   children?: React.ReactNode;
+  responsive?: boolean;
 }
 
 export default function CustomLink({
@@ -25,6 +26,7 @@ export default function CustomLink({
   startIcon,
   endIcon,
   children,
+  responsive = true,
 }: LinkProps) {
   const colorStyles = {
     primary: {
@@ -78,13 +80,15 @@ export default function CustomLink({
             ${transitionStyle}
             ${colorStyles[color][variant]}
             ${sizeStyles[size]}
-            gap-3
+            gap-3 w-full md:w-auto
         `;
 
   return (
     <Link href={href} className={classes}>
       {startIcon}
-      <div className="hidden md:inline">{children}</div>
+      <div className={`${responsive ? "hidden  md:inline" : "inline"}`}>
+        {children}
+      </div>
       {endIcon}
     </Link>
   );
