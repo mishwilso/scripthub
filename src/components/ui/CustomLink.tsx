@@ -37,7 +37,7 @@ export default function CustomLink({
       contained: "bg-primary-base text-white-base hover:bg-primary-dark",
       outlined:
         "bg-transparent border-2 border-primary-base text-primary-base hover:bg-primary-base hover:text-white-base",
-      text: "bg-transparent text-primary-base hover:bg-primary-base/10",
+      text: "bg-transparent text-primary-base",
     },
     secondary: {
       contained:
@@ -77,7 +77,7 @@ export default function CustomLink({
     "rounded-md cursor-pointer flex items-center justify-center";
 
   const transitionStyle =
-    "transition delay-60 duration-300 ease-in-out hover:-translate-y-.25 hover:scale-105 hover:shadow-sm/20 motion-reduce:transition-none motion-reduce:hover:translate-y-0";
+    "transition delay-60 duration-300 ease-in-out hover:-translate-y-.25 hover:scale-102 hover:font-semibold hover:shadow-sm/20 motion-reduce:transition-none motion-reduce:hover:translate-y-0";
 
   const classes = `
             ${baseStyle}

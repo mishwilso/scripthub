@@ -34,10 +34,6 @@ export default function Button({
   fullWidth = false,
   responsive = true,
 }: ButtonProps) {
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    console.log("Button Clicked", e.currentTarget);
-    onClick?.();
-  };
 
   const colorStyles = {
     primary: {
@@ -102,7 +98,7 @@ export default function Button({
   return (
     <button
       className={classes}
-      onClick={handleClick}
+      onClick={onClick}
       type={type}
       disabled={disabled}
     >
