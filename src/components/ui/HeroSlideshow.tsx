@@ -22,8 +22,10 @@ const slides = [
     image: collab,
     text: (
       <p>
-        Writing doesn&apos;t have to be lonely.Invite co-writers and editors,
-        track who changed what, and keep every version in one place.
+        Writing doesn&apos;t have to be lonely.
+        <br />
+        <b>Invite co-writers and editors,</b>
+        track <b>who changed what,</b> and keep every version in one place.
       </p>
     ),
     alt: "Two people holding vooks standing back to back",
@@ -32,8 +34,10 @@ const slides = [
     image: creative,
     text: (
       <p>
-        Keep your story world at your fingertips.Characters, locations, and lore
-        are all one click away as you write.
+        Keep your story world at your fingertips.
+        <br />
+        <b>Characters, locations, and lore</b> are all <b>one click away</b> as
+        you write.
       </p>
     ),
     alt: "Person standing on book wholding a paintbrush and art tools floating behind them",
@@ -47,21 +51,17 @@ export default function HeroSlideshow() {
     setCurrentIndex((prev) => (prev + 1) % slides.length);
   }
 
-  function prevIndex() {
-    setCurrentIndex((prev) => (prev - 1) % slides.length);
-  }
-
   function jumpIndex(idx: number) {
     setCurrentIndex(idx);
   }
 
-  //   useEffect(() => {
-  //     const timer = setInterval(() => {
-  //       nextSlide();
-  //     }, 5000);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      nextSlide();
+    }, 7000);
 
-  //     return () => clearInterval(timer); // Cleanup
-  //   }, [currentIndex]);
+    return () => clearInterval(timer); // Cleanup
+  }, [currentIndex]);
 
   return (
     <div className="flex flex-col justify-center items-center my-auto">

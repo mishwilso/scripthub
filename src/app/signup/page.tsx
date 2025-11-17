@@ -2,12 +2,10 @@
 
 import MainNavbar from "@/components/layout/MainNavbar";
 import CustomLink from "@/components/ui/CustomLink";
-import Link from "next/link";
 
 import Card from "@/components/ui/Card";
 import HeroSlideshow from "@/components/ui/HeroSlideshow";
 
-import heroImage from "@/assets/vectors/knowledge-base.png";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 
