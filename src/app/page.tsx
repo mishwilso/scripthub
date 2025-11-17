@@ -30,7 +30,7 @@ export default function HomePage() {
               space.
             </p>
 
-            <CustomLink href="/signup" color="secondary" responsive={false}>
+            <CustomLink href="/signup" color="secondary" responsive={false} fullWidth>
               <p className="px-10">Get Started</p>
             </CustomLink>
           </div>

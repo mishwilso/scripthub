@@ -17,6 +17,8 @@ interface ButtonProps {
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   children?: React.ReactNode;
+  fullWidth?: boolean;
+  responsive?: boolean;
 }
 
 export default function Button({
@@ -29,6 +31,8 @@ export default function Button({
   startIcon,
   endIcon,
   children,
+  fullWidth = false,
+  responsive = true,
 }: ButtonProps) {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log("Button Clicked", e.currentTarget);
@@ -70,14 +74,14 @@ export default function Button({
   };
 
   const sizeStyles = {
-    small: "px-3 py-1.5 text-sm",
-    medium: "px-6 py-2 text-base",
-    large: "px-8 py-3 text-lg",
-    full: "w-full px-4 py-2 text-base",
+    small: "px-3 py-1.5 text-xs",
+    medium: "px-6 py-2 text-sm",
+    large: "px-8 py-2.5 text-base",
+    full: "w-full px-4 py-2 text-sm",
   };
 
   const baseStyle =
-    "rounded-md cursor-pointer flex items-center justify-center";
+    "rounded-xl cursor-pointer flex items-center justify-center text-medium font-medium";
 
   const transitionStyle =
     "transition delay-60 duration-300 ease-in-out hover:-translate-y-.25 hover:scale-105 hover:shadow-sm/20 motion-reduce:transition-none motion-reduce:hover:translate-y-0";
@@ -85,20 +89,27 @@ export default function Button({
   const disabledStyle =
     "disabled:opacity-50 disabled:transition-none disabled:hover-none pointer-events-none";
 
-  return (
-    <button
-      className={`
+  const classes = `
         ${baseStyle}
         ${colorStyles[color][variant]}
         ${sizeStyles[size]}
         ${disabled ? disabledStyle : transitionStyle}
-        gap-2`}
+        ${fullWidth ? "w-full" : ""}
+        gap-2`
+    .trim()
+    .replace(/\s+/g, " ");
+
+  return (
+    <button
+      className={classes}
       onClick={handleClick}
       type={type}
       disabled={disabled}
     >
       {startIcon}
-      {children}
+      <div className={`${responsive ? "hidden  md:inline" : "inline"}`}>
+        {children}
+      </div>
       {endIcon}
     </button>
   );

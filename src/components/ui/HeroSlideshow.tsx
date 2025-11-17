@@ -8,17 +8,34 @@ import { useState, useEffect } from "react";
 const slides = [
   {
     image: ebook,
-    text: "Write with confidence.</br><b>Branch your drafts,</b> explore wild ideas, and <b>merge only what you love.</b>",
+    text: (
+      <p>
+        Write with confidence.
+        <br />
+        <b>Branch your drafts,</b> explore wild ideas, and{" "}
+        <b>merge only what you love.</b>
+      </p>
+    ),
     alt: "Girl looking at phone with large phone behind her",
   },
   {
     image: collab,
-    text: "Writing doesn’t have to be lonely.Invite co-writers and editors, track who changed what, and keep every version in one place.",
+    text: (
+      <p>
+        Writing doesn&apos;t have to be lonely.Invite co-writers and editors,
+        track who changed what, and keep every version in one place.
+      </p>
+    ),
     alt: "Two people holding vooks standing back to back",
   },
   {
     image: creative,
-    text: "Keep your story world at your fingertips.Characters, locations, and lore are all one click away as you write.",
+    text: (
+      <p>
+        Keep your story world at your fingertips.Characters, locations, and lore
+        are all one click away as you write.
+      </p>
+    ),
     alt: "Person standing on book wholding a paintbrush and art tools floating behind them",
   },
 ];
@@ -38,33 +55,58 @@ export default function HeroSlideshow() {
     setCurrentIndex(idx);
   }
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      nextSlide();
-    }, 5000);
+  //   useEffect(() => {
+  //     const timer = setInterval(() => {
+  //       nextSlide();
+  //     }, 5000);
 
-    return () => clearInterval(timer); // Cleanup
-  }, [currentIndex]);
+  //     return () => clearInterval(timer); // Cleanup
+  //   }, [currentIndex]);
 
   return (
-    <div>
-      <Image src={slides[currentIndex].image} alt={slides[currentIndex].alt} />
+    <div className="flex flex-col justify-center items-center my-auto">
+      <div className="flex flex-col items-center justify-center">
+        <div className="w-64 h-64 md:w-96 md:h-96 relative overflow-hidden">
+          {slides.map((slide, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+                index === currentIndex
+                  ? "opacity-100 translate-x-0 z-10 pointer-events-auto"
+                  : index < currentIndex
+                  ? "opacity-0 -translate-x-full pointer-events-none"
+                  : "opacity-0 translate-x-full pointer-events-none"
+              }`}
+            >
+              <Image
+                src={slide.image}
+                alt={slide.alt}
+                fill
+                className="object-contain"
+              />
+            </div>
+          ))}
+        </div>
 
-      <div>
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => jumpIndex(index)}
-            className={
-              currentIndex === index
-                ? "w-8 h-2 bg-primary-base rounded-full"
-                : "w-2 h-2 bg-primary-dark/10 rounded-full transition ease-in-out duration-300 delay-60 hover:scale-105"
-            }
-          />
-        ))}
+        <div className="flex gap-2 mt-4">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => jumpIndex(index)}
+              aria-label={`Go to slide ${index + 1}`}
+              className={
+                currentIndex === index
+                  ? "w-8 h-3 bg-primary-base rounded-full"
+                  : "w-3 h-3 bg-primary-dark/10 rounded-full transition ease-in-out duration-300 delay-60 hover:scale-115 hover:bg-primary-dark/30"
+              }
+            />
+          ))}
+        </div>
+
+        <div className="w-64 md:w-96 text-center text-secondary-dark mt-4">
+          {slides[currentIndex].text}
+        </div>
       </div>
-
-      <p>{slides[currentIndex].text}</p>
     </div>
   );
 }

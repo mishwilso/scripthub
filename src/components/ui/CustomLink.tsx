@@ -16,6 +16,8 @@ interface LinkProps {
   endIcon?: React.ReactNode;
   children?: React.ReactNode;
   responsive?: boolean;
+  className?: string;
+  fullWidth?: boolean;
 }
 
 export default function CustomLink({
@@ -27,6 +29,8 @@ export default function CustomLink({
   endIcon,
   children,
   responsive = true,
+  className,
+  fullWidth = false,
 }: LinkProps) {
   const colorStyles = {
     primary: {
@@ -80,7 +84,9 @@ export default function CustomLink({
             ${transitionStyle}
             ${colorStyles[color][variant]}
             ${sizeStyles[size]}
-            gap-3 w-full md:w-auto
+            ${className ? className : ""}
+            ${fullWidth ? "w-full" : ""}
+            gap-3 md:w-auto
         `;
 
   return (

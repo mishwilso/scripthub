@@ -59,7 +59,7 @@ export default function Input({
   };
 
   const baseStyle =
-    "border rounded-md transition bg-white-input border-2 border-outline-input text-secondary-dark placeholder-secondary-dark/60 w-full";
+    "border rounded-2xl transition bg-white-input border-2 border-outline-input text-secondary-dark placeholder-secondary-dark/60 w-full";
 
   const focusStyle =
     "focus:outline-none focus:ring-2 focus:ring-primary-base focus:ring-opacity-50 focus:border-primary-base";

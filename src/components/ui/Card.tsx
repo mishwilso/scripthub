@@ -18,7 +18,7 @@ export default function Card({ variant = "outline", color="dark", children }: Ca
   };
 
   const classes = `
-    bg-white-light rounded-lg p-4
+    w-full bg-white-light rounded-[35px]
     ${variantStyles[variant]}
     ${colorStyles[color]}
 

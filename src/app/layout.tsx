@@ -22,6 +22,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
+      <head>
+        <title>ScriptHub</title>
+      </head>
       <body className={`${poppins.className} antialiased`}>{children}</body>
     </html>
   );
