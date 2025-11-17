@@ -12,11 +12,11 @@ export default function HomePage() {
       <header className="sticky top-0 z-10">
         <MainNavbar />
       </header>
-      <main className="flex-1 flex items-center justify-center px-6 md:px-12  pt-10 md:pt-0">
-        <div className="w-full max-w-[1184px] flex flex-col md:flex-row md:gap-4 items-center">
+      <main className="flex-1 flex items-center justify-center px-6 md:px-12  py-12 md:py-6">
+        <div className="w-full max-w-[1025px] flex flex-col md:flex-row md:gap-4 items-center">
           {/* Text column */}
           <div className="flex-1 flex flex-col items-start">
-            <h1 className="max-w-[683px] text-3xl md:text-6xl text-neutral-dark font-bold pb-4">
+            <h1 className="text-3xl md:text-6xl text-neutral-dark font-bold pb-4">
               All your story <br/>pieces, finally in one place.
             </h1>
             <p className="text-neutral-dark pb-2">

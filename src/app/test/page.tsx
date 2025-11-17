@@ -5,6 +5,8 @@ import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import Input from "@/components/ui/Input";
 import MainNavbar from "@/components/layout/MainNavbar";
+
+import Card from "@/components/ui/Card";
 import { MdEmail, MdDelete, MdSearch, MdCheckCircle } from "react-icons/md";
 
 type TestCategory =
@@ -557,6 +559,18 @@ function LayoutTests() {
         <div className="space-y-6">
           <SubSection title="Main Navbar">
             <MainNavbar />
+          </SubSection>
+        </div>
+      </TestSection>
+
+      <TestSection title="Card">
+        <div className="space-y-6">
+          <SubSection title="Stats Card">
+            <Card>
+              <h1 className="font-semibold text-secondary-dark pb-4">Chapters</h1>
+              <p className="text-secondary-dark text-3xl pb-1">12</p>
+              <p className="text-primary-dark text-xs">10 total versions</p>
+            </Card>
           </SubSection>
         </div>
       </TestSection>

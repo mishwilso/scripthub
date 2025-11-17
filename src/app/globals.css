@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+
+body {
+  background: #FFFDFB;
+}
+
+
 *,
 *::before,
 *::after {

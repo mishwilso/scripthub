@@ -24,7 +24,7 @@ export default function MainNavbar() {
               alt="Scripthub logo"
             />
           </div>
-          <div className="w-24">
+          <div className="w-24 pt-1">
             <Image src={logoName} alt="ScriptHUB" />
           </div>
         </div>
