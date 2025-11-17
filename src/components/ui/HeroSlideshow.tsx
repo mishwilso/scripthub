@@ -88,7 +88,7 @@ export default function HeroSlideshow() {
           ))}
         </div>
 
-        <div className="flex gap-2 mt-4">
+        <div className="flex gap-6 mt-4">
           {slides.map((_, index) => (
             <button
               key={index}
@@ -96,8 +96,8 @@ export default function HeroSlideshow() {
               aria-label={`Go to slide ${index + 1}`}
               className={
                 currentIndex === index
-                  ? "w-8 h-3 bg-primary-base rounded-full"
-                  : "w-3 h-3 bg-primary-dark/10 rounded-full transition ease-in-out duration-300 delay-60 hover:scale-115 hover:bg-primary-dark/30"
+                  ? "w-8 h-4 bg-primary-base rounded-full"
+                  : "w-4 h-4 bg-primary-dark/10 rounded-full transition ease-in-out duration-300 delay-60 hover:scale-115 hover:bg-primary-dark/30"
               }
             />
           ))}
