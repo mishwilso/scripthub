@@ -50,7 +50,8 @@ export async function updateSession(request: NextRequest) {
     "/signup",
     "/forgot-password",
     "/reset-password", // User needs to access this from email link
-    "/auth", // Handles email confirmations
+    "/auth",
+    "/test" // Handles email confirmations
   ];
 
   // Check if current path is public
