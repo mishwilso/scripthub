@@ -85,8 +85,8 @@ export default function CustomLink({
             ${colorStyles[color][variant]}
             ${sizeStyles[size]}
             ${className ? className : ""}
-            ${fullWidth ? "w-full" : ""}
-            gap-3 md:w-auto
+            ${fullWidth ? "md:w-full" : "md:w-auto"}
+            gap-3 w-full
         `;
 
   return (

@@ -17,7 +17,7 @@ interface InputProps {
   disabled?: boolean;
   label?: string;
   helperText?: string;
-  errorMessage?: string;
+  errorMessage?: string | null;
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   fullWidth?: boolean;
@@ -116,7 +116,7 @@ export default function Input({
         )}
       </div>
 
-      {error && errorMessage && (
+      {errorMessage && (
         <p id={`${id}-error`} className="text-sm text-negative-base">
           {errorMessage}
         </p>

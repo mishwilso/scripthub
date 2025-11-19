@@ -15,12 +15,19 @@ import { MdCheckCircle } from "react-icons/md";
 
 export default function CheckEmailPage() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const email = searchParams.get("email") || "your email";
+  const type = searchParams.get("type") === "reset" ? "reset" : "verification";
 
   const [resending, setResending] = React.useState(false);
   const [resendSuccess, setResendSuccess] = React.useState(false);
   const [resendError, setResendError] = React.useState<string | null>(null);
+
+
+  const pageMessage = {
+    "verification": {message: <p>Click the link in the email to activate your account. If you don&apos;t see it, check your spam folder.</p>},
+    "reset": {message: <p>Click the link in the email to reset your password. If you don&apos;t see it, check your spam folder.</p>}
+  }
+
 
   const handleResendEmail = async () => {
     setResending(true);
@@ -65,14 +72,14 @@ export default function CheckEmailPage() {
                   Check your email!
                 </h1>
                 <p className="text-secondary-dark text-lg mb-2">
-                  We sent a verification link to
+                  We sent a {type} link to
                 </p>
                 <p className="text-secondary-dark font-semibold text-lg mb-6">
                   {email}
                 </p>
-                <p className="text-neutral-dark max-w-md">
-                  Click the link in the email to activate your account. If you don&apos;t see it, check your spam folder.
-                </p>
+                <div className="text-neutral-dark max-w-md">
+                  {pageMessage[type].message}
+                </div>
               </div>
 
               {/* Success Message */}

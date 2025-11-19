@@ -115,7 +115,7 @@ export default function LoginPage() {
 
                 <div>
                   <CustomLink
-                    href="/"
+                    href="/forgot-password"
                     variant="text"
                     className="px-[4px] block justify-stretch text-end"
                     responsive={false}
@@ -130,6 +130,7 @@ export default function LoginPage() {
                   size="large"
                   loading={loading}
                   fullWidth
+                  responsive={false}
                 >
                   Log In
                 </Button>
@@ -147,7 +148,7 @@ export default function LoginPage() {
                 <Button
                   variant="outlined"
                   color="tertiary"
-                  size="full"
+                  fullWidth
                   startIcon={<FaGoogle size={20} />}
                 >
                   Google
@@ -155,7 +156,7 @@ export default function LoginPage() {
                 <Button
                   variant="outlined"
                   color="tertiary"
-                  size="full"
+                  fullWidth
                   startIcon={<FaApple size={20} />}
                 >
                   Apple ID
@@ -163,7 +164,7 @@ export default function LoginPage() {
                 <Button
                   variant="outlined"
                   color="tertiary"
-                  size="full"
+                  fullWidth
                   startIcon={<FaGithub size={20} />}
                 >
                   Github

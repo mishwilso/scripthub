@@ -28,9 +28,62 @@ export default function SignupPage() {
   const [name, setName] = React.useState("");
 
   const [error, setError] = React.useState<string | null>(null);
+  const [errors, setErrors] = React.useState<{ [key: string]: string | null }>({
+    email: null,
+    password: null,
+    confirmPassword: null,
+    name: null,
+  });
+
   const [loading, setLoading] = React.useState(false);
 
-  const {signup} = useAuth();
+  const { signup } = useAuth();
+
+  // Validate form submission
+  const validateForm = () => {
+    const newErrors: { [key: string]: string | null } = {
+      email: null,
+      password: null,
+      confirmPassword: null,
+      name: null,
+    };
+
+    let isValid = true;
+    // Name validation
+    if (!name.trim()) {
+      newErrors.name = "Name is required";
+      isValid = false;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    } else if (!emailRegex.test(email)) {
+      newErrors.email = "Please enter a valid email address";
+      isValid = false;
+    }
+
+    // Password validation
+    if (!password) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    } else if (password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+      isValid = false;
+    }
+
+    // Confirm password validation
+    if (password !== confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
@@ -46,13 +99,10 @@ export default function SignupPage() {
     setError(null);
     setLoading(true);
 
-    // handle missmatch passwords
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
+    if (validateForm() === false) {
       setLoading(false);
       return;
     }
-
 
     try {
       const { success, error } = await signup(email, password, name);
@@ -61,14 +111,17 @@ export default function SignupPage() {
       } else {
         // Signup successful, redirect to check-email page
         console.log("Signup successful");
-        router.push(`/auth/check-email?email=${encodeURIComponent(email)}`);
+        router.push(
+          `/auth/check-email?email=${encodeURIComponent(
+            email
+          )}&type=verification`
+        );
       }
-    } catch(err) {
+    } catch (err) {
       setError("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
-
   };
 
   // Handle input changes
@@ -117,14 +170,18 @@ export default function SignupPage() {
                 </div>
 
                 <div id="login-error-message" aria-live="polite">
-                  {error && <p className="text-red-700 bg-negative-base/10 p-2 flex items-center gap-2 border-l-4 border-red-700 rounded-e-lg mb-4">
-                  <MdError />
-                  Error: {error}</p>}
+                  {error && (
+                    <p className="text-red-700 bg-negative-base/10 p-2 flex items-center gap-2 border-l-4 border-red-700 rounded-e-lg mb-4">
+                      <MdError />
+                      Error: {error}
+                    </p>
+                  )}
                 </div>
 
                 <form
                   className="flex flex-col gap-3 mt-4"
                   onSubmit={handleSubmit}
+                  noValidate
                 >
                   <Input
                     type="text"
@@ -132,6 +189,9 @@ export default function SignupPage() {
                     label="Name"
                     value={name}
                     onChange={handleNameChange}
+                    errorMessage={errors.name}
+                    error={!!errors.name}
+                    required
                   />
                   <Input
                     type="email"
@@ -139,6 +199,9 @@ export default function SignupPage() {
                     label="Email"
                     value={email}
                     onChange={handleEmailChange}
+                    errorMessage={errors.email}
+                    error={!!errors.email}
+                    required
                   />
                   <div className="flex flex-col md:flex-row md:justify-between gap-4 pb-12">
                     <Input
@@ -148,6 +211,9 @@ export default function SignupPage() {
                       fullWidth
                       value={password}
                       onChange={handlePasswordChange}
+                      errorMessage={errors.password}
+                      error={!!errors.password}
+                      required
                     />
                     <Input
                       type="password"
@@ -156,6 +222,9 @@ export default function SignupPage() {
                       fullWidth
                       value={confirmPassword}
                       onChange={handleConfirmPasswordChange}
+                      errorMessage={errors.confirmPassword}
+                      error={!!errors.confirmPassword}
+                      required
                     />
                   </div>
 
@@ -182,7 +251,7 @@ export default function SignupPage() {
                   <Button
                     variant="outlined"
                     color="tertiary"
-                    size="full"
+                    fullWidth
                     startIcon={<FaGoogle size={20} />}
                   >
                     Google
@@ -190,7 +259,7 @@ export default function SignupPage() {
                   <Button
                     variant="outlined"
                     color="tertiary"
-                    size="full"
+                    fullWidth
                     startIcon={<FaApple size={20} />}
                   >
                     Apple ID
@@ -198,7 +267,7 @@ export default function SignupPage() {
                   <Button
                     variant="outlined"
                     color="tertiary"
-                    size="full"
+                    fullWidth
                     startIcon={<FaGithub size={20} />}
                   >
                     Github
@@ -212,7 +281,6 @@ export default function SignupPage() {
                   variant="text"
                   className="font-bold px-[4px] inline-block"
                   responsive={false}
-                  
                 >
                   Log In
                 </CustomLink>
@@ -228,5 +296,3 @@ export default function SignupPage() {
     </div>
   );
 }
-
-

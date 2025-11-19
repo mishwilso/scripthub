@@ -21,6 +21,7 @@ interface ButtonProps {
   fullWidth?: boolean;
   responsive?: boolean;
   loading?: boolean;
+  className?: React.CSSProperties | string;
 }
 
 export default function Button({
@@ -36,6 +37,7 @@ export default function Button({
   fullWidth = false,
   responsive = true,
   loading = false,
+  className,
 }: ButtonProps) {
 
   const colorStyles = {
@@ -93,8 +95,9 @@ export default function Button({
         ${colorStyles[color][variant]}
         ${sizeStyles[size]}
         ${disabled ? disabledStyle : transitionStyle}
-        ${fullWidth ? "w-full" : ""}
-        gap-2`
+        ${fullWidth ? "md:w-full" : "md:w-auto"}
+        ${className ? className : ""}
+        gap-2 w-full`
     .trim()
     .replace(/\s+/g, " ");
 
