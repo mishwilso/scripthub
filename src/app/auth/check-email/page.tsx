@@ -12,6 +12,9 @@ import Button from "@/components/ui/Button";
 import { FiMail } from "react-icons/fi";
 import { MdError } from "react-icons/md";
 import { MdCheckCircle } from "react-icons/md";
+import { clientSupabase } from "@/lib/supabase/client";
+
+import { useAuth } from "@/context/AuthContext";
 
 export default function CheckEmailPage() {
   const searchParams = useSearchParams();
@@ -22,12 +25,26 @@ export default function CheckEmailPage() {
   const [resendSuccess, setResendSuccess] = React.useState(false);
   const [resendError, setResendError] = React.useState<string | null>(null);
 
+  const { user } = useAuth();
 
   const pageMessage = {
-    "verification": {message: <p>Click the link in the email to activate your account. If you don&apos;t see it, check your spam folder.</p>},
-    "reset": {message: <p>Click the link in the email to reset your password. If you don&apos;t see it, check your spam folder.</p>}
-  }
-
+    verification: {
+      message: (
+        <p>
+          Click the link in the email to activate your account. If you
+          don&apos;t see it, check your spam folder.
+        </p>
+      ),
+    },
+    reset: {
+      message: (
+        <p>
+          Click the link in the email to reset your password. If you don&apos;t
+          see it, check your spam folder.
+        </p>
+      ),
+    },
+  };
 
   const handleResendEmail = async () => {
     setResending(true);
@@ -36,15 +53,16 @@ export default function CheckEmailPage() {
 
     try {
       // TODO: Implement resend email logic with Supabase
-      // For now, simulate a delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      setResendSuccess(true);
-
-      // Hide success message after 5 seconds
-      setTimeout(() => {
-        setResendSuccess(false);
-      }, 5000);
+      const { error } = await clientSupabase.auth.resend({
+        type: "signup",
+        email: user?.email ?? "",
+      });
+      if (error) {
+        setResendError("Failed to resend email. Please try again.");
+      } else {
+        setResendSuccess(true);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setResendError("Failed to resend email. Please try again.");
     } finally {
@@ -98,7 +116,11 @@ export default function CheckEmailPage() {
 
               {/* Error Message */}
               {resendError && (
-                <div id="resend-error-message" aria-live="polite" className="mb-4">
+                <div
+                  id="resend-error-message"
+                  aria-live="polite"
+                  className="mb-4"
+                >
                   <p className="text-red-700 bg-negative-base/10 p-2 flex items-center gap-2 border-l-4 border-red-700 rounded-e-lg">
                     <MdError />
                     Error: {resendError}

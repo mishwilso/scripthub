@@ -95,6 +95,7 @@ export default function LoginPage() {
         // Login successful, you can redirect or show a success message
         router.push("/dashboard"); // Redirect to dashboard
       }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
     } finally {
