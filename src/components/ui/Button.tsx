@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import LoadingIcons from 'react-loading-icons'
 
 type Size = "small" | "medium" | "large" | "full";
 type ButtonType = "button" | "submit" | "reset";
@@ -104,6 +105,7 @@ export default function Button({
       type={type}
       disabled={disabled}
     >
+      {loading ? <LoadingIcons.TailSpin stroke="#ffffff" width="20px" /> : null}
       {startIcon}
       <div className={`${responsive ? "hidden  md:inline" : "inline"}`}>
         {children}
