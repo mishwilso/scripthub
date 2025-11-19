@@ -158,16 +158,3 @@ export function useAuth() {
   return context;
 }
 
-
-/**
- * alter policy "Users can insert chapters in own books"
-
-
-on "public"."chapters"
-to authenticated
-with check (
-  (EXISTS ( SELECT 1
-   FROM books
-  WHERE ((books.id = chapters.book_id) AND (books.user_id = auth.uid()))))
-);
- */

@@ -19,6 +19,7 @@ interface ButtonProps {
   children?: React.ReactNode;
   fullWidth?: boolean;
   responsive?: boolean;
+  loading?: boolean;
 }
 
 export default function Button({
@@ -33,6 +34,7 @@ export default function Button({
   children,
   fullWidth = false,
   responsive = true,
+  loading = false,
 }: ButtonProps) {
 
   const colorStyles = {

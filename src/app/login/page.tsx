@@ -16,10 +16,13 @@ import { FaGoogle } from "react-icons/fa";
 import { FaApple } from "react-icons/fa";
 import { useAuth } from "@/context/AuthContext";
 
+import { MdError } from "react-icons/md";
+
 export default function LoginPage() {
 
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const [error, setError] = React.useState<string | null>(null);
 
     const { login } = useAuth();
 
@@ -33,11 +36,23 @@ export default function LoginPage() {
     }
 
     // handle submit
-    const handleSubmit = (e:React.FormEvent) => {
+    const handleSubmit = async (e:React.FormEvent) => {
         e.preventDefault();
         // add your login logic here
+        setPassword("");
+        setError(null); // reset previous error
         console.log("Login form submitted", {email, password});
         console.log(login(email, password));
+        try {
+          const { success, error, data } = await login(email, password);
+
+          // handle login result - error
+          if (!success) {
+              setError(error || "An unknown error occurred");
+          }
+        } catch (err) {
+          setError("An unexpected error occurred. Please try again.");
+        }
     }
 
   return (
@@ -50,7 +65,6 @@ export default function LoginPage() {
           {/* Sign up Card */}
           <Card>
             <div className=" max-w-[577px] px-6 md:px-12 py-12 md:py-6 flex flex-col justify-between">
-              <div>
                 <div className="pt-11 pb-6">
                   <h1 className="text-3xl font-bold text-secondary-dark">
                     Welcome back!
@@ -59,6 +73,13 @@ export default function LoginPage() {
                     Enter your details to sign in to your account
                   </p>
                 </div>
+
+                <div id="login-error-message" aria-live="polite">
+                  {error && <p className="text-red-700 bg-negative-base/10 p-2 flex items-center gap-2 border-l-4 border-red-700 rounded-e-lg mb-4">
+                  <MdError />
+                  Error: {error}</p>}
+                </div>
+
                 <form className="flex flex-col gap-3 mt-4 items-start" onSubmit={handleSubmit}>
                   <Input
                     type="email"
@@ -142,7 +163,6 @@ export default function LoginPage() {
                   Sign Up Now
                 </CustomLink>
               </div>
-            </div>
           </Card>
           {/* Photo Slide Show */}
           <div className="flex my-auto">
