@@ -108,6 +108,7 @@ export default function CheckEmailPage() {
                   fullWidth
                   loading={resending}
                   onClick={handleResendEmail}
+                  responsive={false}
                 >
                   Resend Email
                 </Button>
