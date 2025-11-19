@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 
 import MainNavbar from "@/components/layout/MainNavbar";
 import CustomLink from "@/components/ui/CustomLink";
@@ -15,14 +16,24 @@ import { FaGithub } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import { FaApple } from "react-icons/fa";
 
+import { useAuth } from "@/context/AuthContext";
+
+import { MdError } from "react-icons/md";
+
 export default function SignupPage() {
+  const router = useRouter();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [name, setName] = React.useState("");
 
+  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(false);
+
+  const {signup} = useAuth();
+
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Add your signup logic here
     console.log("Signup form submitted", {
@@ -31,6 +42,33 @@ export default function SignupPage() {
       password,
       confirmPassword,
     });
+
+    setError(null);
+    setLoading(true);
+
+    // handle missmatch passwords
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+
+
+    try {
+      const { success, error } = await signup(email, password, name);
+      if (!success) {
+        setError(error || "An unknown error occurred");
+      } else {
+        // Signup successful, redirect to check-email page
+        console.log("Signup successful");
+        router.push(`/auth/check-email?email=${encodeURIComponent(email)}`);
+      }
+    } catch(err) {
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+
   };
 
   // Handle input changes
@@ -77,6 +115,13 @@ export default function SignupPage() {
                     Please enter your details to get stared
                   </p>
                 </div>
+
+                <div id="login-error-message" aria-live="polite">
+                  {error && <p className="text-red-700 bg-negative-base/10 p-2 flex items-center gap-2 border-l-4 border-red-700 rounded-e-lg mb-4">
+                  <MdError />
+                  Error: {error}</p>}
+                </div>
+
                 <form
                   className="flex flex-col gap-3 mt-4"
                   onSubmit={handleSubmit}
@@ -119,6 +164,7 @@ export default function SignupPage() {
                     color="secondary"
                     size="large"
                     fullWidth
+                    loading={loading}
                   >
                     Sign Up
                   </Button>
@@ -166,6 +212,7 @@ export default function SignupPage() {
                   variant="text"
                   className="font-bold px-[4px] inline-block"
                   responsive={false}
+                  
                 >
                   Log In
                 </CustomLink>
@@ -181,3 +228,5 @@ export default function SignupPage() {
     </div>
   );
 }
+
+

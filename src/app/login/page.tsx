@@ -23,6 +23,7 @@ export default function LoginPage() {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [error, setError] = React.useState<string | null>(null);
+    const [loading, setLoading] = React.useState(false);
 
     const { login } = useAuth();
 
@@ -43,15 +44,21 @@ export default function LoginPage() {
         setError(null); // reset previous error
         console.log("Login form submitted", {email, password});
         console.log(login(email, password));
+        setLoading(true);
         try {
           const { success, error, data } = await login(email, password);
 
           // handle login result - error
           if (!success) {
               setError(error || "An unknown error occurred");
+          } else {
+              // Login successful, you can redirect or show a success message
+              console.log("Login successful", data);
           }
         } catch (err) {
           setError("An unexpected error occurred. Please try again.");
+        } finally {
+          setLoading(false);
         }
     }
 
@@ -113,6 +120,7 @@ export default function LoginPage() {
                     type="submit"
                     color="secondary"
                     size="large"
+                    loading={loading}
                     fullWidth
                   >
                     Log In
@@ -151,7 +159,7 @@ export default function LoginPage() {
                     Github
                   </Button>
                 </div>
-              </div>
+              
               <div className="flex items-center justify-center pt-32">
                 <p className="text-neutral-dark">Don&apos;t have an account?</p>
                 <CustomLink
@@ -160,9 +168,10 @@ export default function LoginPage() {
                   className="font-bold px-[4px] inline-block"
                   responsive={false}
                 >
-                  Sign Up Now
+                  Sign Up
                 </CustomLink>
               </div>
+            </div>
           </Card>
           {/* Photo Slide Show */}
           <div className="flex my-auto">

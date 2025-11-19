@@ -105,7 +105,7 @@ export default function Button({
       type={type}
       disabled={disabled}
     >
-      {loading ? <LoadingIcons.TailSpin stroke="#ffffff" width="20px" /> : null}
+      {loading ? <LoadingIcons.TailSpin stroke="#5e4c3b" width="1em" height="1em" strokeWidth="3px" /> : null}
       {startIcon}
       <div className={`${responsive ? "hidden  md:inline" : "inline"}`}>
         {children}

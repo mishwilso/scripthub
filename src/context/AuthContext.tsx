@@ -2,7 +2,7 @@
 
 import { createContext, useState, useEffect, useContext } from "react";
 import { clientSupabase } from "@/lib/supabase/client";
-import { Session, User, AuthError, AuthResponse } from "@supabase/supabase-js";
+import { type Session, type User, type AuthError, type AuthResponse } from "@supabase/supabase-js";
 import { getAuthErrorMessage } from "@/lib/authErrors";
 
 interface AuthContextType {
@@ -12,7 +12,8 @@ interface AuthContextType {
   isAuthenticated: boolean;
   signup: (
     email: string,
-    password: string
+    password: string,
+    name: string
   ) => Promise<{
     success: boolean;
     data?: AuthResponse["data"];
@@ -76,11 +77,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   //sign up
-  const signup = async (email: string, password: string) => {
+  const signup = async (email: string, password: string, name: string) => {
     try {
       const { data, error } = await clientSupabase.auth.signUp({
         email: email.toLowerCase(),
-        password,
+        password: password,
+        options: {
+            data: {
+                name: name,
+            }
+        }
       });
 
       if (error) {
@@ -111,8 +117,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       return { success: true, data: authData };
     } catch (error) {
       const authError = error as AuthError;
-      console.log("Login error status:", authError.status);
-      console.log("Login error code:", authError.code);
       return { success: false, error: getAuthErrorMessage(authError) };
     }
   };
