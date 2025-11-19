@@ -1,6 +1,7 @@
 // import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import {AuthProvider} from "@/context/AuthContext";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
@@ -25,7 +26,9 @@ export default function RootLayout({
       <head>
         <title>ScriptHub</title>
       </head>
-      <body className={`${poppins.className} antialiased`}>{children}</body>
+      <body className={`${poppins.className} antialiased`}>
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

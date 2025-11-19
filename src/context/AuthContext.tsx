@@ -1,6 +1,9 @@
+'use client';
+
 import { createContext, useState, useEffect, useContext } from "react";
 import { clientSupabase } from "@/lib/supabase/client";
 import { Session, User, AuthError, AuthResponse } from "@supabase/supabase-js";
+import { getAuthErrorMessage } from "@/lib/authErrors";
 
 interface AuthContextType {
   session: Session | null;
@@ -87,6 +90,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       return { success: true, data: authData };
     } catch (error) {
       const authError = error as AuthError;
+      console.log("Signup error:", authError);
       return { success: false, error: authError?.message };
     }
   };
@@ -107,7 +111,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       return { success: true, data: authData };
     } catch (error) {
       const authError = error as AuthError;
-      return { success: false, error: authError?.message };
+      console.log("Login error status:", authError.status);
+      console.log("Login error code:", authError.code);
+      return { success: false, error: getAuthErrorMessage(authError) };
     }
   };
 
@@ -151,3 +157,17 @@ export function useAuth() {
 
   return context;
 }
+
+
+/**
+ * alter policy "Users can insert chapters in own books"
+
+
+on "public"."chapters"
+to authenticated
+with check (
+  (EXISTS ( SELECT 1
+   FROM books
+  WHERE ((books.id = chapters.book_id) AND (books.user_id = auth.uid()))))
+);
+ */

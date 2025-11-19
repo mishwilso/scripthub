@@ -14,11 +14,14 @@ import Button from "@/components/ui/Button";
 import { FaGithub } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
 import { FaApple } from "react-icons/fa";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
 
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+
+    const { login } = useAuth();
 
     // handle chahes
     const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,6 +37,7 @@ export default function LoginPage() {
         e.preventDefault();
         // add your login logic here
         console.log("Login form submitted", {email, password});
+        console.log(login(email, password));
     }
 
   return (
