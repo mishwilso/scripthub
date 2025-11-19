@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ScriptHub
+
+A writing application with Git-style version control for authors. Organize your stories, track changes, and explore alternate narratives—all in one place.
+
+## About
+
+ScriptHub helps writers manage their creative projects with features inspired by version control systems. Branch your narrative to explore alternate endings, commit changes to chapters, and keep all your drafts organized without the "final_draft_v3_ACTUAL_final.docx" hellscape.
+
+## Tech Stack
+
+- **Framework:** Next.js 15 (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **Database:** Supabase (PostgreSQL)
+- **Authentication:** Supabase Auth
+- **Icons:** React Icons
+
+## Features (In Development)
+
+- [ ] User authentication (signup, login, email verification)
+- [ ] Book/project management
+- [ ] Chapter organization
+- [ ] Version control for chapters
+- [ ] Branch narratives (alternate storylines)
+- [ ] World building notes
+- [ ] Collaborator support
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+- Supabase account
+
+### Installation
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/scripthub.git
+cd scripthub
+```
+
+2. Install dependencies
+
+```bash
+npm install
+```
+
+3. Set up environment variables
+
+Create a `.env.local` file in the root directory:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+```
+
+4. Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/                    # Next.js App Router pages
+├── components/
+│   ├── ui/                 # Reusable UI components
+│   └── layout/             # Layout components
+├── context/                # React context providers
+├── lib/                    # Utilities and configurations
+└── assets/                 # Images and vectors
+```
 
-## Learn More
+## Dev Log
 
-To learn more about Next.js, take a look at the following resources:
+Follow the development journey on [Hashnode](https://code-n-quill.hashnode.dev/?source=top_nav_blog_home).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project is for portfolio/educational purposes.
 
-## Deploy on Vercel
+## Author
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**M** - CS Graduate & Web Developer
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+_Built with ☕ and a love for storytelling_
