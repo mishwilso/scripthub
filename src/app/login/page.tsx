@@ -23,11 +23,45 @@ export default function LoginPage() {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
+  const [errors, setErrors] = React.useState<{ [key: string]: string | null }>({
+    email: null,
+    password: null
+  });
   const [loading, setLoading] = React.useState(false);
 
   const { login } = useAuth();
 
   const router = useRouter();
+
+    // Validate form submission
+  const validateForm = () => {
+    const newErrors: { [key: string]: string | null } = {
+      email: null,
+      password: null
+    };
+
+    let isValid = true;
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    } else if (!emailRegex.test(email)) {
+      newErrors.email = "Please enter a valid email address";
+      isValid = false;
+    }
+
+    // Password validation
+    if (!password) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    } 
+    
+    setErrors(newErrors);
+    return isValid;
+  };
 
   // handle chahes
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,9 +78,13 @@ export default function LoginPage() {
     // add your login logic here
     setPassword("");
     setError(null); // reset previous error
-    console.log("Login form submitted", { email, password });
-    console.log(login(email, password));
     setLoading(true);
+
+    if (!validateForm()) {
+      setLoading(false);
+      return;
+    }
+
     try {
       const { success, error, data } = await login(email, password);
 
@@ -95,6 +133,7 @@ export default function LoginPage() {
               <form
                 className="flex flex-col gap-3 mt-4 items-start"
                 onSubmit={handleSubmit}
+                noValidate
               >
                 <Input
                   type="email"
@@ -103,6 +142,9 @@ export default function LoginPage() {
                   fullWidth
                   value={email}
                   onChange={handleEmailChange}
+                  required
+                  errorMessage={errors.email}
+                  error={!!errors.email}
                 />
                 <Input
                   type="password"
@@ -111,6 +153,9 @@ export default function LoginPage() {
                   fullWidth
                   value={password}
                   onChange={handlePasswordChange}
+                  required
+                  errorMessage={errors.password}
+                  error={!!errors.password}
                 />
 
                 <div>

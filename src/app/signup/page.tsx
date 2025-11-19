@@ -98,6 +98,7 @@ export default function SignupPage() {
 
     setError(null);
     setLoading(true);
+    setConfirmPassword("");
 
     if (validateForm() === false) {
       setLoading(false);
@@ -117,6 +118,7 @@ export default function SignupPage() {
           )}&type=verification`
         );
       }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
     } finally {
