@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Logo from "@/components/ui/Logo";
-import Link from "next/link";
 import IconButton from "@/components/ui/IconButton";
 
 import { FaBars } from "react-icons/fa6";

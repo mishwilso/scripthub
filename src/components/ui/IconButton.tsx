@@ -116,7 +116,8 @@ export default function IconButton({
         ${colorStyles[color][variant]}
         ${sizeStyles[size][width]}
         ${disabled ? disabledStyle : transitionStyle}
-        ${shapeStyles[shape]}`}
+        ${shapeStyles[shape]}
+        ${className}`}
       onClick={onClick}
       type={type}
       disabled={disabled}
