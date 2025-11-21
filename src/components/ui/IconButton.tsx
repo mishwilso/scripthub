@@ -19,6 +19,7 @@ interface IconButtonProps {
   children?: React.ReactNode;
   shape?: "round" | "square";
   altText: string;
+  className?: string
 }
 
 export default function IconButton({
@@ -31,7 +32,8 @@ export default function IconButton({
   disabled = false,
   type = "button",
   children,
-  altText
+  altText,
+  className
 }: IconButtonProps) {
 
   const colorStyles = {
