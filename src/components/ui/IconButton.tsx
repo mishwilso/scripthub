@@ -33,10 +33,6 @@ export default function IconButton({
   children,
   altText
 }: IconButtonProps) {
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    console.log("Button Clicked", e.currentTarget);
-    onClick?.();
-  };
 
   const colorStyles = {
     primary: {
@@ -119,7 +115,7 @@ export default function IconButton({
         ${sizeStyles[size][width]}
         ${disabled ? disabledStyle : transitionStyle}
         ${shapeStyles[shape]}`}
-      onClick={handleClick}
+      onClick={onClick}
       type={type}
       disabled={disabled}
       aria-label={altText}

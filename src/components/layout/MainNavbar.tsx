@@ -3,6 +3,8 @@ import Image from "next/image";
 import logo from "@/assets/logo/scripthub-logo.png";
 import logoName from "@/assets/logo/script-hub-logo-name.png";
 
+import Logo from "@/components/ui/Logo"
+
 import { CiUser } from "react-icons/ci";
 
 import { usePathname } from "next/navigation";
@@ -17,17 +19,7 @@ export default function MainNavbar() {
   return (
     <nav className="min-w-96 flex items-center justify-between bg-white-input px-5 md:px-10 py-3 border-b-2 border-b-outline-input">
       <Link href="/" className="px-1 py-1">
-        <div className="flex items-center gap-2 transition delay-75 duration-300 ease-in-out hover:scale-105">
-          <div className="w-10">
-            <Image
-              src={logo}
-              alt="Scripthub logo"
-            />
-          </div>
-          <div className="w-24 pt-1">
-            <Image src={logoName} alt="ScriptHUB" />
-          </div>
-        </div>
+        <Logo />
       </Link>
 
       <Link
