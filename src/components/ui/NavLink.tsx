@@ -14,21 +14,23 @@ export default function NavLink({icon, label, href, isOpen}:NavLinkProps) {
     const pathname = usePathname()
     const isActive:boolean = pathname === href
 
-    const isActiveStyle = isActive ? "bg-secondary-base/10" : ""
+    const isActiveStyle = isActive ? "bg-secondary-dark/10" : ""
     
 
     return (
-        <Link 
-            href={href}
-            className={`flex items-center rounded hover:bg-neutral-light ${
-                isOpen 
-                ? "gap-3 px-3 py-2 justify-start"  // Expanded: gap + left align
-                : "px-0 py-2 justify-center"        // Collapsed: centered
-            }`}
-            >
-            <span className='text-secondary-dark flex-shrink-0'>{icon}</span>
-            {isOpen && <span className='text-secondary-dark text-sm whitespace-nowrap'>{label}</span>}
-        </Link>
-        
-    )
+    <Link 
+      href={href}
+      className={`flex items-center gap-4 py-2 px-1 rounded hover:bg-neutral-light/50 transition delay-75 duration-300 ease-in-out hover:scale-105 ${isActiveStyle}`}
+    >
+      {/* Always render icon - doesn't move */}
+      <span className="text-secondary-dark flex-shrink-0 w-8 flex items-center justify-center">
+        {icon}
+      </span>
+      
+      {/* Only render text when open */}
+      {isOpen && (
+        <span className="text-secondary-dark text-sm whitespace-nowrap">{label}</span>
+      )}
+    </Link>
+  )
 }

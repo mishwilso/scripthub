@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Logo from "@/components/ui/Logo";
+import Link from "next/link";
 import IconButton from "@/components/ui/IconButton";
 
 import { FaBars } from "react-icons/fa6";
@@ -15,16 +16,15 @@ import { PiNoteLight } from "react-icons/pi";
 import { BiGitBranch } from "react-icons/bi";
 import { GrGroup } from "react-icons/gr";
 
-
 import NavLink from "@/components/ui/NavLink";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
-            //   <NavLink icon={<IoBookOutline />} label="Overview" href="/books/[bookId]/?view=overview" isOpen={isOpen}/>
-            // <NavLink icon={<PiNoteLight />} label="Chapters" href="/books/[bookId]/?view=chapters" isOpen={isOpen}/>
-            // <NavLink icon={<GrGroup />} label="Worldbuilding" href="/books/[bookId]/?view=worldbuilding" isOpen={isOpen}/>
-            // <NavLink icon={<BiGitBranch />} label="Versions" href="/books/[bookId]/?view=versions" isOpen={isOpen}/>
+  //   <NavLink icon={<IoBookOutline />} label="Overview" href="/books/[bookId]/?view=overview" isOpen={isOpen}/>
+  // <NavLink icon={<PiNoteLight />} label="Chapters" href="/books/[bookId]/?view=chapters" isOpen={isOpen}/>
+  // <NavLink icon={<GrGroup />} label="Worldbuilding" href="/books/[bookId]/?view=worldbuilding" isOpen={isOpen}/>
+  // <NavLink icon={<BiGitBranch />} label="Versions" href="/books/[bookId]/?view=versions" isOpen={isOpen}/>
 
   return (
     <>
@@ -70,24 +70,56 @@ export default function Sidebar() {
 
         {/* Nav */}
         <nav className="">
-            <div className="flex gap-1 px-4 py-8 border-b-2 border-neutral-dark/20">
-                <Logo logoSize="w-7" nameSize="hidden"/>
-                {isOpen && <Logo logoSize="hidden"/>}
-            </div>
+          <div className="flex gap-4 px-4 py-8 border-b-2 border-neutral-dark/20">
+            <Logo logoSize="w-7" nameSize="hidden" />
+            {isOpen && <Logo logoSize="hidden" />}
+          </div>
 
-            <div className="flex flex-col gap-8 px-4 py-8">
-                <NavLink icon={<RxDashboard size={18}/>} label="Dashboard" href="/dashboard" isOpen={isOpen}/>
-                <NavLink icon={<VscLibrary size={18}/>} label="My Works" href="/myworks" isOpen={isOpen}/>
-                <NavLink icon={<IoLibraryOutline size={18}/>} label="My Works" href="/myworks" isOpen={isOpen}/>
-            </div>
+          <div className="flex flex-col gap-8 px-2 py-8">
+            <NavLink
+              icon={<RxDashboard size={18} />}
+              label="Dashboard"
+              href="/dashboard"
+              isOpen={isOpen}
+            />
+            <NavLink
+              icon={<VscLibrary size={18} />}
+              label="My Works"
+              href="/myworks"
+              isOpen={isOpen}
+            />
+          </div>
 
-            <p>Book Name</p>
+          <p className={`${isOpen ? "translate-x-0" : "-translate-x-full"} sticky text-xs text-secondary-dark font-semibold text-center border-y-2  border-neutral-dark/20 py-2`}>
+            A Court of Thorns and Roses
+          </p>
 
-
-            <NavLink icon={<IoBookOutline size={18}/>} label="Overview" href="/test/navtest" isOpen={isOpen}/>
-            <NavLink icon={<PiNoteLight size={18}/>} label="Chapters" href="/test" isOpen={isOpen}/>
-            <NavLink icon={<GrGroup size={18}/>} label="Worldbuilding" href="/test" isOpen={isOpen}/>
-            <NavLink icon={<BiGitBranch size={18}/>} label="Versions" href="/test" isOpen={isOpen}/>
+          <div className="flex flex-col gap-8 px-3 py-8">
+            <NavLink
+              icon={<IoBookOutline size={18} />}
+              label="Overview"
+              href="/test/navtest"
+              isOpen={isOpen}
+            />
+            <NavLink
+              icon={<PiNoteLight size={18} />}
+              label="Chapters"
+              href="/test"
+              isOpen={isOpen}
+            />
+            <NavLink
+              icon={<GrGroup size={18} />}
+              label="Worldbuilding"
+              href="/test"
+              isOpen={isOpen}
+            />
+            <NavLink
+              icon={<BiGitBranch size={18} />}
+              label="Versions"
+              href="/test"
+              isOpen={isOpen}
+            />
+          </div>
         </nav>
       </aside>
     </>
