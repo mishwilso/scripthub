@@ -19,7 +19,9 @@ interface IconButtonProps {
   children?: React.ReactNode;
   shape?: "round" | "square";
   altText: string;
-  className?: string
+  className?: string;
+  showNotification?: boolean;
+  notificationColor?: string;
 }
 
 export default function IconButton({
@@ -33,6 +35,8 @@ export default function IconButton({
   type = "button",
   children,
   altText,
+  showNotification = false,
+  notificationColor = "#B65733", // default to primary-base
   className
 }: IconButtonProps) {
 
@@ -110,20 +114,31 @@ export default function IconButton({
     "disabled:opacity-50 disabled:transition-none disabled:hover-none pointer-events-none";
 
   return (
-    <button
-      className={`
-        ${baseStyle}
-        ${colorStyles[color][variant]}
-        ${sizeStyles[size][width]}
-        ${disabled ? disabledStyle : transitionStyle}
-        ${shapeStyles[shape]}
-        ${className}`}
-      onClick={onClick}
-      type={type}
-      disabled={disabled}
-      aria-label={altText}
-    >
-      <span className={`${iconSizeClasses[size]}`}>{children}</span>
-    </button>
+    <div className="relative inline-block">
+      <button
+        className={`
+          ${baseStyle}
+          ${colorStyles[color][variant]}
+          ${sizeStyles[size][width]}
+          ${disabled ? disabledStyle : transitionStyle}
+          ${shapeStyles[shape]}
+          ${className}
+        `}
+        onClick={onClick}
+        type={type}
+        disabled={disabled}
+        aria-label={altText}
+      >
+        <span className={iconSizeClasses[size]}>{children}</span>
+      </button>
+      
+      {/* Notification dot */}
+      {showNotification && (
+        <span 
+          className="absolute top-2 right-0 h-2.5 w-2.5 rounded-full border-2 border-white"
+          style={{ backgroundColor: notificationColor }}
+        />
+      )}
+    </div>
   );
 }
