@@ -16,9 +16,15 @@ Provides context to children
 Handles click outside
  */
 
-import React, {useRef, useEffect, useState } from 'react';
+import React, {useRef, useEffect, useState, useContext, createContext } from 'react';
+import DropdownMenu from './DropdownMenu';
+import DropdownButton from './DropdownButton';
+import DropdownOption from './DropdownOption';
 
-function Dropdown(){
+export const DropdownContext = createContext(undefined);
+
+
+export function Dropdown({children}){
 
     // Use to track the location of the dropdown
     const dropdownRef = useRef(null);
@@ -33,13 +39,29 @@ function Dropdown(){
             }
         }
 
+        document.addEventListener('mousedown', handleClickOutside)
+
+        return (() => document.removeEventListener('mousedown', handleClickOutside))
 
     }, [dropdownRef])
 
+    function toggle(){
+        setIsOpen((prevState) => !prevState)
+    }
+
     return (
-        <div ref={dropdownRef}>
-            
-        </div>
+        <DropdownContext.Provider value={{isOpen, setIsOpen, toggle}}>
+            <div ref={dropdownRef} className='relative'>
+                {children}
+            </div>
+        </DropdownContext.Provider>
     )
 
 }
+
+Dropdown.Button = DropdownButton
+Dropdown.Menu = DropdownMenu
+Dropdown.Option = DropdownOption
+
+export default Dropdown
+

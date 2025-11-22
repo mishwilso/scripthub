@@ -1,0 +1,12 @@
+/**
+ * <Dropdown>
+  <Dropdown.Button>Settings</Dropdown.Button>
+  <Dropdown.Menu>
+    <Dropdown.Header>Account</Dropdown.Header>
+    <Dropdown.Option>Profile</Dropdown.Option>
+    <Dropdown.Option>Settings</Dropdown.Option>
+    <Dropdown.Divider />
+    <Dropdown.Option danger>Logout</Dropdown.Option>
+  </Dropdown.Menu>
+</Dropdown>
+ */
