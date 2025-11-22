@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "src/lib/authErrors.js"  ],
+, "src/lib/authErrors.js", "src/components/ui/Dropdown/Dropdown.jsx"  ],
   "exclude": ["node_modules"]
 }
