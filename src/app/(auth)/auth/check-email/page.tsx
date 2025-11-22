@@ -52,7 +52,6 @@ export default function CheckEmailPage() {
     setResendSuccess(false);
 
     try {
-      // TODO: Implement resend email logic with Supabase
       const { error } = await clientSupabase.auth.resend({
         type: "signup",
         email: user?.email ?? "",

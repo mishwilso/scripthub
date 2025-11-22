@@ -1,6 +1,5 @@
 // TODO: Implement Header title change depending on Page
-// TODO: Search Input drop down
-// TODO: ProfilePicture rendering
+// TODO: fix with proper database queries
 
 "use client";
 
@@ -13,11 +12,14 @@ import { useAuth } from '@/context/AuthContext';
 
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { getHeaderDate } from "@/lib/utils/formatDates";
+import { capitalizeFirstLetter } from "@/lib/utils/formatString"
 
 export default function Header() {
   const headerDate = getHeaderDate();
   const {user} = useAuth();
   console.log(user)
+
+  const userName = capitalizeFirstLetter(user?.user_metadata.name)
 
   return (
     <div>
@@ -48,7 +50,7 @@ export default function Header() {
           <div className="flex gap-5 h-9 items-center">
             <Avatar />
             <div className="hidden lg:block">
-              <p className="font-bold text-secondary-dark">{user?.user_metadata.name}</p>
+              <p className="font-bold text-secondary-dark">{userName}</p>
               <p className="text-secondary-dark">Writer</p>
             </div>
           </div>

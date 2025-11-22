@@ -17,7 +17,7 @@ ScriptHub helps writers manage their creative projects with features inspired by
 
 ## Features (In Development)
 
-- [ ] User authentication (signup, login, email verification)
+- [x] User authentication (signup, login, email verification)
 - [ ] Book/project management
 - [ ] Chapter organization
 - [ ] Version control for chapters

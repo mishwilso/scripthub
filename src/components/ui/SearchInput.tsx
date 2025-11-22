@@ -1,3 +1,7 @@
+// TODO: Fix search Query
+// TODO: Search Input drop down
+
+
 "use client";
 
 import { FaMagnifyingGlass } from "react-icons/fa6";
