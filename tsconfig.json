@@ -28,7 +28,13 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
-, "src/lib/authErrors.js", "src/components/ui/Dropdown/Dropdown.jsx", "src/components/ui/Dropdown/DropdownButton.jsx", "src/components/ui/Dropdown/DropdownMenu.jsx", "src/components/ui/Dropdown/DropdownOption.tsx", "src/components/ui/Dropdown/notes"  ],
+    "**/*.mts",
+    "src/lib/authErrors.js",
+    "src/components/ui/Dropdown.jsx",
+    "src/components/ui/Dropdown/DropdownButton.jsx",
+    "src/components/ui/Dropdown/DropdownMenu.jsx",
+    "src/components/ui/Dropdown/DropdownOption.tsx",
+    "src/components/ui/Dropdown/notes"
+  ],
   "exclude": ["node_modules"]
 }

@@ -6,7 +6,7 @@ import IconButton from "@/components/ui/IconButton";
 import Input from "@/components/ui/Input";
 import MainNavbar from "@/components/layout/MainNavbar";
 
-import Dropdown from "@/components/ui/Dropdown/Dropdown";
+import Dropdown from "@/components/ui/Dropdown";
 
 import Card from "@/components/ui/Card";
 import { MdEmail, MdDelete, MdSearch, MdCheckCircle } from "react-icons/md";

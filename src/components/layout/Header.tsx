@@ -9,6 +9,10 @@ import Avatar from "@/components/ui/Avatar";
 
 import { useAuth } from '@/context/AuthContext';
 
+import Badge from '@/components/ui/Badge'
+import Notification from '@/components/ui/Notification'
+import Dropdown from '@/components/ui/Dropdown'
+
 
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { getHeaderDate } from "@/lib/utils/formatDates";
@@ -20,6 +24,16 @@ export default function Header() {
   console.log(user)
 
   const userName = capitalizeFirstLetter(user?.user_metadata.name)
+
+  const hasUnread = true
+  
+  const markAllRead = () => {
+    console.log('Marking all as read')
+  }
+  
+  const handleNotificationClick = () => {
+    console.log('Notification clicked')
+  }
 
   return (
     <div>
