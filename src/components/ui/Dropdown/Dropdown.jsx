@@ -20,6 +20,7 @@ import React, {useRef, useEffect, useState, useContext, createContext } from 're
 import DropdownMenu from './DropdownMenu';
 import DropdownButton from './DropdownButton';
 import DropdownOption from './DropdownOption';
+import DropdownDivider from './DropdownDivider';
 
 export const DropdownContext = createContext(undefined);
 
@@ -51,7 +52,7 @@ export function Dropdown({children}){
 
     return (
         <DropdownContext.Provider value={{isOpen, setIsOpen, toggle}}>
-            <div ref={dropdownRef} className='relative'>
+            <div ref={dropdownRef} className='inline-block'>
                 {children}
             </div>
         </DropdownContext.Provider>
@@ -62,6 +63,7 @@ export function Dropdown({children}){
 Dropdown.Button = DropdownButton
 Dropdown.Menu = DropdownMenu
 Dropdown.Option = DropdownOption
+Dropdown.Divider = DropdownDivider
 
 export default Dropdown
 

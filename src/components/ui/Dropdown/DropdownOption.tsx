@@ -25,28 +25,42 @@ export default function DropdownOption({
   danger,
   disabled,
 }: DropdownOptionProps) {
+
   const getPaddingClasses = () => {
-    if (startIcon && endIcon) return "pl-10 pr-10";
-    if (startIcon) return "pl-10 pr-4";
-    if (endIcon) return "pl-4 pr-10";
+    if (endIcon) return "px-4 justify-between";
     return "px-4";
   };
 
-  const classStyle = `${getPaddingClasses}`;
+  const disabledStyle = disabled ? "cursor-not-allowed pointer-events-none opacity-50" : "cursor-pointer"
+  const dangerStyle = danger ? "text-negative-base/80 hover:text-negative-base hover:bg-negative-base/10" : "text-secondary-dark/80 hover:text-secondary-dark hover:bg-[#917F74]/15"
+
+  const classStyle = `
+  flex flex-1 py-2 
+  text-sm
+  hover:outline-hidden  
+  rounded-md
+  ${dangerStyle}
+  ${disabledStyle}
+  gap-3 items-center
+  ${getPaddingClasses()}
+  `;
+
 
   return (
-    <div className="relative">
+    <div className="relative flex flex-1 mx-2 my-1"
+    role="menuitem">
       {href ? (
         <Link href={href} className={classStyle}>
-          {startIcon && (
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-secondary-dark/60">
-              {startIcon}
-            </div>
-          )}
+          {startIcon}
           {children}
+          {endIcon}
         </Link>
       ) : (
-        <button onClick={onClick}></button>
+        <button disabled={disabled} onClick={onClick} className={classStyle}>
+          {startIcon}
+          {children}
+          {endIcon}
+        </button>
       )}
     </div>
   );

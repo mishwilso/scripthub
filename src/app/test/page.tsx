@@ -6,6 +6,8 @@ import IconButton from "@/components/ui/IconButton";
 import Input from "@/components/ui/Input";
 import MainNavbar from "@/components/layout/MainNavbar";
 
+import Dropdown from "@/components/ui/Dropdown/Dropdown";
+
 import Card from "@/components/ui/Card";
 import { MdEmail, MdDelete, MdSearch, MdCheckCircle } from "react-icons/md";
 
@@ -555,6 +557,30 @@ function LayoutTests() {
         </div>
       </TestSection>
 
+      <TestSection title="Dropdown">
+        <div className="space-y-6">
+          <SubSection title="Basic Drop down">
+            <div className="flex justify-center">
+              <Dropdown>
+                <Dropdown.Button>
+                  <p className="rounded-md bg-white-input px-3 py-2 hover:bg-secondary-dark/10">
+                    Settings
+                  </p>
+                </Dropdown.Button>
+                <Dropdown.Menu>
+                  <Dropdown.Option onClick={() => console.log("hi")} startIcon={<MdEmail size={16}/>}>
+                    Profile
+                  </Dropdown.Option>
+                  <Dropdown.Option startIcon={<MdEmail size={16}/>}>Settings</Dropdown.Option>
+                  <Dropdown.Divider/>
+                  <Dropdown.Option startIcon={<MdEmail size={16}/>} danger>Logout</Dropdown.Option>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          </SubSection>
+        </div>
+      </TestSection>
+
       <TestSection title="NavBar">
         <div className="space-y-6">
           <SubSection title="Main Navbar">
@@ -567,7 +593,9 @@ function LayoutTests() {
         <div className="space-y-6">
           <SubSection title="Stats Card">
             <Card>
-              <h1 className="font-semibold text-secondary-dark pb-4">Chapters</h1>
+              <h1 className="font-semibold text-secondary-dark pb-4">
+                Chapters
+              </h1>
               <p className="text-secondary-dark text-3xl pb-1">12</p>
               <p className="text-primary-dark text-xs">10 total versions</p>
             </Card>

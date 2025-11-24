@@ -2,11 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-
 body {
-  background: #FFFDFB;
+  background: #fffdfb;
 }
-
 
 *,
 *::before,
@@ -78,4 +76,19 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px #f7f3ef inset !important;
+}
+
+.anchor {
+  anchor-name: --dropdown-anchor;
+  width: fit-content;
+}
+
+.dropdown-menu {
+  position: fixed;
+  position-anchor: --dropdown-anchor;
+  margin: 5px 0 0 5px;
+}
+
+.visually-hidden {
+  visibility: hidden;
 }
