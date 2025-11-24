@@ -27,6 +27,7 @@ import DropdownMenu from "./Dropdown/DropdownMenu";
 import DropdownButton from "./Dropdown/DropdownButton";
 import DropdownOption from "./Dropdown/DropdownOption";
 import DropdownDivider from "./Dropdown/DropdownDivider";
+import DropdownHeader from "./Dropdown/DropdownHeader";
 
 export const DropdownContext = createContext(undefined);
 
@@ -65,5 +66,6 @@ Dropdown.Button = DropdownButton;
 Dropdown.Menu = DropdownMenu;
 Dropdown.Option = DropdownOption;
 Dropdown.Divider = DropdownDivider;
+Dropdown.Header = DropdownHeader
 
 export default Dropdown;

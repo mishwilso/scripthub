@@ -4,7 +4,7 @@
  * Toggles dropdown
  */
 
-import { DropdownContext } from '@/components/ui/Dropdown/Dropdown'
+import { DropdownContext } from '@/components/ui/Dropdown'
 import { useContext } from 'react'
 
 export default function DropdownButton({children}){

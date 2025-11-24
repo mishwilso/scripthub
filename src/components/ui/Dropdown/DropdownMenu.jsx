@@ -4,7 +4,7 @@
  * Positioned absolutely
  * Wraps all options
  */
-import { DropdownContext } from "@/components/ui/Dropdown/Dropdown";
+import { DropdownContext } from "@/components/ui/Dropdown";
 import { useContext } from "react";
 
 // interface DropdownMenuProps {
