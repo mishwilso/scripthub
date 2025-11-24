@@ -13,7 +13,7 @@ export default function DropdownHeader({
 }: DropdownHeaderProps) {
 
   return (
-    <div className="relative flex flex-1 mb-1 py-2 px-4"
+    <div className="relative flex flex-1 py-3 px-4"
     role="menuheader">
           {children}
     </div>

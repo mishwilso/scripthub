@@ -13,12 +13,19 @@ import Badge from '@/components/ui/Badge'
 import Notification from '@/components/ui/Notification'
 import Dropdown from '@/components/ui/Dropdown'
 
-
+import { useRouter } from 'next/navigation';
 import { FaComment, FaAt } from 'react-icons/fa'
 
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { getHeaderDate } from "@/lib/utils/formatDates";
 import { capitalizeFirstLetter } from "@/lib/utils/formatString"
+
+import { MdOutlineMarkChatRead } from "react-icons/md";
+import { IoSettingsOutline } from "react-icons/io5";
+import { TbLogout2 } from "react-icons/tb";
+import { CgProfile } from "react-icons/cg";
+
+
 
 export default function Header() {
   const headerDate = getHeaderDate();
@@ -49,13 +56,7 @@ export default function Header() {
         <div className="flex items-center gap-5">
           <NotificationDropdown/>
 
-          <div className="flex gap-5 h-9 items-center">
-            <Avatar />
-            <div className="hidden lg:block">
-              <p className="font-bold text-secondary-dark">{userName}</p>
-              <p className="text-secondary-dark">Writer</p>
-            </div>
-          </div>
+          <ProfileDropdown username={userName}/>
         </div>
       </div>
       <div></div>
@@ -84,20 +85,22 @@ function NotificationDropdown(){
         </IconButton>
       </Dropdown.Button>
       
-      <Dropdown.Menu>
+      <Dropdown.Menu size="w-96">
         <Dropdown.Header>
-          Notifications 
-          <Badge>2</Badge>
+          <div className="gap-4 flex">
+            <p className="text-secondary-dark">Notifications </p>
+            <Badge shape="square">2</Badge>
+          </div>
         </Dropdown.Header>
         
-        <Dropdown.Option onClick={markAllRead}>
+        <Dropdown.Option onClick={markAllRead} startIcon={<MdOutlineMarkChatRead />} danger>
           Mark all as read
         </Dropdown.Option>
         
         <Dropdown.Divider />
         
         <Notification
-          icon={<FaComment size={20} color="#7E7065" />}
+          icon={<FaComment size={16} color="#7E7065" />}
           title="New Comment"
           message="Sarah added a comment on chapter 3"
           timestamp="5 minutes ago"
@@ -106,14 +109,53 @@ function NotificationDropdown(){
         />
         
         <Notification
-          icon={<FaAt size={20} color="#7E7065" />}
+          icon={<FaAt size={16} color="#7E7065" />}
           title="You were mentioned"
           message="Alex mentioned you in a note on Chapter 7"
           timestamp="1 hour ago"
-          isRead={false}
+          isRead={true}
           onClick={handleNotificationClick}
         />
       </Dropdown.Menu>
     </Dropdown>
   )
+}
+
+function ProfileDropdown({username}:{username: string}){
+
+  const {user, logout} = useAuth();
+  const router = useRouter();
+
+  const handleLogOut = () => {
+    logout()
+    router.push("/")
+  }
+
+  return (
+    <Dropdown>
+      <Dropdown.Button>
+        <div className="flex gap-4 h-9 items-center focus:bg-purple-500">
+          <Avatar />
+          <div className="hidden lg:block">
+            <p className="font-bold text-secondary-dark">{username}</p>
+            <p className="text-secondary-dark text-left">Writer</p>
+          </div>
+        </div>
+      </Dropdown.Button>
+
+      <Dropdown.Menu>
+        <Dropdown.Option startIcon={<IoSettingsOutline size={16}/>}>
+          Settings
+        </Dropdown.Option>
+        <Dropdown.Option startIcon={<CgProfile size={16}/>}>
+          My Profile
+        </Dropdown.Option>
+        <Dropdown.Divider/>
+        <Dropdown.Option startIcon={<TbLogout2 size={16}/>} onClick={handleLogOut} danger>
+          Log Out
+        </Dropdown.Option>
+      </Dropdown.Menu>
+    </Dropdown>
+  )
+
 }

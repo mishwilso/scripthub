@@ -29,17 +29,23 @@ import DropdownOption from "./Dropdown/DropdownOption";
 import DropdownDivider from "./Dropdown/DropdownDivider";
 import DropdownHeader from "./Dropdown/DropdownHeader";
 
-export const DropdownContext = createContext(undefined);
+export interface DropdownContextType {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  toggle: () => void;
+}
 
-export function Dropdown({ children }) {
+export const DropdownContext = createContext<DropdownContextType | undefined>(undefined);
+
+export function Dropdown({ children }:{children:React.ReactNode}) {
   // Use to track the location of the dropdown
-  const dropdownRef = useRef(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     // attach to document to handle mousedown?
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as HTMLDivElement)) {
         setIsOpen(false);
       }
     }
@@ -47,14 +53,22 @@ export function Dropdown({ children }) {
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => document.removeEventListener("mousedown", handleClickOutside);
+    
+
   }, [dropdownRef]);
 
   function toggle() {
     setIsOpen((prevState) => !prevState);
   }
 
+  const contextValues : DropdownContextType = {
+    isOpen,
+    setIsOpen,
+    toggle
+  }
+
   return (
-    <DropdownContext.Provider value={{ isOpen, setIsOpen, toggle }}>
+    <DropdownContext.Provider value={contextValues}>
       <div ref={dropdownRef} className="inline-block">
         {children}
       </div>

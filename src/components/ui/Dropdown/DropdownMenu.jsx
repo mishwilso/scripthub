@@ -11,11 +11,11 @@ import { useContext } from "react";
 //   position?: 'bottom span-right' | 'bottom span-left' | 'bottom' | 'top bottom span-right' | 'top bottom span-left' | 'top'
 // }
 
-export default function DropdownMenu({ children, position='bottom span-left' }) {
+export default function DropdownMenu({ children, position='bottom span-left', size="w-56"}) {
     const { isOpen } = useContext(DropdownContext);
 
     const classStyle = `
-    dropdown-menu w-56 rounded-md 
+    dropdown-menu ${size} rounded-md 
     bg-white-light outline-1 -outline-offset-1 outline-outline-light 
     shadow-md
     transition-all duration-200 ease-in-out

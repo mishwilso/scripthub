@@ -4,12 +4,14 @@ interface BadgeProps {
   children: React.ReactNode
   variant?: 'primary' | 'secondary' | 'success' | 'error'
   size?: 'small' | 'medium'
+  shape?: 'rounded' | 'square'
 }
 
 export default function Badge({ 
   children, 
   variant = 'primary',
-  size = 'small' 
+  size = 'small', 
+  shape = 'rounded'
 }: BadgeProps) {
   const variantStyles = {
     primary: 'bg-primary-base text-white',
@@ -23,12 +25,18 @@ export default function Badge({
     medium: 'text-sm px-3 py-1'
   }
 
+  const shapeStyles = {
+    'rounded': 'rounded-full',
+    'square': 'rounded-md'
+  }
+
   return (
     <span className={`
       inline-flex items-center justify-center
-      rounded-full font-medium
+      rounded-full font-medium text-xs text-white-base
       ${variantStyles[variant]}
       ${sizeStyles[size]}
+      ${shapeStyles[shape]}
     `}>
       {children}
     </span>
