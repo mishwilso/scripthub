@@ -5,6 +5,7 @@ import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import Input from "@/components/ui/Input";
 import MainNavbar from "@/components/layout/MainNavbar";
+import Book from "@/components/ui/Book"
 
 import Dropdown from "@/components/ui/Dropdown";
 
@@ -554,6 +555,14 @@ function LayoutTests() {
             <p>• Modals</p>
             <p>• Drawers</p>
           </div>
+        </div>
+      </TestSection>
+
+      <TestSection title="Book">
+        <div className="space-y-6">
+          <SubSection title="Book Parts">
+                <Book title="Untitled Book"/>
+          </SubSection>
         </div>
       </TestSection>
 

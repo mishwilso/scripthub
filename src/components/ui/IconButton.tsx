@@ -22,6 +22,7 @@ interface IconButtonProps {
   className?: string;
   showNotification?: boolean;
   notificationColor?: string;
+  inert?: boolean;
 }
 
 export default function IconButton({
@@ -37,7 +38,8 @@ export default function IconButton({
   altText,
   showNotification = false,
   notificationColor = "#B65733", // default to primary-base
-  className
+  className,
+  inert = false
 }: IconButtonProps) {
 
   const colorStyles = {
@@ -128,6 +130,7 @@ export default function IconButton({
         type={type}
         disabled={disabled}
         aria-label={altText}
+        inert={inert}
       >
         <span className={iconSizeClasses[size]}>{children}</span>
       </button>

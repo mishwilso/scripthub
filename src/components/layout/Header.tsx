@@ -53,9 +53,8 @@ export default function Header() {
           <SearchInput />
         </div>
 
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-5 md:my-auto">
           <NotificationDropdown/>
-
           <ProfileDropdown username={userName}/>
         </div>
       </div>
@@ -80,7 +79,7 @@ function NotificationDropdown(){
   return (
     <Dropdown>
       <Dropdown.Button>
-        <IconButton showNotification={hasUnread} altText="notfication" size="small">
+        <IconButton showNotification={hasUnread} altText="notfication" size="small" inert={true}>
           <IoMdNotificationsOutline size={24} color="#7E7065" />
         </IconButton>
       </Dropdown.Button>
@@ -133,8 +132,10 @@ function ProfileDropdown({username}:{username: string}){
 
   return (
     <Dropdown>
+
+
       <Dropdown.Button>
-        <div className="flex gap-4 h-9 items-center focus:bg-purple-500">
+        <div className="flex gap-4 h-9 items-center px-2 py-6">
           <Avatar />
           <div className="hidden lg:block">
             <p className="font-bold text-secondary-dark">{username}</p>
@@ -144,16 +145,23 @@ function ProfileDropdown({username}:{username: string}){
       </Dropdown.Button>
 
       <Dropdown.Menu>
-        <Dropdown.Option startIcon={<IoSettingsOutline size={16}/>}>
-          Settings
-        </Dropdown.Option>
-        <Dropdown.Option startIcon={<CgProfile size={16}/>}>
-          My Profile
-        </Dropdown.Option>
-        <Dropdown.Divider/>
-        <Dropdown.Option startIcon={<TbLogout2 size={16}/>} onClick={handleLogOut} danger>
-          Log Out
-        </Dropdown.Option>
+          <Dropdown.Header>
+            <div>
+              <p className="text-xs text-secondary-dark/80">Signed in as</p>
+              <p className="text-sm font-semibold text-secondary-dark line-clamp-1 w-48" title={user?.email}>{user?.email}</p>
+            </div>
+          </Dropdown.Header>
+          <Dropdown.Divider/>
+          <Dropdown.Option startIcon={<IoSettingsOutline size={16}/>}>
+            Settings
+          </Dropdown.Option>
+          <Dropdown.Option startIcon={<CgProfile size={16}/>}>
+            My Profile
+          </Dropdown.Option>
+          <Dropdown.Divider/>
+          <Dropdown.Option startIcon={<TbLogout2 size={16}/>} onClick={handleLogOut} danger>
+            Log Out
+          </Dropdown.Option>
       </Dropdown.Menu>
     </Dropdown>
   )
