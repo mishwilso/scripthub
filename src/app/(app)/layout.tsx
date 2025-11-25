@@ -4,14 +4,13 @@ import Header from "@/components/layout/Header"
 
 export default function AppLayout({children}: Readonly<{children: React.ReactNode}>){
     return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex">
         <Sidebar />
-        <div className="mt-16 md:mt-0 md:ml-16 px-6 md:px-12  py-12 md:py-6">
+        <div className="flex-1 flex flex-col px-6 md:px-12 py-12 md:py-6 min-w-0">
             <header>
                 <Header />
             </header>
-            <main className="flex-1 flex">
-                
+            <main className="flex-1 flex w-full">
                 {children}
             </main>
         </div>

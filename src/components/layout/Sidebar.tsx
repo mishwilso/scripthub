@@ -56,12 +56,12 @@ export default function Sidebar() {
 
       {/** Desktop Stuff!! */}
       <aside
-        className={`hidden md:fixed md:flex md:flex-col md:inset-y-0  md:left-0 md:bg-neutral-base transition-all duration-300 rounded-r-3xl ${
-          isOpen ? "w-48" : "w-16"
-        }`}
-        onMouseEnter={() => setShowToggle(true)}
-        onMouseLeave={() => setShowToggle(false)}
-      >
+          className={`hidden md:flex md:flex-col md:sticky md:top-0 md:h-screen md:bg-neutral-base transition-all duration-300 rounded-r-3xl ${
+            isOpen ? "w-48" : "w-16"
+          }`}
+          onMouseEnter={() => setShowToggle(true)}
+          onMouseLeave={() => setShowToggle(false)}
+        >
         {/* Toggle widget - slides in from right edge */}
         <button
           onClick={() => setIsOpen(!isOpen)}

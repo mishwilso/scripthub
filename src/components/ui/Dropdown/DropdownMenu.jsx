@@ -26,7 +26,7 @@ export default function DropdownMenu({ children, position='bottom span-left', si
     `
 
   return (
-    <div popover className={classStyle}
+    <div popover="true" className={classStyle}
         style={{ positionArea: position}} role="menu" open={isOpen ? "true" : ""}>
           {children}
     </div>

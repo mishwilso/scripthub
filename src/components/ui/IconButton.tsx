@@ -48,7 +48,7 @@ export default function IconButton({
       tonal:
         "bg-neutral-dark/10 text-secondary-dark hover:secondary-dark hover:text-white-base",
       filled:
-        "bg-neutral-light text-secondary-dark hover:secondary-dark hover:text-white-base",
+        "bg-neutral-light text-secondary-dark hover:bg-secondary-dark hover:text-neutral-light",
       outlined:
         "bg-transparent border-2 border-secondary-dark text-secondary-dark hover:bg-neutral-dark/10 hover:text-secondary-dark",
     },

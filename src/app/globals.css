@@ -78,6 +78,17 @@ input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px #f7f3ef inset !important;
 }
 
+
+/* Hide scrollbar but keep functionality */
+.overflow-x-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.overflow-x-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 .anchor {
   anchor-name: --dropdown-anchor;
 }
