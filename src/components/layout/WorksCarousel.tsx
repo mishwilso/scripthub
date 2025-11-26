@@ -24,7 +24,7 @@ export default function WorksCarousel(){
         console.log("Create New Book")
     }
 
-    const movies:[StaticImageData] = [];
+    const movies:[StaticImageData] = [battle_fate];
 
     const scrollContainerRef = useRef<HTMLDivElement>(null)
     const [canScrollLeft, setCanScrollLeft] = useState(false)
@@ -81,8 +81,8 @@ export default function WorksCarousel(){
                 </div>
                 <div className="flex gap-5">
                     <Button endIcon={<CgMathPlus />} onClick={createNewBook} size="small">Add New Button</Button>
-                    <IconButton variant="filled" altText="Previous" onClick={scrollLeft} disabled={!canScrollLeft}><MdKeyboardArrowLeft /></IconButton>
-                    <IconButton variant="filled" altText="Next" onClick={scrollRight} disabled={!canScrollRight}><MdKeyboardArrowRight /></IconButton>
+                    <IconButton variant="filled" altText="Previous" onClick={scrollLeft} disabled={!canScrollLeft} size="small"><MdKeyboardArrowLeft /></IconButton>
+                    <IconButton variant="filled" altText="Next" onClick={scrollRight} disabled={!canScrollRight} size="small"><MdKeyboardArrowRight /></IconButton>
                 </div>
             </div>
             <div className="border-b-2 border-[#917F74]/39 mt-2"></div>
