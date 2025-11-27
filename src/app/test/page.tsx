@@ -5,8 +5,8 @@ import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import Input from "@/components/ui/Input";
 import MainNavbar from "@/components/layout/MainNavbar";
-import Book from "@/components/ui/Book"
-import WorksCarousel from "@/components/layout/WorksCarousel";
+import Book from "@/app/(app)/dashboard/components/Book";
+import BooksCarousel from "@/app/(app)/dashboard/components/BooksCarousel";
 
 import Dropdown from "@/components/ui/Dropdown";
 
@@ -562,7 +562,7 @@ function LayoutTests() {
       <TestSection title="Book">
         <div className="space-y-6">
           <SubSection title="Book Parts">
-                <WorksCarousel/>
+            <BooksCarousel />
           </SubSection>
         </div>
       </TestSection>
@@ -570,7 +570,7 @@ function LayoutTests() {
       <TestSection title="Book">
         <div className="space-y-6">
           <SubSection title="Book Parts">
-                <Book title="Untitled Book"/>
+            <Book title="Untitled Book" />
           </SubSection>
         </div>
       </TestSection>
@@ -586,12 +586,19 @@ function LayoutTests() {
                   </p>
                 </Dropdown.Button>
                 <Dropdown.Menu>
-                  <Dropdown.Option onClick={() => console.log("hi")} startIcon={<MdEmail size={16}/>}>
+                  <Dropdown.Option
+                    onClick={() => console.log("hi")}
+                    startIcon={<MdEmail size={16} />}
+                  >
                     Profile
                   </Dropdown.Option>
-                  <Dropdown.Option startIcon={<MdEmail size={16}/>}>Settings</Dropdown.Option>
-                  <Dropdown.Divider/>
-                  <Dropdown.Option startIcon={<MdEmail size={16}/>} danger>Logout</Dropdown.Option>
+                  <Dropdown.Option startIcon={<MdEmail size={16} />}>
+                    Settings
+                  </Dropdown.Option>
+                  <Dropdown.Divider />
+                  <Dropdown.Option startIcon={<MdEmail size={16} />} danger>
+                    Logout
+                  </Dropdown.Option>
                 </Dropdown.Menu>
               </Dropdown>
             </div>

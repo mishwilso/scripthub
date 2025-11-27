@@ -32,7 +32,7 @@
     "src/lib/authErrors.js",
     "src/components/ui/Dropdown.tsx",
     "src/components/ui/Dropdown/DropdownButton.tsx",
-    "src/components/ui/Dropdown/DropdownMenu.jsx",
+    "src/components/ui/Dropdown/DropdownMenu.tsx",
     "src/components/ui/Dropdown/DropdownOption.tsx",
     "src/components/ui/Dropdown/notes"
   ],

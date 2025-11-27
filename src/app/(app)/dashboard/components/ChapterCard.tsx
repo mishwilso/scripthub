@@ -1,0 +1,50 @@
+import Card from '@/components/ui/Card'
+import Button from '@/components/ui/Button';
+import Dropdown from '@/components/ui/Dropdown';
+import IconButton from '@/components/ui/IconButton';
+
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { IoTrashOutline } from "react-icons/io5";
+import { IoRemoveCircleOutline } from "react-icons/io5";
+import { IoEyeOutline } from "react-icons/io5";
+
+
+interface ChapterCardProps {
+    chapterNum: number | string;
+    bookName: string;
+    wordCount: number | string;
+    lastUpdated: Date;
+    href: string
+}
+
+export default function ChapterCard({chapterNum, bookName, wordCount, lastUpdated, href}: ChapterCardProps){
+    return (
+        <Card>
+            <div className='flex justify-between'>
+            <h3>Chapter {chapterNum}</h3>
+            <p>{bookName}</p>
+            <p>{wordCount} words - Last Updated</p>
+            </div>
+            <div className='flex gap-9'>
+                <Button color="secondary">Continue Writing</Button>
+                <ChapterOptions href={href} />
+            </div>
+        </Card>
+    )
+}
+
+export function ChapterOptions({href}:{href: string}){
+    return (
+        <Dropdown>
+            <Dropdown.Button>
+                <IconButton altText='Chapter options' variant='standard'><BsThreeDotsVertical /></IconButton> 
+            </Dropdown.Button>
+            <Dropdown.Menu position='top span-left'>
+                <Dropdown.Option startIcon={<IoEyeOutline />} href={href}>View in Book</Dropdown.Option>
+                <Dropdown.Option startIcon={<IoRemoveCircleOutline />}>Remove from List</Dropdown.Option>
+                <Dropdown.Divider/>
+                <Dropdown.Option startIcon={<IoTrashOutline />} danger>Delete Chapter</Dropdown.Option>
+            </Dropdown.Menu>
+        </Dropdown>
+    )
+}
