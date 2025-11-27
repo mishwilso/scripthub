@@ -1,6 +1,7 @@
 import Image from "next/image";
 import ChapterCard from "./ChapterCard";
 import { ChapterCardProps } from "./ChapterCard";
+
 import no_chapters from "@/assets/vectors/no-chapters.png";
 
 export default function RecentChapters() {
@@ -36,7 +37,7 @@ export default function RecentChapters() {
       <div className="border-b-2 border-[#917F74]/39 mt-2"></div>
       {/* Carousel Time */}
       {recentChapter.length > 0 ? (
-        <div className="flex overflow-x-scroll w-full gap-8 pt-6 pl-1 h-72">
+        <div className="flex flex-col w-full gap-8 pt-6 pl-1 h-72">
           {recentChapter.map((chapter, idx) => (
             <ChapterCard
               key={`${chapter.bookName}-${chapter.chapterNum}`}

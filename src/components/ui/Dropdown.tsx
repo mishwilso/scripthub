@@ -22,6 +22,7 @@ import React, {
   useState,
   useContext,
   createContext,
+  useId
 } from "react";
 import DropdownMenu from "./Dropdown/DropdownMenu";
 import DropdownButton from "./Dropdown/DropdownButton";
@@ -33,6 +34,7 @@ export interface DropdownContextType {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   toggle: () => void;
+  anchorName: string;
 }
 
 export const DropdownContext = createContext<DropdownContextType | undefined>(undefined);
@@ -41,6 +43,10 @@ export function Dropdown({ children }:{children:React.ReactNode}) {
   // Use to track the location of the dropdown
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
+
+  const dropdownId = useId() // Generates a unique_id for our dropdown!
+
+  const anchorName = `--dropdown-${dropdownId}`
 
   useEffect(() => {
     // attach to document to handle mousedown?
@@ -64,7 +70,8 @@ export function Dropdown({ children }:{children:React.ReactNode}) {
   const contextValues : DropdownContextType = {
     isOpen,
     setIsOpen,
-    toggle
+    toggle,
+    anchorName
   }
 
   return (

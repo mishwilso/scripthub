@@ -1,50 +1,76 @@
-import Card from '@/components/ui/Card'
-import Button from '@/components/ui/Button';
-import Dropdown from '@/components/ui/Dropdown';
-import IconButton from '@/components/ui/IconButton';
+import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
+import Dropdown from "@/components/ui/Dropdown";
+import IconButton from "@/components/ui/IconButton";
 
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { IoTrashOutline } from "react-icons/io5";
 import { IoRemoveCircleOutline } from "react-icons/io5";
 import { IoEyeOutline } from "react-icons/io5";
 
+import { formatRelativeTime } from "@/lib/utils/formatDates";
 
 export interface ChapterCardProps {
-    chapterNum: number | string;
-    bookName: string;
-    wordCount: number | string;
-    lastUpdated: Date;
-    href: string
+  chapterNum: number | string;
+  bookName: string;
+  wordCount: number | string;
+  lastUpdated: Date;
+  href: string;
 }
 
-export default function ChapterCard({chapterNum, bookName, wordCount, lastUpdated, href}: ChapterCardProps){
-    return (
-        <Card>
-            <div className='flex justify-between'>
-            <h3>Chapter {chapterNum}</h3>
-            <p>{bookName}</p>
-            <p>{wordCount} words - Last Updated</p>
+export default function ChapterCard({
+  chapterNum,
+  bookName,
+  wordCount,
+  lastUpdated,
+  href,
+}: ChapterCardProps) {
+  return (
+    <Card>
+        <div className="flex justify-between items-start">
+            <div className="flex flex-col">
+                <h3>Chapter {chapterNum}</h3>
+                <p>{bookName}</p>
+                <p>
+                {wordCount} words - Last Updated {formatRelativeTime(lastUpdated)}
+                </p>
             </div>
-            <div className='flex gap-9'>
+            <div className="flex gap-9 my-auto">
                 <Button color="secondary">Continue Writing</Button>
                 <ChapterOptions href={href} />
             </div>
-        </Card>
-    )
+        </div>
+    </Card>
+  );
 }
 
-export function ChapterOptions({href}:{href: string}){
-    return (
-        <Dropdown>
-            <Dropdown.Button>
-                <IconButton altText='Chapter options' variant='standard'><BsThreeDotsVertical /></IconButton> 
-            </Dropdown.Button>
-            <Dropdown.Menu position='top span-left'>
-                <Dropdown.Option startIcon={<IoEyeOutline />} href={href}>View in Book</Dropdown.Option>
-                <Dropdown.Option startIcon={<IoRemoveCircleOutline />}>Remove from List</Dropdown.Option>
-                <Dropdown.Divider/>
-                <Dropdown.Option startIcon={<IoTrashOutline />} danger>Delete Chapter</Dropdown.Option>
-            </Dropdown.Menu>
-        </Dropdown>
-    )
+export function ChapterOptions({ href }: { href: string }) {
+  return (
+    <Dropdown>
+
+      <Dropdown.Button>
+        <IconButton altText="Chapter options" variant="standard"inert={true}>
+          <BsThreeDotsVertical />
+        </IconButton>
+      </Dropdown.Button>
+
+      <Dropdown.Menu position="top span-left">
+
+        <Dropdown.Option startIcon={<IoEyeOutline />} href={href}>
+          View in Book
+        </Dropdown.Option>
+
+        <Dropdown.Option startIcon={<IoRemoveCircleOutline />}>
+          Remove from List
+        </Dropdown.Option>
+
+        <Dropdown.Divider />
+
+        <Dropdown.Option startIcon={<IoTrashOutline />} danger>
+          Delete Chapter
+        </Dropdown.Option>
+
+      </Dropdown.Menu>
+    </Dropdown>
+  );
 }

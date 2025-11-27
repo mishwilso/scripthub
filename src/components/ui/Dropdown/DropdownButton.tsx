@@ -18,12 +18,13 @@ export default function DropdownButton({
   if (!context) {
     throw new Error("Dropdown.Button must be used within a Dropdown provider");
   }
-  const { isOpen, toggle } = context;
+  const { isOpen, toggle, anchorName } = context;
 
   return (
     <button
       onClick={toggle}
-      className={`anchor inline-flex w-full justify-center rounded-lg hover:bg-neutral-dark/10 ${
+      style={{ anchorName }}
+      className={`inline-flex w-full justify-center rounded-lg hover:bg-neutral-dark/10 ${
         isOpen ? "bg-neutral-dark/10" : ""
       } ${className} `}
       aria-haspopup="menu"
