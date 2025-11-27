@@ -4,7 +4,7 @@ import { MdKeyboardArrowRight } from "react-icons/md";
 
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
-import Book from "@/app/(app)/dashboard/components/Book";
+import Book from "./Book";
 import Image, { StaticImageData } from "next/image";
 
 import battle_fate from "@/assets/test_books/battle_fate.jpg";
@@ -21,7 +21,7 @@ export default function BooksCarousel() {
     console.log("Create New Book");
   };
 
-  const movies: [StaticImageData] = [battle_fate];
+  const movies: StaticImageData[] = [battle_fate];
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);

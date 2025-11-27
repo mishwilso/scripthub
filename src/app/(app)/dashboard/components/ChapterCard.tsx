@@ -9,7 +9,7 @@ import { IoRemoveCircleOutline } from "react-icons/io5";
 import { IoEyeOutline } from "react-icons/io5";
 
 
-interface ChapterCardProps {
+export interface ChapterCardProps {
     chapterNum: number | string;
     bookName: string;
     wordCount: number | string;
