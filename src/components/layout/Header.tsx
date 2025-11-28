@@ -25,10 +25,31 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { TbLogout2 } from "react-icons/tb";
 import { CgProfile } from "react-icons/cg";
 
+import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+
+
 export default function Header() {
   const headerDate = getHeaderDate();
   const { user } = useAuth();
+
   console.log(user);
+
+  const pathname = usePathname();
+
+  const getHeaderTitle = () => {
+    if (pathname === '/dashboard') {
+      return 'Dashboard';
+    } else if (pathname === '/books') {
+      return 'My Works';
+    } else {
+      return 'New Page';
+    }
+  };
+
+  const headerTitle = getHeaderTitle();
+
+
 
   const userName = capitalizeFirstLetter(user?.user_metadata.name);
 
@@ -37,7 +58,7 @@ export default function Header() {
       <div className="flex justify-between md:gap-8 items-start ">
         <div>
           <h1 className="text-xl text-secondary-dark font-bold w-48">
-            Dashboard
+            {headerTitle}
           </h1>
           <p className="text-secondary-dark font-light">
             <span className="font-bold">{headerDate.day}, </span>

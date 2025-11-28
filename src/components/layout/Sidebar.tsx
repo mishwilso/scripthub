@@ -75,9 +75,9 @@ export function Nav({ isOpen, onToggle, isMobile }: NavProps) {
 
   // Sample recent items - replace with actual data
   const recentItems = [
-    { id: 1, title: "A Court of Thorns and Roses", href: "/works/1" },
-    { id: 2, title: "The Great Gatsby", href: "/works/2" },
-    { id: 3, title: "Project Hail Mary", href: "/works/3" },
+    { id: 1, title: "A Court of Thorns and Roses", href: "/books/1" },
+    { id: 2, title: "The Great Gatsby", href: "/books/2" },
+    { id: 3, title: "Project Hail Mary", href: "/books/3" },
   ];
 
   return (
@@ -140,7 +140,7 @@ export function Nav({ isOpen, onToggle, isMobile }: NavProps) {
         <NavLink
           icon={<VscLibrary size={20} />}
           label="My Works"
-          href="/myworks"
+          href="/books"
           isOpen={isOpen}
           altText="My Works"
         />
