@@ -27,17 +27,24 @@ export default function ChapterCard({
 }: ChapterCardProps) {
   return (
     <Card className="py-4 px-7 hover:shadow-md" rounded="sm" >
-        <div className="flex flex-col md:flex-row gap-9 md:justify-between items-start">
-            <div className="flex flex-col">
-                <h3 className="pb-2 font-medium">Chapter {chapterNum}</h3>
-                <p className="text-sm text-secondary-dark/90">{bookName}</p>
-                <p className="text-xs text-secondary-dark/70">
-                {wordCount} words - Last Updated {formatRelativeTime(lastUpdated)}
-                </p>
-            </div>
-            <div className="flex justify-between md:gap-9 my-auto">
-                <Button color="secondary">Continue Writing</Button>
+        <div className="flex flex-col md:flex-row gap-5 md:justify-between items-start">
+            <div className="flex w-full justify-between items-start">
+              <div className="flex flex-col gap-1">
+                  <h3 className="pb-1 font-medium">Chapter {chapterNum}</h3>
+                  <p className="text-sm text-secondary-dark/90">{bookName}</p>
+                  <p className="text-xs text-secondary-dark/70">
+                  {wordCount} words - Last Updated {formatRelativeTime(lastUpdated)}
+                  </p>
+              </div>
+              <div className="md:hidden">
                 <ChapterOptions href={href} />
+              </div>
+            </div>
+            <div className="flex w-full md:w-auto items-center justify-between gap-9">
+                <Button color="secondary" responsive={false}>Continue Writing</Button>
+                <div className="hidden md:block">
+                  <ChapterOptions href={href} />
+                </div>
             </div>
         </div>
     </Card>

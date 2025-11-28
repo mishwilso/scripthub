@@ -16,6 +16,7 @@ import { FaLeaf } from "react-icons/fa";
 import { FaCirclePlus } from "react-icons/fa6";
 
 import NavLink from "@/components/ui/NavLink";
+import SearchInput from "../ui/SearchInput";
 
 export default function Sidebar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -110,6 +111,10 @@ export function Nav({ isOpen, onToggle, isMobile }: NavProps) {
           </button>
           
         )}
+      </div>
+
+      <div className="md:hidden px-2 pt-4 pb-2">
+        <SearchInput/>
       </div>
 
       {/* Create New Book Button */}
