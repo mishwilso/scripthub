@@ -42,6 +42,7 @@ export default function DropdownMenu({
             ? "opacity-100 scale-100"
             : "visually-hidden opacity-0 scale-95 pointer-events-none"
         }
+        z-10
     `;
 
   return (

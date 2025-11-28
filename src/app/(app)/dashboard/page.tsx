@@ -17,7 +17,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="mt-6 flex flex-col w-full gap-6">
       <DashboardHero />
       <BooksCarousel />
       <RecentChapters />

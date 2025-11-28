@@ -28,7 +28,7 @@ export default function DropdownOption({
 
   const getPaddingClasses = () => {
     if (endIcon) return "px-4 justify-between";
-    return "px-4";
+    return "px-2";
   };
 
   const disabledStyle = disabled ? "cursor-not-allowed pointer-events-none opacity-50" : "cursor-pointer"

@@ -18,10 +18,10 @@ export default function DashboardHero() {
         <button
           className="developer-button text-sm font-bold text-white-base stroke-black rounded-xl py-3 px-8"
         >
-          Check out Developer
+          Check out Developer 
         </button>
       </div>
-      <div className="hidden md:flex relative w-[32rem] h-full">
+      <div className="hidden md:flex relative w-[32rem] h-full " >
         <Image
           src={hero_bg}
           alt="A girl, a rabbit and a man wearing a hat sitting at a table drinking tea."
