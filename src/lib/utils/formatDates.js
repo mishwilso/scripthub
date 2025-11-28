@@ -22,10 +22,25 @@ export function formatRelativeTime(updatedDate) {
     return `${diffDays} days ago`;
   } else if (diffDays < 14) {
     return 'Last week';
+  } else if (diffDays < 60) {
+    return `1 month ago`;
+  } else if (diffDays < 365) {
+    return `${diffDays / 30} month ago`;
   } else {
     // Fallback to a standard date format
-    return updatedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) 
+    return updatedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
   }
+}
+
+export function formatExactDateTime(date) {
+  return date.toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  });
 }
 
 
