@@ -116,7 +116,7 @@ export default function IconButton({
     "disabled:opacity-50 disabled:transition-none disabled:hover-none pointer-events-none";
 
   return (
-    <div className="relative inline-block">
+    <div className="relative inline-block flex-shrink-0">
       <button
         className={`
           ${baseStyle}

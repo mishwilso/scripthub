@@ -27,8 +27,8 @@ export default function ChapterCard({
 }: ChapterCardProps) {
   return (
     <Card className="py-4 px-7 hover:shadow-md" rounded="sm" >
-        <div className="flex flex-col md:flex-row gap-5 md:justify-between items-start">
-            <div className="flex w-full justify-between items-start">
+        <div className="flex flex-col md:flex-row md:justify-between items-start md:items-center gap-9">
+            <div className="flex w-full md:w-auto justify-between items-start">
               <div className="flex flex-col gap-1">
                   <h3 className="pb-1 font-medium">Chapter {chapterNum}</h3>
                   <p className="text-sm text-secondary-dark/90">{bookName}</p>

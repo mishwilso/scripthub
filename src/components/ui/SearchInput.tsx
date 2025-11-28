@@ -8,7 +8,7 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 
 export default function SearchInput() {
   const searchStyle =
-    "border rounded-2xl md:rounded-r-0 transition bg-white-input md:bg-neutral-base border-2 text-secondary-dark placeholder-secondary-dark/80 w-full border-transparent";
+    "border rounded-2xl md:rounded-r-none transition bg-white-input md:bg-neutral-base border-2 text-secondary-dark placeholder-secondary-dark/80 w-full border-transparent";
 
   const buttonStyle =
     "border rounded-r-2xl transition bg-neutral-base border-2 text-secondary-dark border-l-2 border-l-neutral-dark pl-3 border-transparent hover:bg-secondary-dark/70 hover:text-white-base";
@@ -25,7 +25,7 @@ export default function SearchInput() {
             id="search-input"
             name="q"
             placeholder="Search for book..."
-            className="bg-transparent flex-1 placeholder-neutral-dark focus:outline-none"
+            className="bg-transparent flex-1 placeholder-neutral-dark focus:outline-none" 
           />
         </div>
         <button type="submit" className={`hidden md:block ${buttonStyle} py-1 px-3`}>

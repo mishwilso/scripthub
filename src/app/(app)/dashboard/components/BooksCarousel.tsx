@@ -80,7 +80,7 @@ export default function BooksCarousel() {
             Manage your writing projects
           </p>
         </div>
-        <div className="flex gap-5">
+        <div className="flex flex-shrink-0 gap-5">
           <Button endIcon={<CgMathPlus />} onClick={createNewBook} size="small">
             Add New Button
           </Button>
@@ -91,7 +91,7 @@ export default function BooksCarousel() {
             disabled={!canScrollLeft}
             size="small"
           >
-            <MdKeyboardArrowLeft />
+            <MdKeyboardArrowLeft size={24}/>
           </IconButton>
           <IconButton
             variant="filled"
@@ -100,7 +100,7 @@ export default function BooksCarousel() {
             disabled={!canScrollRight}
             size="small"
           >
-            <MdKeyboardArrowRight />
+            <MdKeyboardArrowRight size={24}/>
           </IconButton>
         </div>
       </div>
