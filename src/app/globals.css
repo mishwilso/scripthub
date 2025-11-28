@@ -4,6 +4,7 @@
 
 body {
   background: #fffdfb;
+  color: #5e4c3b;
 }
 
 *,
@@ -101,4 +102,31 @@ input:-webkit-autofill:active {
 
 .visually-hidden {
   visibility: hidden;
+}
+
+/* Developer Button and Gradient Magic */
+/* Defining gradient color stops as custom CSS prps/ Allowing browser to understand how to interpolate between diff colors */
+@property --color-a {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: #679287;
+}
+
+@property --color-b {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: #9BBC74;
+}
+
+
+.developer-button {
+  background-image: linear-gradient(to right, var(--color-a), var(--color-b));
+  transition: all 0.4s ease-in-out, --color-a 0.4s ease, --color-b 0.4s ease;
+
+}
+
+.developer-button:hover {
+  --color-a: #9BBC74;
+  transform: translateY(-2px); /* Slight lift on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
 }

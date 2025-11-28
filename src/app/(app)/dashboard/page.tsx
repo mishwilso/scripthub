@@ -1,5 +1,6 @@
 "use client";
 
+import DashboardHero from "./components/DashboardHero";
 import BooksCarousel from "@/app/(app)/dashboard/components/BooksCarousel";
 import RecentChapters from "@/app/(app)/dashboard/components/RecentChapters";
 import { useAuth } from "@/context/AuthContext";
@@ -17,6 +18,7 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col w-full">
+      <DashboardHero />
       <BooksCarousel />
       <RecentChapters />
     </div>
