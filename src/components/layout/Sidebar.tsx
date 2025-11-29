@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Logo from "@/components/ui/Logo";
 import IconButton from "@/components/ui/IconButton";
 
@@ -17,6 +17,10 @@ import { FaCirclePlus } from "react-icons/fa6";
 
 import NavLink from "@/components/ui/NavLink";
 import SearchInput from "../ui/SearchInput";
+
+import { useAuth } from "@/context/AuthContext";
+import type { Book } from "@/lib/api/books";
+import { getRecentBooks } from "@/lib/api/books";
 
 export default function Sidebar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -72,6 +76,29 @@ interface NavProps {
 
 export function Nav({ isOpen, onToggle, isMobile }: NavProps) {
   const [isRecentsOpen, setIsRecentsOpen] = useState(true);
+  const [loading, setLoading] = useState(true)
+  const [books, setBooks] = useState<Book[]>([] as Book[]);
+  const { user } = useAuth();
+  
+    useEffect(() => {
+      async function loadData() {
+        if (!user) {
+          setLoading(false)
+          return
+        }
+  
+        try {
+          const booksData = await getRecentBooks(user.id, 3)
+          setBooks(booksData)
+        } catch (err) {
+          console.error('Error loading books: ', err)
+          setError(true)
+        } finally {
+          setLoading(false)
+        }
+      }
+      loadData()
+    }, [user])
 
   // Sample recent items - replace with actual data
   const recentItems = [

@@ -5,13 +5,15 @@ import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
 import Input from "@/components/ui/Input";
 import MainNavbar from "@/components/layout/MainNavbar";
-import Book from "@/app/(app)/dashboard/components/Book";
+import Book from "@/app/(app)/dashboard/components/BookCard";
 import BooksCarousel from "@/app/(app)/dashboard/components/BooksCarousel";
 
 import Dropdown from "@/components/ui/Dropdown";
 
 import Card from "@/components/ui/Card";
 import { MdEmail, MdDelete, MdSearch, MdCheckCircle } from "react-icons/md";
+
+import { useAuth } from "@/context/AuthContext";
 
 type TestCategory =
   | "buttons"
@@ -647,6 +649,13 @@ function UtilityTests() {
             <p>• API utilities</p>
             <p>• Form helpers</p>
           </div>
+        </div>
+      </TestSection>
+      <TestSection title="Book API">
+        <div className="space-y-6">
+          <SubSection title="Get User Books">
+            <MainNavbar />
+          </SubSection>
         </div>
       </TestSection>
     </div>
