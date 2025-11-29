@@ -101,6 +101,7 @@ export type Database = {
           parent_chapter_id: string | null
           title: string
           updated_at: string
+          user_id: string | null
           word_count: number
         }
         Insert: {
@@ -114,6 +115,7 @@ export type Database = {
           parent_chapter_id?: string | null
           title: string
           updated_at?: string
+          user_id?: string | null
           word_count?: number
         }
         Update: {
@@ -127,6 +129,7 @@ export type Database = {
           parent_chapter_id?: string | null
           title?: string
           updated_at?: string
+          user_id?: string | null
           word_count?: number
         }
         Relationships: [
@@ -142,6 +145,13 @@ export type Database = {
             columns: ["parent_chapter_id"]
             isOneToOne: false
             referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chapters_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]

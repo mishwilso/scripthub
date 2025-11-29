@@ -77,7 +77,7 @@ interface NavProps {
 export function Nav({ isOpen, onToggle, isMobile }: NavProps) {
   const [isRecentsOpen, setIsRecentsOpen] = useState(true);
   const [loading, setLoading] = useState(true)
-  const [books, setBooks] = useState<Book[]>([] as Book[]);
+  const [books, setBooks] = useState([] as { id: string; title: string; }[]);
   const { user } = useAuth();
   
     useEffect(() => {
@@ -92,7 +92,6 @@ export function Nav({ isOpen, onToggle, isMobile }: NavProps) {
           setBooks(booksData)
         } catch (err) {
           console.error('Error loading books: ', err)
-          setError(true)
         } finally {
           setLoading(false)
         }
@@ -101,11 +100,9 @@ export function Nav({ isOpen, onToggle, isMobile }: NavProps) {
     }, [user])
 
   // Sample recent items - replace with actual data
-  const recentItems = [
-    { id: 1, title: "A Court of Thorns and Roses", href: "/books/1" },
-    { id: 2, title: "The Great Gatsby", href: "/books/2" },
-    { id: 3, title: "Project Hail Mary", href: "/books/3" },
-  ];
+  const recentItems = books.map((book) => {
+    return {id: book.id, title: book.title, href: `/books/${book.id}`}
+  });
 
   return (
     <nav className="flex flex-col w-full h-full">

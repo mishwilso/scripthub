@@ -23,7 +23,7 @@ export async function getUserBooks(userId: string) {
 export async function getRecentBooks(userId: string, limit: number) {
   const { data, error } = await clientSupabase
     .from("books")
-    .select("book_id, title")
+    .select("id, title")
     .eq("user_id", userId)
     .limit(limit);
 

@@ -112,7 +112,7 @@ export default function BooksCarousel() {
         </div>
         <div className="flex flex-shrink-0 gap-5">
           <Button endIcon={<CgMathPlus />} onClick={createNewBook} size="small">
-            Add New Button
+            Add New Book
           </Button>
           <IconButton
             variant="filled"
