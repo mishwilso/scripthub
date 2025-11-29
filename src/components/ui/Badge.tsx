@@ -5,14 +5,17 @@ interface BadgeProps {
   variant?: 'primary' | 'secondary' | 'success' | 'error'
   size?: 'small' | 'medium'
   shape?: 'rounded' | 'square'
+  className?: string
 }
 
 export default function Badge({ 
   children, 
   variant = 'primary',
   size = 'small', 
-  shape = 'rounded'
-}: BadgeProps) {
+  shape = 'rounded',
+  className,
+  ...props
+}: BadgeProps & React.ComponentProps<"span">) {
   const variantStyles = {
     primary: 'bg-primary-base text-white',
     secondary: 'bg-secondary-base text-white',
@@ -37,7 +40,8 @@ export default function Badge({
       ${variantStyles[variant]}
       ${sizeStyles[size]}
       ${shapeStyles[shape]}
-    `}>
+      ${className}
+  `} {...props}>
       {children}
     </span>
   )

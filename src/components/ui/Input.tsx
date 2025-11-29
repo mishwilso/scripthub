@@ -2,17 +2,26 @@
 
 import React from "react";
 
-type InputType = "text" | "email" | "password" | "number" | "tel" | "url" | "search" | "date" | "time";
-type Size = "small" | "medium" | "large";
+type InputType =
+  | "text"
+  | "email"
+  | "password"
+  | "number"
+  | "tel"
+  | "url"
+  | "search"
+  | "date"
+  | "time";
 
 interface InputProps {
   type?: InputType;
   placeholder?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   name?: string;
   id?: string;
-  size?: Size;
+  width?: "small" | "medium" | "large";
   error?: boolean;
   disabled?: boolean;
   label?: string;
@@ -27,12 +36,13 @@ interface InputProps {
 
 export default function Input({
   type = "text",
+  width = "medium" as const,
   placeholder,
   value,
   onChange,
+  onKeyDown,
   name,
   id,
-  size = "medium",
   error = false,
   disabled = false,
   label,
@@ -43,7 +53,8 @@ export default function Input({
   fullWidth = false,
   required = false,
   autoFocus = false,
-}: InputProps) {
+  ...props
+}: InputProps & React.ComponentProps<"input">) {
   const sizeStyles = {
     small: "py-1.5 text-sm",
     medium: "py-2 text-base",
@@ -67,18 +78,28 @@ export default function Input({
   const inputClasses = `
         ${baseStyle}
         ${focusStyle}
-        ${sizeStyles[size]}
+        ${sizeStyles[width]}
         ${getPaddingClasses()}
         ${disabled ? "opacity-60 cursor-not-allowed bg-neutral-light" : ""}
-        ${error ? "ring-2 ring-negative-base ring-opacity-50 bg-negative-light border-negative-base" : ""}
+        ${
+          error
+            ? "ring-2 ring-negative-base ring-opacity-50 bg-negative-light border-negative-base"
+            : ""
+        }
         ${fullWidth ? "w-full" : ""}
-    `.trim().replace(/\s+/g, ' ');
+    `
+    .trim()
+    .replace(/\s+/g, " ");
 
   return (
     <div className={`flex flex-col gap-1.5 ${fullWidth ? "w-full" : ""}`}>
       {label && (
         <label
-          className={`text-sm font-medium text-secondary-dark ${required ? "after:content-['*'] after:ml-0.5 after:text-negative-base" : ""}`}
+          className={`text-sm font-medium text-secondary-dark ${
+            required
+              ? "after:content-['*'] after:ml-0.5 after:text-negative-base"
+              : ""
+          }`}
           htmlFor={id}
         >
           {label}
@@ -98,6 +119,7 @@ export default function Input({
           type={type}
           value={value}
           onChange={onChange}
+          onKeyDown={onKeyDown}
           placeholder={placeholder}
           className={inputClasses}
           disabled={disabled}
@@ -105,8 +127,13 @@ export default function Input({
           autoFocus={autoFocus}
           aria-invalid={error}
           aria-describedby={
-            error && errorMessage ? `${id}-error` : helperText ? `${id}-helper` : undefined
+            error && errorMessage
+              ? `${id}-error`
+              : helperText
+              ? `${id}-helper`
+              : undefined
           }
+          {...props}
         />
 
         {endIcon && (
