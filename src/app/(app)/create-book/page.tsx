@@ -8,6 +8,7 @@ import { FaPlus } from "react-icons/fa6";
 
 import { useEffect, useRef, useState } from "react";
 
+// Temporary genre options
 const GENRE_OPTIONS = [
   "Fantasy",
   "Sci-Fi",
