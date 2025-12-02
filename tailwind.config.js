@@ -37,7 +37,7 @@ module.exports = {
         negative: {
           base: "#C93218",
           light: "#FEF8F4",
-        },
+        }
       },
       fontFamily: {
         sans: ["Poppins", "sans-serif"],

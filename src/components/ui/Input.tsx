@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { cn } from "@/lib/utils";
 
 type InputType =
   | "text"
@@ -17,34 +18,24 @@ interface InputProps {
   type?: InputType;
   placeholder?: string;
   value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  name?: string;
-  id?: string;
   width?: "small" | "medium" | "large";
   error?: boolean;
-  disabled?: boolean;
   label?: string;
   helperText?: string;
   errorMessage?: string | null;
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   fullWidth?: boolean;
-  required?: boolean;
-  autoFocus?: boolean;
 }
 
 export default function Input({
+  className,
   type = "text",
   width = "medium" as const,
   placeholder,
   value,
-  onChange,
-  onKeyDown,
-  name,
   id,
   error = false,
-  disabled = false,
   label,
   helperText,
   errorMessage,
@@ -52,7 +43,6 @@ export default function Input({
   endIcon,
   fullWidth = false,
   required = false,
-  autoFocus = false,
   ...props
 }: InputProps & React.ComponentProps<"input">) {
   const sizeStyles = {
@@ -80,16 +70,14 @@ export default function Input({
         ${focusStyle}
         ${sizeStyles[width]}
         ${getPaddingClasses()}
-        ${disabled ? "opacity-60 cursor-not-allowed bg-neutral-light" : ""}
+        ${"disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-neutral-light"}
         ${
           error
             ? "ring-2 ring-negative-base ring-opacity-50 bg-negative-light border-negative-base"
             : ""
         }
         ${fullWidth ? "w-full" : ""}
-    `
-    .trim()
-    .replace(/\s+/g, " ");
+    `;
 
   return (
     <div className={`flex flex-col gap-1.5 ${fullWidth ? "w-full" : ""}`}>
@@ -115,16 +103,11 @@ export default function Input({
 
         <input
           id={id}
-          name={name}
           type={type}
           value={value}
-          onChange={onChange}
-          onKeyDown={onKeyDown}
           placeholder={placeholder}
-          className={inputClasses}
-          disabled={disabled}
+          className={cn(inputClasses, className)}
           required={required}
-          autoFocus={autoFocus}
           aria-invalid={error}
           aria-describedby={
             error && errorMessage

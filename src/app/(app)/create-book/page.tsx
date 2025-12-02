@@ -2,9 +2,10 @@
 
 import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
-import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
+import Tag from "@/components/ui/Tags"
 
-import { FaPlus } from "react-icons/fa6";
+import { FaPlus, FaXmark } from "react-icons/fa6";
 
 import { useEffect, useRef, useState } from "react";
 
@@ -52,7 +53,6 @@ export default function CreateBookPage() {
 
   return (
     <div className="mt-6 flex flex-col w-full gap-6">
-      <p>Create Book Page</p>
       <Card>
         <h2>Create New Book</h2>
         <p>Start your next writing project</p>
@@ -94,11 +94,9 @@ export default function CreateBookPage() {
 }
 
 export function GenreTags() {
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
-  const [tags, setTags] = useState<string[]>([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [customTags, setCustomTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
 
   const toggleGenre = (genre: string) => {
@@ -107,38 +105,28 @@ export function GenreTags() {
     );
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const setCustomTagInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewTag(e.target.value);
-    setIsDropdownOpen(true);
   };
 
-  const handleAddNewTag = () => {
-    if (newTag.trim() !== "" && !tags.includes(newTag.trim())) {
-      setTags([...tags, newTag.trim()]);
+  const removeCustomTag = (removeTag: string) => {
+    setCustomTags(customTags.filter((tag) => tag !== removeTag))
+  }
+
+  const addCustomTag = () => {
+    if (newTag.trim() !== "" && !customTags.includes(newTag.trim())) {
+      setCustomTags([...customTags, newTag.trim()]);
       setNewTag("");
     }
   };
 
   const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      e.preventDefault()
       // Validate that input value is not already in tag.
-      handleAddNewTag();
+      addCustomTag();
     }
   };
-
-  useEffect(() => {
-    const handleClickOutside = (e: React.MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   return (
     <div className="space-y-2">
@@ -151,51 +139,52 @@ export function GenreTags() {
 
       <div className="flex flex-wrap gap-2">
         {GENRE_OPTIONS.map((genre) => (
-          <Badge
+          <Tag
             key={genre}
-            variant={selectedGenres.includes(genre) ? "primary" : "secondary"}
-            className="cursor-pointer"
+            variant={selectedGenres.includes(genre) ? "genre" : "custom"}
+            className= {selectedGenres.includes(genre) ? "hover:opacity-90 cursor-pointer" : "cursor-pointer opacity-50 hover:opacity-100"} 
             onClick={() => toggleGenre(genre)}
           >
             {genre}
-          </Badge>
+            {selectedGenres.includes(genre) ? <FaXmark className="w-3 h-3 ml-1"/> : ""}
+          </Tag>
         ))}
       </div>
 
-      <div>
-        {tags.map((tag, index) => (
-          <span key={index} className="">
-            {tag}
-          </span>
-        ))}
-      </div>
-
-      <Input
-        type="text"
-        id="tag"
-        placeholder="Add tags..."
-        onChange={handleInputChange}
-        onKeyDown={handleInputKeyDown}
-        onFocus={() => setIsDropdownOpen(true)}
-      ></Input>
-      {isDropdownOpen && (
-        <div
-          ref={dropdownRef}
-          className="absolute z-50 w-full mt-1 bg-card border rounded-md shadow-lg max-h-64 overflow-y-auto"
-        >
-          <button
-            type="button"
-            onClick={() => console.log("Add new tag")}
-            className={`w-full flex items-center gap-2 px-3 py-2 border-t hover:bg-accent transition-colors`}
-          >
-            <FaPlus size={16} />
-            <span className="text-sm">
-              <span className="text-muted-foreground">Create: </span>
-              <span>&quot;{newTag}&quot;</span>
-            </span>
-          </button>
+      <label
+        className={`text-sm font-medium text-secondary-dark`}
+        htmlFor={"tag"}
+      >
+        Custom Tags (Optional)
+      </label>
+      {customTags.length > 0 &&  ( 
+        <div className="flex flex-wrap gap-2 mb-2">
+          {customTags.map((tag) => (
+            <Tag
+              key={tag}
+              variant="custom"
+              onClick={() => removeCustomTag(tag)}
+            >
+              {tag}
+              <FaXmark className="w-3 h-3 ml-1"/>
+            </Tag>
+          ))}
         </div>
       )}
+
+      <div className="flex gap-2">
+        <Input
+          type="text"
+          id="tag"
+          value={newTag}
+          placeholder="Add a custom tag..."
+          onChange={setCustomTagInput}
+          onKeyDown={handleInputKeyDown}
+        ></Input>
+        <Button onClick={addCustomTag}>
+          <FaPlus className="w-4 h-4"/>
+        </Button>
+      </div>
     </div>
   );
 }
