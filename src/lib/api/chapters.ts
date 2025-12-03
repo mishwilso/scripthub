@@ -37,10 +37,10 @@ export async function createChapter(chapterData: NewChapter) {
   const { data, error } = await clientSupabase
     .from("chapters")
     .insert(chapterData)
-    .single();
+    .select();
 
   if (error) throw error;
-  return data;
+  return data[0];
 }
 
 // updateChapter(chapterId, updates) - update chapter

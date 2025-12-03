@@ -41,8 +41,10 @@ export type Database = {
     Tables: {
       books: {
         Row: {
+          book_color: string | null
           cover_url: string | null
           created_at: string
+          custom_genres: string[] | null
           description: string | null
           genres: string[] | null
           id: string
@@ -54,8 +56,10 @@ export type Database = {
           word_count: number
         }
         Insert: {
+          book_color?: string | null
           cover_url?: string | null
           created_at?: string
+          custom_genres?: string[] | null
           description?: string | null
           genres?: string[] | null
           id?: string
@@ -67,8 +71,10 @@ export type Database = {
           word_count?: number
         }
         Update: {
+          book_color?: string | null
           cover_url?: string | null
           created_at?: string
+          custom_genres?: string[] | null
           description?: string | null
           genres?: string[] | null
           id?: string

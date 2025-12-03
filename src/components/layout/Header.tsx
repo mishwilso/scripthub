@@ -44,6 +44,8 @@ export default function Header() {
       return 'My Works';
     } else if (pathname === '/create-book') {
       return 'Create Book';
+    } else if (pathname.startsWith('/books/')){
+      return 'Book Overview'
     } else {
       return 'New Page';
     }

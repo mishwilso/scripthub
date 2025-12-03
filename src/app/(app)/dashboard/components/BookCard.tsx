@@ -5,9 +5,9 @@ export default function BookCard({
   title,
   color = "#E88A7F",
 }: {
-  coverImage?: string | StaticImageData;
+  coverImage?: string | StaticImageData | null;
   title: string;
-  color?: string;
+  color?: string | null;
 }) {
   const blurAmount = "10px";
   const componentStyle = {
@@ -34,10 +34,10 @@ export default function BookCard({
           className={`flex flex-col w-32 h-48 rounded-l-[5px] rounded-r-[3px] items-center justify-evenly`}
           style={componentStyle}
         >
-          <div className="rounded-md bg-[#FFEDED] h-14 w-24"></div>
+          <div className="rounded-md bg-white-base/25 h-14 w-24"></div>
           <div className="flex flex-col gap-4">
-            <div className="rounded-md bg-[#FFEDED] h-2 w-24"></div>
-            <div className="rounded-md bg-[#FFEDED] h-2 w-24"></div>
+            <div className="rounded-md bg-white-base/25 h-2 w-24"></div>
+            <div className="rounded-md bg-white-base/25 h-2 w-24"></div>
           </div>
         </div>
       )}

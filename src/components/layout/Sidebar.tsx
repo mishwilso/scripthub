@@ -19,6 +19,8 @@ import NavLink from "@/components/ui/NavLink";
 import SearchInput from "../ui/SearchInput";
 
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+
 import type { Book } from "@/lib/api/books";
 import { getRecentBooks } from "@/lib/api/books";
 
@@ -79,25 +81,32 @@ export function Nav({ isOpen, onToggle, isMobile }: NavProps) {
   const [loading, setLoading] = useState(true)
   const [books, setBooks] = useState([] as { id: string; title: string; }[]);
   const { user } = useAuth();
+
+  const router = useRouter();
+
+  const createNewBook = () => {
+    router.push("/create-book");
+  };
+
   
-    useEffect(() => {
-      async function loadData() {
-        if (!user) {
-          setLoading(false)
-          return
-        }
-  
-        try {
-          const booksData = await getRecentBooks(user.id, 3)
-          setBooks(booksData)
-        } catch (err) {
-          console.error('Error loading books: ', err)
-        } finally {
-          setLoading(false)
-        }
+  useEffect(() => {
+    async function loadData() {
+      if (!user) {
+        setLoading(false)
+        return
       }
-      loadData()
-    }, [user])
+
+      try {
+        const booksData = await getRecentBooks(user.id, 3)
+        setBooks(booksData)
+      } catch (err) {
+        console.error('Error loading books: ', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadData()
+  }, [user])
 
   // Sample recent items - replace with actual data
   const recentItems = books.map((book) => {
@@ -146,7 +155,7 @@ export function Nav({ isOpen, onToggle, isMobile }: NavProps) {
         <NavLink
           icon={<FaCirclePlus size={25} color="#B65733"/>}
           label="Create New Book"
-          href="/new-bool"
+          href="/create-book"
           isOpen={isOpen}
           altText="Create New Book"
         />

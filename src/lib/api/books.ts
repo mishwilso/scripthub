@@ -3,20 +3,30 @@
 import { clientSupabase } from "@/lib/supabase/client";
 import { Tables, TablesInsert, TablesUpdate } from "../supabase/database.types";
 
+import { v4 as uuidv4 } from "uuid";
+
 export type Book = Tables<"books">;
-type NewBook = TablesInsert<"books">;
+export type NewBook = TablesInsert<"books">;
+export type BookData = Book & {chapter_count: number};
 type UpdatedBook = TablesUpdate<"books">;
 
 // getUserBooks(userId) - get all books for a user
 export async function getUserBooks(userId: string) {
   const { data, error } = await clientSupabase
     .from("books")
-    .select("*")
+    .select(`
+      *,
+      chapters(count)
+    `)
     .eq("user_id", userId)
     .order("updated_at", { ascending: false });
 
   if (error) throw error;
-  return data;
+
+  return data.map(book => ({
+    ...book,
+    chapter_count: book.chapters[0]?.count || 0
+  }));
 }
 
 // getRecentBooks(userId, limit) - recently updated chapters
@@ -35,12 +45,17 @@ export async function getRecentBooks(userId: string, limit: number) {
 export async function getBookById(bookId: string) {
   const { data, error } = await clientSupabase
     .from("books")
-    .select("*")
+    .select(`
+      *,
+      chapters(count)`)
     .eq("id", bookId)
     .single();
 
   if (error) throw error;
-  return data;
+  return {
+    ...data,
+    chapter_count: data.chapters[0]?.count || 0
+  };
 }
 
 // createBook(bookData) - create new book
@@ -48,10 +63,10 @@ export async function createBook(insertData: NewBook) {
   const { data, error } = await clientSupabase
     .from("books")
     .insert(insertData)
-    .single();
+    .select();
 
   if (error) throw error;
-  return data;
+  return data[0];
 }
 
 // updateBook(bookId, updates) - update book info
@@ -82,5 +97,31 @@ export async function archiveBook(bookId: string) {
     .single();
 
   if (error) throw error;
+  return data;
+}
+
+// upload bookcover
+export async function uploadBookCover(
+  bookFile: File,
+  fileName: string,
+  userId: string
+) {
+  const { data, error } = await clientSupabase.storage
+    .from("book-covers")
+    .upload(`${userId}/${uuidv4()}-${fileName}`, bookFile, {
+      cacheControl: "3600",
+      upsert: false,
+    });
+
+  if (error) throw error;
+  return data;
+}
+
+// get coverUrl
+export async function getBookCoverURL(filePath: string) {
+  const { data } = clientSupabase.storage
+    .from("book-covers")
+    .getPublicUrl(filePath);
+
   return data;
 }

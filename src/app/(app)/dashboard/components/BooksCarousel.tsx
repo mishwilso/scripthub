@@ -8,24 +8,19 @@ import BookCard from "./BookCard";
 import Image, { StaticImageData } from "next/image";
 
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+
 import type { Book } from "@/lib/api/books";
 import { getUserBooks } from "@/lib/api/books";
 
-import battle_fate from "@/assets/test_books/battle_fate.jpg";
-import city_orange from "@/assets/test_books/city_orange.jpg";
-import giant_peach from "@/assets/test_books/giant_peach.jpg";
-import orange_door from "@/assets/test_books/ocean_door.jpg";
-import court_roses from "@/assets/test_books/test_book_cover.jpg";
 import { useRef, useState, useEffect } from "react";
 
 import no_books from "@/assets/vectors/no-books.png";
 
 export default function BooksCarousel() {
-
-
   const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true)
-  
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [books, setBooks] = useState<Book[]>([] as Book[]);
@@ -33,28 +28,30 @@ export default function BooksCarousel() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
 
+  const router = useRouter()
+
   useEffect(() => {
     async function loadData() {
       if (!user) {
-        setLoading(false)
-        return
+        setLoading(false);
+        return;
       }
 
       try {
-        const booksData = await getUserBooks(user.id)
-        setBooks(booksData)
+        const booksData = await getUserBooks(user.id);
+        setBooks(booksData);
       } catch (err) {
-        console.error('Error loading books: ', err)
-        setError(true)
+        console.error("Error loading books: ", err);
+        setError(true);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
-    loadData()
-  }, [user])
+    loadData();
+  }, [user]);
 
   const createNewBook = () => {
-    console.log("Create New Book");
+    router.push("/create-book");
   };
 
   const checkScrollPosition = () => {
@@ -174,7 +171,11 @@ export default function BooksCarousel() {
               Every great story starts with a blank page. Ready to write yours?
             </p>
           </div>
-          <Button color="secondary" endIcon={<CgMathPlus />} onClick={createNewBook}>
+          <Button
+            color="secondary"
+            endIcon={<CgMathPlus />}
+            onClick={createNewBook}
+          >
             Add New Book
           </Button>
         </div>
@@ -187,7 +188,7 @@ export default function BooksCarousel() {
         >
           {books.map((book) => (
             <div key={book.id} className="group flex flex-col gap-3 w-36">
-              <BookCard coverImage={book.cover_url || ""} title={book.title} />
+              <BookCard coverImage={book.cover_url || ""} title={book.title} color={book.book_color || ""}/>
               <div>
                 <h3 className="text-md text-secondary-dark group-hover:font-semibold">
                   {book.title}

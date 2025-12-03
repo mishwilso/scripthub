@@ -20,6 +20,15 @@ import { Label } from "@/components/ui/Label";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+import { useAuth } from "@/context/AuthContext";
+import {
+  createBook,
+  NewBook,
+  uploadBookCover,
+  getBookCoverURL,
+} from "@/lib/api/books";
+import { createChapter } from "@/lib/api/chapters";
+
 // Temporary genre options
 const GENRE_OPTIONS = [
   "Fantasy",
@@ -49,6 +58,10 @@ const DESCRIPTION_MAX = 1000;
 
 export default function CreateBookPage() {
   // ==========================================
+  // AUTH
+  const { user } = useAuth();
+
+  // ==========================================
   // ROUTING
   const router = useRouter();
 
@@ -57,6 +70,7 @@ export default function CreateBookPage() {
   // Book details
   const [bookTitle, setBookTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const [coverFileName, setCoverFileName] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
@@ -146,7 +160,7 @@ export default function CreateBookPage() {
       };
       reader.readAsDataURL(file);
       setSelectedColor(null);
-      console.log("New cover uploaded ", file.name);
+      setCoverFile(file);
     }
   };
 
@@ -155,7 +169,6 @@ export default function CreateBookPage() {
     setCoverImage(null);
     setCoverFileName("");
     setSelectedColor(null);
-    console.log("Cover Removed");
     e.stopPropagation();
   };
 
@@ -163,7 +176,6 @@ export default function CreateBookPage() {
     setCoverImage(null);
     setCoverFileName("");
     setSelectedColor(color);
-    console.log("Cover changed to: ", color);
   };
 
   // ==========================================
@@ -208,7 +220,7 @@ export default function CreateBookPage() {
   };
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
@@ -218,7 +230,6 @@ export default function CreateBookPage() {
     }
 
     setLoading(false);
-    setError("Have not setup Submit yet");
     console.log("Form Submitted", {
       bookTitle,
       description,
@@ -229,11 +240,71 @@ export default function CreateBookPage() {
       selectedColor,
     });
 
-    // TODO: Call createBook API
-    // TODO: Upload cover image if exists
-    // TODO: Create first chapter if checked
-    // TODO: Handle errors and success
-    // TODO: Redirect to book page
+    try {
+      if (!user) {
+        setError("You must be logged in to create a book");
+        return;
+      }
+
+      let bookData: NewBook;
+      if (coverFile) {
+        //First upload cover image and grab url
+        const bookCoverData = await uploadBookCover(
+          coverFile,
+          coverFileName,
+          user.id
+        );
+        const bookUrl = await getBookCoverURL(bookCoverData.path);
+
+        bookData = await createBook({
+          cover_url: bookUrl.publicUrl,
+          description: description,
+          genres: selectedGenres,
+          custom_genres: customTags,
+          is_public: false,
+          title: bookTitle,
+          user_id: user.id,
+          word_count: 0,
+        });
+
+        console.log(bookData);
+      } else {
+        bookData = await createBook({
+          book_color: selectedColor,
+          description: description,
+          genres: selectedGenres,
+          custom_genres: customTags,
+          is_public: false,
+          title: bookTitle,
+          user_id: user.id,
+          word_count: 0,
+        });
+
+        console.log(bookData);
+      }
+      // Check if chapter should be made
+      if (createFirstChapter) {
+        if (bookData && bookData.id) {
+          const chapterData = await createChapter({
+            book_id: bookData.id,
+            order_index: 1,
+            title: "Untitled Chapter",
+          });
+          router.push(`/books/${bookData.id}/chapters/${chapterData.id}`);
+        } else {
+          router.push(`/books/${bookData.id}`);
+        }
+      } else {
+        router.push(`/books/${bookData.id}`);
+      }
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "An unexpected error occurred";
+      setLoading(false);
+      setError(errorMessage);
+      console.error("Error creating book:", err);
+    }
+
   };
 
   // ========================================
@@ -345,7 +416,10 @@ export default function CreateBookPage() {
             </p>
           )}
           {errors.coverImage && (
-            <p id={`coverImage-error`} className="text-sm text-negative-base text-center">
+            <p
+              id={`coverImage-error`}
+              className="text-sm text-negative-base text-center"
+            >
               {errors.coverImage}
             </p>
           )}
