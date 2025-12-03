@@ -35,7 +35,7 @@ export default function Button({
   endIcon,
   children,
   fullWidth = false,
-  responsive = true,
+  responsive = false,
   loading = false,
   className,
 }: ButtonProps) {

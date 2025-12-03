@@ -6,7 +6,7 @@ export default function AppLayout({children}: Readonly<{children: React.ReactNod
     return (
     <div className="min-h-screen flex flex-col md:flex-row">
         <Sidebar />
-        <div className="flex-1 flex flex-col px-6 md:px-12 py-12 md:py-6 min-w-0">
+        <div className="flex-1 flex flex-col px-6 md:px-12 py-6 md:py-6 min-w-0">
             <header>
                 <Header />
             </header>

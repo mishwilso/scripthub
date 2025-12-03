@@ -3,7 +3,7 @@ import Image, { StaticImageData } from "next/image";
 export default function BookCard({
   coverImage,
   title,
-  color = "#EF6C65",
+  color = "#E88A7F",
 }: {
   coverImage?: string | StaticImageData;
   title: string;
