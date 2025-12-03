@@ -18,8 +18,8 @@ export default function ErrorBanner({
   const [isClosing, setIsClosing] = useState(false);
 
   const handleClose = () => {
-    setIsClosing(true);
-    // Wait for animation to complete before hiding
+  setIsClosing(true);
+  // Wait for animation to complete before hiding
     setTimeout(() => {
       setIsVisible(false);
       setIsClosing(false);
@@ -29,6 +29,7 @@ export default function ErrorBanner({
 
   useEffect(() => {
     if (message) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsVisible(true);
       setIsClosing(false);
 
@@ -41,6 +42,8 @@ export default function ErrorBanner({
       }
     }
   }, [message, duration]);
+
+ 
 
   if (!message || !isVisible) return null;
 

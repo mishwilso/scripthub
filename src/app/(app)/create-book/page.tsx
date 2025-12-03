@@ -8,8 +8,6 @@ import Textarea from "@/components/ui/Textarea";
 import LoadingOverlay from "@/components/ui/LoadingOverlay";
 import ErrorBanner from "@/components/ui/ErrorBanner";
 
-import TurningPageIcon from "@/components/icons/TurningPageIcon";
-
 import { Checkbox } from "@/components/ui/Checkbox";
 
 import { FaPlus, FaXmark } from "react-icons/fa6";
@@ -73,7 +71,7 @@ export default function CreateBookPage() {
 
   // ==========================================
   // UI STATE
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [charCount, setCharCount] = useState(0);
 
   // ==========================================
@@ -83,7 +81,7 @@ export default function CreateBookPage() {
     bookTitle: null,
     description: null,
     genre: null,
-    customTags: null,
+    coverImage: null,
   });
 
   // ==========================================
@@ -147,7 +145,7 @@ export default function CreateBookPage() {
         setCoverFileName(file.name);
       };
       reader.readAsDataURL(file);
-      setSelectedColor(null)
+      setSelectedColor(null);
       console.log("New cover uploaded ", file.name);
     }
   };
@@ -156,7 +154,7 @@ export default function CreateBookPage() {
   const handleRemoveCover = (e: React.MouseEvent<HTMLButtonElement>) => {
     setCoverImage(null);
     setCoverFileName("");
-    setSelectedColor(null)
+    setSelectedColor(null);
     console.log("Cover Removed");
     e.stopPropagation();
   };
@@ -176,7 +174,7 @@ export default function CreateBookPage() {
       bookTitle: null,
       description: null,
       genre: null,
-      customTags: null,
+      coverImage: null,
     };
 
     let isValid = true;
@@ -199,6 +197,12 @@ export default function CreateBookPage() {
       isValid = false;
     }
 
+    // Book Cover Validation
+    if (!coverImage && !selectedColor) {
+      newErrors.coverImage = "Must have a book cover selected.";
+      isValid = false;
+    }
+
     setErrors(newErrors);
     return isValid;
   };
@@ -212,8 +216,19 @@ export default function CreateBookPage() {
       setLoading(false);
       return;
     }
-    console.log("Form Submitted", {bookTitle, description, selectedGenres, customTags, coverFileName, createFirstChapter, selectedColor});
-  
+
+    setLoading(false);
+    setError("Have not setup Submit yet");
+    console.log("Form Submitted", {
+      bookTitle,
+      description,
+      selectedGenres,
+      customTags,
+      coverFileName,
+      createFirstChapter,
+      selectedColor,
+    });
+
     // TODO: Call createBook API
     // TODO: Upload cover image if exists
     // TODO: Create first chapter if checked
@@ -326,7 +341,12 @@ export default function CreateBookPage() {
           />
           {(coverFileName || selectedColor) && (
             <p className="text-xs text-muted-foreground text-center truncate">
-              {coverFileName? `${coverFileName}` : "Generated Cover"}
+              {coverFileName ? `${coverFileName}` : "Generated Cover"}
+            </p>
+          )}
+          {errors.coverImage && (
+            <p id={`coverImage-error`} className="text-sm text-negative-base text-center">
+              {errors.coverImage}
             </p>
           )}
           <div className="space-y-3 w-full">
@@ -399,7 +419,9 @@ export default function CreateBookPage() {
                 {GENRE_OPTIONS.map((genre) => (
                   <Tag
                     key={genre}
-                    variant={selectedGenres.includes(genre) ? "genre" : "custom"}
+                    variant={
+                      selectedGenres.includes(genre) ? "genre" : "custom"
+                    }
                     className={
                       selectedGenres.includes(genre)
                         ? "hover:opacity-90 cursor-pointer"
@@ -492,4 +514,3 @@ export default function CreateBookPage() {
     </div>
   );
 }
-
