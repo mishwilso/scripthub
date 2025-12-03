@@ -11,6 +11,7 @@ import HeroSlideshow from "@/components/ui/HeroSlideshow";
 
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
+import { Label } from "@/components/ui/Label";
 
 import { FaGithub } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
@@ -131,28 +132,29 @@ export default function LoginPage() {
             onSubmit={handleSubmit}
             noValidate
           >
-            <Input
-              type="email"
-              placeholder="Enter your Email"
-              label="Email"
-              fullWidth
-              value={email}
-              onChange={handleEmailChange}
-              required
-              errorMessage={errors.email}
-              error={!!errors.email}
-            />
-            <Input
-              type="password"
-              placeholder="Enter your Password"
-              label="Password"
-              fullWidth
-              value={password}
-              onChange={handlePasswordChange}
-              required
-              errorMessage={errors.password}
-              error={!!errors.password}
-            />
+              <Input
+                id="Email"
+                type="email"
+                label="Email"
+                placeholder="Enter your Email"
+                value={email}
+                onChange={handleEmailChange}
+                required
+                errorMessage={errors.email}
+                error={!!errors.email}
+              />
+
+              <Input
+                type="password"
+                placeholder="Enter your Password"
+                id="Password"
+                label="Password"
+                value={password}
+                onChange={handlePasswordChange}
+                required
+                errorMessage={errors.password}
+                error={!!errors.password}
+              />
 
             <div>
               <CustomLink

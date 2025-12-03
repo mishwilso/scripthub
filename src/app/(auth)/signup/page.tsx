@@ -11,6 +11,7 @@ import HeroSlideshow from "@/components/ui/HeroSlideshow";
 
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
+import Label from "@/components/ui/Button";
 
 import { FaGithub } from "react-icons/fa";
 import { FaGoogle } from "react-icons/fa";
@@ -205,7 +206,6 @@ export default function SignupPage() {
                   type="text"
                   placeholder="Enter your Password"
                   label="Password"
-                  fullWidth
                   value={password}
                   onChange={handlePasswordChange}
                   errorMessage={errors.password}
@@ -216,7 +216,6 @@ export default function SignupPage() {
                   type="password"
                   placeholder="Confirm your Password"
                   label="Confirm Password"
-                  fullWidth
                   value={confirmPassword}
                   onChange={handleConfirmPasswordChange}
                   errorMessage={errors.confirmPassword}

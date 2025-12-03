@@ -3,6 +3,8 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 
+import { Label } from "./Label";
+
 type InputType =
   | "text"
   | "email"
@@ -17,15 +19,14 @@ type InputType =
 interface InputProps {
   type?: InputType;
   placeholder?: string;
+  label?: string;
   value?: string;
   width?: "small" | "medium" | "large";
   error?: boolean;
-  label?: string;
   helperText?: string;
   errorMessage?: string | null;
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
-  fullWidth?: boolean;
 }
 
 export default function Input({
@@ -34,21 +35,20 @@ export default function Input({
   width = "medium" as const,
   placeholder,
   value,
+  label,
   id,
   error = false,
-  label,
   helperText,
   errorMessage,
   startIcon,
   endIcon,
-  fullWidth = false,
   required = false,
   ...props
 }: InputProps & React.ComponentProps<"input">) {
   const sizeStyles = {
-    small: "py-1.5 text-sm",
-    medium: "py-2 text-base",
-    large: "py-3 text-lg",
+    small: "py-1.5 text-sm rounded-xl",
+    medium: "py-2 text-base rounded-2xl",
+    large: "py-3 text-lg rounded-2xl",
   };
 
   // Calculate padding based on icons
@@ -60,7 +60,7 @@ export default function Input({
   };
 
   const baseStyle =
-    "border rounded-2xl transition bg-white-input border-2 border-outline-input text-secondary-dark placeholder-secondary-dark/60 w-full";
+    "border  transition bg-white-input border-2 border-outline-input text-secondary-dark placeholder-secondary-dark/60 min-w-0 w-full";
 
   const focusStyle =
     "focus:outline-none focus:ring-2 focus:ring-primary-base focus:ring-opacity-50 focus:border-primary-base";
@@ -71,28 +71,18 @@ export default function Input({
         ${sizeStyles[width]}
         ${getPaddingClasses()}
         ${"disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-neutral-light"}
+        ${" file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium "}
         ${
           error
             ? "ring-2 ring-negative-base ring-opacity-50 bg-negative-light border-negative-base"
             : ""
         }
-        ${fullWidth ? "w-full" : ""}
     `;
 
   return (
-    <div className={`flex flex-col gap-1.5 ${fullWidth ? "w-full" : ""}`}>
-      {label && (
-        <label
-          className={`text-sm font-medium text-secondary-dark ${
-            required
-              ? "after:content-['*'] after:ml-0.5 after:text-negative-base"
-              : ""
-          }`}
-          htmlFor={id}
-        >
-          {label}
-        </label>
-      )}
+    <div className={`space-y-2 w-full`}>
+
+      {label && <Label htmlFor={id} required={required}>{label}</Label>}
 
       <div className="relative">
         {startIcon && (
