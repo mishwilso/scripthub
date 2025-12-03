@@ -130,3 +130,64 @@ input:-webkit-autofill:active {
   transform: translateY(-2px); /* Slight lift on hover */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
 }
+
+/* Turning page animation */
+.turning-page-animation {
+  perspective: 600px;
+  transform-style: preserve-3d;
+}
+
+.page-turn {
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  animation: pageTurn 3s ease-in-out infinite;
+}
+
+@keyframes pageTurn {
+  0% {
+    transform: rotateY(0deg);
+  }
+  25% {
+    transform: rotateY(-180deg);
+  }
+  50% {
+    transform: rotateY(-180deg);
+  }
+  75% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(0deg);
+  }
+}
+
+/* Error Banner Slide Animations */
+.error-banner-enter {
+  animation: slideInRight 0.3s ease-out forwards;
+}
+
+.error-banner-exit {
+  animation: slideOutRight 0.3s ease-in forwards;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
