@@ -10,7 +10,7 @@ export default function BookOverview() {
     const params = useParams<{ bookId: string }>()
     const [book, setBook] = useState<BookData>()
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(true)
+    const [error, setError] = useState(false)
 
     const router = useRouter();
 

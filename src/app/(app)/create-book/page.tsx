@@ -229,17 +229,6 @@ export default function CreateBookPage() {
       return;
     }
 
-    setLoading(false);
-    console.log("Form Submitted", {
-      bookTitle,
-      description,
-      selectedGenres,
-      customTags,
-      coverFileName,
-      createFirstChapter,
-      selectedColor,
-    });
-
     try {
       if (!user) {
         setError("You must be logged in to create a book");
@@ -303,8 +292,9 @@ export default function CreateBookPage() {
       setLoading(false);
       setError(errorMessage);
       console.error("Error creating book:", err);
+    } finally {
+      setLoading(false);
     }
-
   };
 
   // ========================================

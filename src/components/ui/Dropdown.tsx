@@ -33,7 +33,7 @@ import DropdownHeader from "./Dropdown/DropdownHeader";
 export interface DropdownContextType {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  toggle: () => void;
+  toggle: (e: React.MouseEvent<HTMLButtonElement>) => void;
   anchorName: string;
 }
 
@@ -63,8 +63,9 @@ export function Dropdown({ children }:{children:React.ReactNode}) {
 
   }, [dropdownRef]);
 
-  function toggle() {
+  function toggle(e: React.MouseEvent<HTMLButtonElement>) {
     setIsOpen((prevState) => !prevState);
+    e.stopPropagation();
   }
 
   const contextValues : DropdownContextType = {
