@@ -3,6 +3,8 @@
 import React from "react";
 import LoadingIcons from 'react-loading-icons'
 
+import { cn } from '@/lib/utils'
+
 type Size = "small" | "medium" | "large" | "full";
 type ButtonType = "button" | "submit" | "reset";
 type Color = "primary" | "secondary" | "tertiary" | "success" | "error";
@@ -37,7 +39,7 @@ export default function Button({
   fullWidth = false,
   responsive = false,
   loading = false,
-  className,
+  className = "",
 }: ButtonProps) {
 
   const colorStyles = {
@@ -96,14 +98,15 @@ export default function Button({
         ${sizeStyles[size]}
         ${disabled ? disabledStyle : transitionStyle}
         ${fullWidth ? "md:w-full" : "md:w-auto"}
-        ${className ? className : ""}
         gap-2 w-full`
     .trim()
     .replace(/\s+/g, " ");
 
+  
+
   return (
     <button
-      className={classes}
+      className={cn(classes, className)}
       onClick={onClick}
       type={type}
       disabled={disabled}

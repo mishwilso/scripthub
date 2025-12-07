@@ -13,12 +13,12 @@ import { useRouter } from "next/navigation";
 import type { Book } from "@/lib/api/books";
 import { getUserBooks } from "@/lib/api/books";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 
 import no_books from "@/assets/vectors/no-books.png";
 
 export default function BooksCarousel() {
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(true);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
   const [loading, setLoading] = useState(true);
@@ -28,7 +28,7 @@ export default function BooksCarousel() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { user } = useAuth();
 
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     async function loadData() {
@@ -77,10 +77,16 @@ export default function BooksCarousel() {
   const scrollRight = () => {
     if (!scrollContainerRef.current) return;
     scrollContainerRef.current.scrollBy({
-      left: 300, // scroll 300px right
+      left: 350, // scroll 300px right
       behavior: "smooth",
     });
   };
+
+  const handleWheel = useCallback((event: WheelEvent) => {
+    if (!scrollContainerRef.current) return;
+    event.preventDefault();
+    scrollContainerRef.current.scrollLeft += event.deltaY;
+  }, []);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -93,8 +99,23 @@ export default function BooksCarousel() {
     container.addEventListener("scroll", checkScrollPosition);
 
     // Cleanup
-    return () => container.removeEventListener("scroll", checkScrollPosition);
+    return () => {
+      container.removeEventListener("scroll", checkScrollPosition);
+    };
   }, []);
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    //Check on wheel
+    container.addEventListener("wheel", handleWheel);
+
+    // Cleanup
+    return () => {
+      container.removeEventListener("wheel", handleWheel);
+    };
+  }, [handleWheel]);
 
   return (
     <section className="flex flex-col">
@@ -183,14 +204,18 @@ export default function BooksCarousel() {
 
       {!loading && !error && books.length > 0 && (
         <div
-          className="flex overflow-x-scroll w-full gap-8 pt-6 pl-1 h-72"
+          className="flex overflow-x-scroll w-full gap-8 pt-6 pl-1 h-80"
           ref={scrollContainerRef}
         >
           {books.map((book) => (
-            <div key={book.id} className="group flex flex-col gap-3 w-36">
-              <BookCard coverImage={book.cover_url || ""} title={book.title} color={book.book_color || ""}/>
+            <div key={book.id} className="group flex flex-col gap-3 w-36 cursor-pointer" onClick={() => {router.push(`/books/${book.id}`)}}>
+              <BookCard
+                coverImage={book.cover_url || ""}
+                title={book.title}
+                color={book.book_color || ""}
+              />
               <div>
-                <h3 className="text-md text-secondary-dark group-hover:font-semibold">
+                <h3 className="text-md text-secondary-dark group-hover:font-semibold line-clamp-2">
                   {book.title}
                 </h3>
                 <p className="text-primary-base text-xs group-hover:font-semibold">

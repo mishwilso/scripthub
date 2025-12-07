@@ -323,7 +323,7 @@ export default function CreateBookPage() {
             <p className="">Upload an image for your book cover</p>
           </div>
           <div
-            className="box-border relative w-full aspect-[2/3] max-w-72 mx-auto 
+            className="box-border relative aspect-[2/3] max-w-72 mx-auto 
           bg-gradient-to-br from-[#FAF8F5] to-[#F5EFE7] rounded-lg 
           border-2 border-dashed border-[#E3DAD1] hover:border-primary-base 
           transition-colors cursor-pointer group overflow-hidden"
