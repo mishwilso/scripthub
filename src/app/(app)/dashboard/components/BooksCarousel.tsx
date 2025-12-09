@@ -32,6 +32,7 @@ export default function BooksCarousel() {
 
   useEffect(() => {
     async function loadData() {
+      console.log(user);
       if (!user) {
         setLoading(false);
         return;
@@ -208,7 +209,13 @@ export default function BooksCarousel() {
           ref={scrollContainerRef}
         >
           {books.map((book) => (
-            <div key={book.id} className="group flex flex-col gap-3 w-36 cursor-pointer" onClick={() => {router.push(`/books/${book.id}`)}}>
+            <div
+              key={book.id}
+              className="group flex flex-col gap-3 w-36 cursor-pointer"
+              onClick={() => {
+                router.push(`/books/${book.id}`);
+              }}
+            >
               <BookCard
                 coverImage={book.cover_url || ""}
                 title={book.title}

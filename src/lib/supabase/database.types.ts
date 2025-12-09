@@ -39,6 +39,90 @@ export type Database = {
   }
   public: {
     Tables: {
+      book_activity: {
+        Row: {
+          activity_data: Json | null
+          activity_type: string
+          book_id: string | null
+          created_at: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          activity_data?: Json | null
+          activity_type: string
+          book_id?: string | null
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          activity_data?: Json | null
+          activity_type?: string
+          book_id?: string | null
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_activity_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      book_collaborators: {
+        Row: {
+          book_id: string
+          created_at: string | null
+          id: string
+          invited_by: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          book_id: string
+          created_at?: string | null
+          id?: string
+          invited_by: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          book_id?: string
+          created_at?: string | null
+          id?: string
+          invited_by?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_collaborators_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "book_collaborators_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "book_collaborators_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       books: {
         Row: {
           book_color: string | null
@@ -49,10 +133,10 @@ export type Database = {
           genres: string[] | null
           id: string
           is_public: boolean
+          owner_id: string
           status: string
           title: string
           updated_at: string
-          user_id: string
           word_count: number
         }
         Insert: {
@@ -64,10 +148,10 @@ export type Database = {
           genres?: string[] | null
           id?: string
           is_public?: boolean
+          owner_id: string
           status?: string
           title: string
           updated_at?: string
-          user_id: string
           word_count?: number
         }
         Update: {
@@ -79,16 +163,16 @@ export type Database = {
           genres?: string[] | null
           id?: string
           is_public?: boolean
+          owner_id?: string
           status?: string
           title?: string
           updated_at?: string
-          user_id?: string
           word_count?: number
         }
         Relationships: [
           {
-            foreignKeyName: "books_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "books_owner_id_fkey"
+            columns: ["owner_id"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
@@ -155,6 +239,67 @@ export type Database = {
           },
           {
             foreignKeyName: "chapters_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          book_id: string | null
+          created_at: string | null
+          id: string
+          message: string
+          notification_data: Json | null
+          notification_type: string
+          read: boolean | null
+          related_user_id: string | null
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          book_id?: string | null
+          created_at?: string | null
+          id?: string
+          message: string
+          notification_data?: Json | null
+          notification_type: string
+          read?: boolean | null
+          related_user_id?: string | null
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          book_id?: string | null
+          created_at?: string | null
+          id?: string
+          message?: string
+          notification_data?: Json | null
+          notification_type?: string
+          read?: boolean | null
+          related_user_id?: string | null
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_related_user_id_fkey"
+            columns: ["related_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"

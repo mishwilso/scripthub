@@ -7,25 +7,27 @@ import { v4 as uuidv4 } from "uuid";
 
 export type Book = Tables<"books">;
 export type NewBook = TablesInsert<"books">;
-export type BookData = Book & {chapter_count: number};
+export type BookData = Book & { chapter_count: number };
 type UpdatedBook = TablesUpdate<"books">;
 
 // getUserBooks(userId) - get all books for a user
 export async function getUserBooks(userId: string) {
   const { data, error } = await clientSupabase
     .from("books")
-    .select(`
+    .select(
+      `
       *,
       chapters(count)
-    `)
-    .eq("user_id", userId)
+    `
+    )
+    .eq("owner_id", userId)
     .order("updated_at", { ascending: false });
 
   if (error) throw error;
 
-  return data.map(book => ({
+  return data.map((book) => ({
     ...book,
-    chapter_count: book.chapters[0]?.count || 0
+    chapter_count: book.chapters[0]?.count || 0,
   }));
 }
 
@@ -34,7 +36,7 @@ export async function getRecentBooks(userId: string, limit: number) {
   const { data, error } = await clientSupabase
     .from("books")
     .select("id, title")
-    .eq("user_id", userId)
+    .eq("owner_id", userId)
     .limit(limit);
 
   if (error) throw error;
@@ -45,16 +47,18 @@ export async function getRecentBooks(userId: string, limit: number) {
 export async function getBookById(bookId: string) {
   const { data, error } = await clientSupabase
     .from("books")
-    .select(`
+    .select(
+      `
       *,
-      chapters(count)`)
+      chapters(count)`
+    )
     .eq("id", bookId)
     .single();
 
   if (error) throw error;
   return {
     ...data,
-    chapter_count: data.chapters[0]?.count || 0
+    chapter_count: data.chapters[0]?.count || 0,
   };
 }
 
