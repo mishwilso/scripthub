@@ -44,6 +44,43 @@ export async function getBookCollaborators(bookId: string) {
   return data as Collaborator[];
 }
 
+export async function addOwner(
+  bookId: string
+) {
+  // Get current user
+  const { data: currentUser } = await clientSupabase.auth.getUser();
+
+  if (!currentUser.user?.id) {
+    throw new Error("User not authenticated");
+  }
+
+  // Add collaborator
+  const { data, error } = await clientSupabase
+    .from("book_collaborators")
+    .insert({
+      book_id: bookId,
+      user_id: currentUser.user.id,
+      role: "owner",
+      invited_by: currentUser.user.id,
+    })
+    .select(
+      `
+      *,
+      user:users!book_collaborators_user_id_fkey (
+        id,
+        email,
+        name,
+        avatar_url
+      )
+    `
+    )
+    .single();
+
+  if (error) throw error;
+
+  return data as Collaborator;
+}
+
 // Add a collaborator
 export async function addCollaborator(
   bookId: string,

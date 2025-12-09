@@ -11,6 +11,8 @@ import Card from "@/components/ui/Card";
 import Tags from "@/components/ui/Tags";
 import BookNavBar from "@/components/layout/BookNavBar";
 
+import Avatar from "@/components/ui/Avatar";
+
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useParams } from "next/navigation";
@@ -21,6 +23,9 @@ import {
   CollaboratorRole,
   getBookCollaborators,
 } from "@/lib/api/collaborators";
+
+
+import { capitalizeFirstLetter, toTitleCase } from "@/lib/utils/formatString"
 
 interface Collaborator {
   user_profile: string | null | undefined;
@@ -34,8 +39,6 @@ export default function BookOverview() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
-
-  const [owner, setOwner] = useState<>();
 
   const [fullDescription, setFullDescription] = useState(false);
 
@@ -59,13 +62,6 @@ export default function BookOverview() {
             };
           })
         );
-
-        setCollaborators((prevCollab) => {
-          return [
-            { user_profile: "", name: "", role: "editor" },
-            ...prevCollab,
-          ];
-        });
 
         setBook(bookData);
       } catch (error) {
@@ -102,7 +98,7 @@ export default function BookOverview() {
     <div className="mt-6 flex flex-col w-full">
       <h1>{book?.title}</h1>
       <p>Book ID: {params.bookId}</p>
-      <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-16">
+      <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-16 pb-6 lg:pb-0">
         <div className="lg:row-span-2 flex items-start gap-16 justify-center lg:justify-start flex-shrink-0">
           <Button
             color="tertiary"
@@ -173,7 +169,7 @@ export default function BookOverview() {
         </div>
       </div>
 
-      <Card className="px-11 py-8 lg:-mt-20 space-y-4">
+      <Card className="px-11 py-8 lg:-mt-20 space-y-4 ">
         <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-16">
           {/* Empty spacer to match book cover width */}
           <div className="hidden lg:block lg:w-96" />
@@ -248,6 +244,18 @@ export default function BookOverview() {
 
         <Card variant="none" className="p-4">
           <h3 className="text-xl font-semibold">Collaborators</h3>
+
+          <div className="flex flex-wrap gap-28">
+            {collaborators.map((collaborator, index) => 
+                <div key={`${index}-${collaborator.name}`} className="flex gap-4 h-9 items-center px-2 py-6">
+                  <Avatar src={collaborator.user_profile}/>
+                  <div className="hidden lg:block">
+                    <p className="font-semibold text-secondary-dark">{toTitleCase(collaborator.name)}</p>
+                    <p className={`${collaborator.role === 'owner'? "text-primary-base" : "text-secondary-base"} text-left`}>{capitalizeFirstLetter(collaborator.role)}</p>
+                  </div>
+                </div>
+            )}
+          </div>
         </Card>
       </Card>
     </div>
