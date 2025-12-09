@@ -24,6 +24,7 @@ import {
   getBookCollaborators,
 } from "@/lib/api/collaborators";
 
+import { BookActivity, getBookActivity, formatBookActivity} from "@/lib/api/bookactivity";
 
 import { capitalizeFirstLetter, toTitleCase } from "@/lib/utils/formatString"
 
@@ -39,7 +40,7 @@ export default function BookOverview() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
-
+  const [bookActivity, setBookActivity] = useState<BookActivity[]>([]);
   const [fullDescription, setFullDescription] = useState(false);
 
   const router = useRouter();
@@ -53,6 +54,10 @@ export default function BookOverview() {
       try {
         const bookData = await getBookById(params.bookId);
         const collaboratorsData = await getBookCollaborators(params.bookId);
+        const bookActivityData = await getBookActivity(params.bookId, 3)
+        
+        setBookActivity(bookActivityData)
+        
         setCollaborators(
           collaboratorsData.map((collab) => {
             return {
@@ -235,14 +240,33 @@ export default function BookOverview() {
           </Card>
         </div>
 
-        <Card className="p-4" rounded="sm">
+        <Card className="p-4 space-y-3" rounded="sm">
           <div>
             <h3 className="text-xl font-semibold">Recent Activity</h3>
             <p className="text-sm">Changes and updates to this book</p>
           </div>
+
+          <ul className="space-y-1 list-none pl-6">
+              {bookActivity.map((activity) => {
+                const formatted = formatBookActivity(activity)
+        
+                return (
+                  <li key={activity.id} className="items-start gap-3">
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm">{formatted.message}</p>
+                      <p className="text-xs text-gray-500 border-r-6">{formatted.timestamp}</p>
+                    </div>
+                  </li>
+                )
+              }
+            )}
+            <li>Hello</li>
+
+          </ul>
         </Card>
 
-        <Card variant="none" className="p-4">
+        <Card variant="none" className="p-4 space-y-3">
           <h3 className="text-xl font-semibold">Collaborators</h3>
 
           <div className="flex flex-wrap gap-28">

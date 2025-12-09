@@ -9,26 +9,38 @@ export function getHeaderDate() {
   return { day: dayOfWeek, date: `${date} ${year}` };
 }
 
-export function formatRelativeTime(updatedDate) {
-  const now = new Date();
-  const diffMilliseconds = now - updatedDate;
-  const diffDays = Math.floor(diffMilliseconds / (1000 * 60 * 60 * 24));
+export function formatRelativeTime(date) {
+  const now = new Date()
+  const past = new Date(date)
+  const diffInSeconds = Math.floor((now.getTime() - past.getTime()) / 1000)
 
-  if (diffDays === 0 && now.getDate() === updatedDate.getDate()) {
-    return "Today";
-  } else if (diffDays === 1 && now.getDate() - updatedDate.getDate() === 1) {
-    return "Yesterday";
-  } else if (diffDays < 7) {
-    return `${diffDays} days ago`;
-  } else if (diffDays < 14) {
-    return 'Last week';
-  } else if (diffDays < 60) {
-    return `1 month ago`;
-  } else if (diffDays < 365) {
-    return `${diffDays / 30} month ago`;
+  const minute = 60
+  const hour = minute * 60
+  const day = hour * 24
+  const week = day * 7
+  const month = day * 30
+  const year = day * 365
+
+  if (diffInSeconds < minute) {
+    return 'just now'
+  } else if (diffInSeconds < hour) {
+    const minutes = Math.floor(diffInSeconds / minute)
+    return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'} ago`
+  } else if (diffInSeconds < day) {
+    const hours = Math.floor(diffInSeconds / hour)
+    return `${hours} ${hours === 1 ? 'hour' : 'hours'} ago`
+  } else if (diffInSeconds < week) {
+    const days = Math.floor(diffInSeconds / day)
+    return `${days} ${days === 1 ? 'day' : 'days'} ago`
+  } else if (diffInSeconds < month) {
+    const weeks = Math.floor(diffInSeconds / week)
+    return `${weeks} ${weeks === 1 ? 'week' : 'weeks'} ago`
+  } else if (diffInSeconds < year) {
+    const months = Math.floor(diffInSeconds / month)
+    return `${months} ${months === 1 ? 'month' : 'months'} ago`
   } else {
-    // Fallback to a standard date format
-    return updatedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+    const years = Math.floor(diffInSeconds / year)
+    return `${years} ${years === 1 ? 'year' : 'years'} ago`
   }
 }
 
