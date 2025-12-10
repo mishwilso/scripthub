@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 
 import { BookData, getBookById, getBookWordCount } from "@/lib/api/books";
+import { BookStats, getBookStats } from '@/lib/api/bookStats';
+
 
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
@@ -47,24 +49,7 @@ export default function BookOverview() {
   const [bookActivity, setBookActivity] = useState<BookActivity[]>([]);
   const [fullDescription, setFullDescription] = useState(false);
 
-  const [stats, setStats] = useState({
-    chapter: {
-      count: 0,
-      averageWordCount: 0,
-    },
-    wordCount: {
-      total: 0,
-      change: 0,
-    },
-    branch: {
-      count: 1,
-      activeCount: 1,
-    },
-    lastUpdated: {
-      date: "",
-      time: "",
-    }
-  })
+  const [stats, setStats] = useState<BookStats>()
 
 
   const router = useRouter();
@@ -76,18 +61,16 @@ export default function BookOverview() {
   useEffect(() => {
     async function loadBook() {
       try {
-        const bookData = await getBookById(params.bookId);
-        const collaboratorsData = await getBookCollaborators(params.bookId);
-        const bookActivityData = await getBookActivity(params.bookId, 3)
-        const bookWordCount = await getBookWordCount(params.bookId);
 
-        setStats(prevStats => ({ ...prevStats, 
-          wordCount: { ...prevStats.wordCount, total: bookWordCount || 0 },
-          lastUpdated: {...prevStats.lastUpdated, date: bookData.updated_at?.split('T')[0] || "", time: bookData.updated_at?.split('T')[1].split('.')[0] || ""  },  
-        }))
+        const [bookData, collaboratorsData, bookActivityData, statsData] = await Promise.all([
+          getBookById(params.bookId),
+          getBookCollaborators(params.bookId),
+          getBookActivity(params.bookId, 3),
+          getBookStats(params.bookId)
+        ])
 
+        setBook(bookData);
         setBookActivity(bookActivityData)
-        
         setCollaborators(
           collaboratorsData.map((collab) => {
             return {
@@ -97,8 +80,8 @@ export default function BookOverview() {
             };
           })
         );
+        setStats(statsData);
 
-        setBook(bookData);
       } catch (error) {
         console.error("Error loading book:", error);
         setError(true);
@@ -220,7 +203,7 @@ export default function BookOverview() {
 
         {/* Card Info - Details Page */}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-4">
           <Card className="p-4 space-y-4" rounded="sm">
             <div className="flex justify-between">
               <h3 className="font-medium">Chapters</h3>
@@ -228,8 +211,8 @@ export default function BookOverview() {
             </div>
 
             <div>
-              <p className="font-light text-2xl">12</p>
-              <p className="text-xs text-primary-base">~ 3807 per chapter</p>
+              <p className="font-light text-2xl">{stats?.chapterCount}</p>
+              <p className="text-xs text-primary-base">~ {stats?.avgWordsPerChapter} per chapter</p>
             </div>
           </Card>
 
@@ -240,8 +223,8 @@ export default function BookOverview() {
             </div>
 
             <div>
-              <p className="font-light text-2xl">12</p>
-              <p className="text-xs text-primary-base">~ 3807 per chapter</p>
+              <p className="font-light text-2xl">{stats?.totalWordCount}</p>
+              <p className="text-xs text-primary-base">+ {stats?.recentWordCount}</p>
             </div>
           </Card>
 
@@ -252,8 +235,8 @@ export default function BookOverview() {
             </div>
 
             <div>
-              <p className="font-light text-2xl">12</p>
-              <p className="text-xs text-primary-base">~ 3807 per chapter</p>
+              <p className="font-light text-2xl">{stats?.branchCount}</p>
+              <p className="text-xs text-primary-base">{stats?.activeBranches} active</p>
             </div>
           </Card>
 
@@ -264,8 +247,8 @@ export default function BookOverview() {
             </div>
 
             <div>
-              <p className="font-light text-2xl">12</p>
-              <p className="text-xs text-primary-base">~ 3807 per chapter</p>
+              <p className="font-light text-2xl">{stats?.lastUpdatedDate}</p>
+              <p className="text-xs text-primary-base">{stats?.lastUpdatedTime}</p>
             </div>
           </Card>
         </div>
