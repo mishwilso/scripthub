@@ -1,3 +1,10 @@
+// TODO: Fix back button and cover. put into 3 column grid?
+// TODO: Add Shadows to book cover
+// TODO: Conditional read more, only if there is more to read
+// TODO: Change Chapter Icon
+// TODO: Make BookOverview actually navigatable
+
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -114,8 +121,6 @@ export default function BookOverview() {
 
   return (
     <div className="mt-6 flex flex-col w-full">
-      <h1>{book?.title}</h1>
-      <p>Book ID: {params.bookId}</p>
       <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-16 pb-6 lg:pb-0">
         <div className="lg:row-span-2 flex items-start gap-16 justify-center lg:justify-start flex-shrink-0">
           <Button
@@ -187,7 +192,7 @@ export default function BookOverview() {
         </div>
       </div>
 
-      <Card className="px-11 py-8 lg:-mt-20 space-y-4 ">
+      <Card className="px-11 py-8 lg:-mt-20 space-y-4">
         <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-16">
           {/* Empty spacer to match book cover width */}
           <div className="hidden lg:block lg:w-96" />
