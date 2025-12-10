@@ -19,6 +19,11 @@ import { useParams } from "next/navigation";
 
 import { FaChevronLeft } from "react-icons/fa";
 import { IoDocumentTextOutline } from "react-icons/io5";
+import { FaArrowTrendUp } from "react-icons/fa6";
+import { FaRegCalendar } from "react-icons/fa6";
+import { FaCodeBranch } from "react-icons/fa6";
+
+
 import {
   CollaboratorRole,
   getBookCollaborators,
@@ -205,8 +210,8 @@ export default function BookOverview() {
 
           <Card className="p-4 space-y-4" rounded="sm">
             <div className="flex justify-between">
-              <h3 className="font-medium">Chapters</h3>
-              <IoDocumentTextOutline size={20} />
+              <h3 className="font-medium">Word Count</h3>
+              <FaArrowTrendUp size={20} />
             </div>
 
             <div>
@@ -217,8 +222,8 @@ export default function BookOverview() {
 
           <Card className="p-4 space-y-4" rounded="sm">
             <div className="flex justify-between">
-              <h3 className="font-medium">Chapters</h3>
-              <IoDocumentTextOutline size={20} />
+              <h3 className="font-medium">Branches</h3>
+              <FaCodeBranch size={20} />
             </div>
 
             <div>
@@ -229,8 +234,8 @@ export default function BookOverview() {
 
           <Card className="p-4 space-y-4" rounded="sm">
             <div className="flex justify-between">
-              <h3 className="font-medium">Chapters</h3>
-              <IoDocumentTextOutline size={20} />
+              <h3 className="font-medium">Last Updated</h3>
+              <FaRegCalendar size={20} />
             </div>
 
             <div>
@@ -246,23 +251,26 @@ export default function BookOverview() {
             <p className="text-sm">Changes and updates to this book</p>
           </div>
 
-          <ul className="space-y-1 list-none pl-6">
+          <ul className="space-y-1 list-none bullet-line-list [&>*:not(:last-child)]:pb-5">
               {bookActivity.map((activity) => {
                 const formatted = formatBookActivity(activity)
-        
+                const branchName = formatted.branchName
                 return (
-                  <li key={activity.id} className="items-start gap-3">
+                  <li key={activity.id} className="bullet-line-list items-start gap-4 text-sm ">
                     {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm">{formatted.message}</p>
-                      <p className="text-xs text-gray-500 border-r-6">{formatted.timestamp}</p>
+                    <p>{formatted.message}</p>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-secondary-dark/90">{formatted.timestamp}</span>
+                    
+                      {branchName && (
+                        <Tags variant="version">{branchName}</Tags>
+                      )}
                     </div>
+
                   </li>
                 )
               }
             )}
-            <li>Hello</li>
-
           </ul>
         </Card>
 
@@ -273,7 +281,7 @@ export default function BookOverview() {
             {collaborators.map((collaborator, index) => 
                 <div key={`${index}-${collaborator.name}`} className="flex gap-4 h-9 items-center px-2 py-6">
                   <Avatar src={collaborator.user_profile}/>
-                  <div className="hidden lg:block">
+                  <div>
                     <p className="font-semibold text-secondary-dark">{toTitleCase(collaborator.name)}</p>
                     <p className={`${collaborator.role === 'owner'? "text-primary-base" : "text-secondary-base"} text-left`}>{capitalizeFirstLetter(collaborator.role)}</p>
                   </div>

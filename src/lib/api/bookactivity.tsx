@@ -52,6 +52,7 @@ interface BookActivityData {
 
 interface ActivityDisplay {
   message: string
+  branchName?: string
   timestamp: string // "2 hours ago", "4 days ago"
 }
 
@@ -61,19 +62,22 @@ export function formatBookActivity(activity: BookActivity): ActivityDisplay {
   const parsed_activity = JSON.parse(JSON.stringify(activity_data))
 
   let message: string;
+  let branchName: string | undefined;
 
   if (!activity_data) return {
     message:activity_type.replace(/_/g, ' '),
     timestamp: formatRelativeTime(created_at),
+    branchName: undefined
     }
 
   switch (activity_type) {
     case 'commit':
       message = `Committed "${parsed_activity.commit_message}"`
+      branchName = parsed_activity.branch_name // Include branch
       break
 
     case 'branch_created':
-      message = `Created branch "${parsed_activity.branch_name}"`
+      message = `Created branch "${parsed_activity.branch_name}"` 
       break
 
     case 'branch_merged':
@@ -82,14 +86,17 @@ export function formatBookActivity(activity: BookActivity): ActivityDisplay {
 
     case 'chapter_created':
       message = `Created new chapter "${parsed_activity.chapter_name}"`
+      branchName = parsed_activity.branch_name
       break
 
     case 'chapter_updated':
       message = `Updated "${parsed_activity.chapter_name}"`
+      branchName = parsed_activity.branch_name
       break
 
     case 'chapter_deleted':
       message = `Deleted chapter "${parsed_activity.chapter_name}"`
+      branchName = parsed_activity.branch_name
       break
 
     case 'collaborator_added':
@@ -102,11 +109,14 @@ export function formatBookActivity(activity: BookActivity): ActivityDisplay {
 
     default:
       message = activity_type.replace(/_/g, ' ')
+      break
   }
 
   return {
     message,
+    branchName: branchName || undefined,
     timestamp: formatRelativeTime(created_at),
+    
   }
 }
 
