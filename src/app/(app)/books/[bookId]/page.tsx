@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { getBookById } from "@/lib/api/books";
-import { BookData } from "@/lib/api/books";
+import { BookData, getBookById, getBookWordCount } from "@/lib/api/books";
 
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
@@ -48,6 +47,26 @@ export default function BookOverview() {
   const [bookActivity, setBookActivity] = useState<BookActivity[]>([]);
   const [fullDescription, setFullDescription] = useState(false);
 
+  const [stats, setStats] = useState({
+    chapter: {
+      count: 0,
+      averageWordCount: 0,
+    },
+    wordCount: {
+      total: 0,
+      change: 0,
+    },
+    branch: {
+      count: 1,
+      activeCount: 1,
+    },
+    lastUpdated: {
+      date: "",
+      time: "",
+    }
+  })
+
+
   const router = useRouter();
 
   const handleReadMore = () => {
@@ -60,7 +79,13 @@ export default function BookOverview() {
         const bookData = await getBookById(params.bookId);
         const collaboratorsData = await getBookCollaborators(params.bookId);
         const bookActivityData = await getBookActivity(params.bookId, 3)
-        
+        const bookWordCount = await getBookWordCount(params.bookId);
+
+        setStats(prevStats => ({ ...prevStats, 
+          wordCount: { ...prevStats.wordCount, total: bookWordCount || 0 },
+          lastUpdated: {...prevStats.lastUpdated, date: bookData.updated_at?.split('T')[0] || "", time: bookData.updated_at?.split('T')[1].split('.')[0] || ""  },  
+        }))
+
         setBookActivity(bookActivityData)
         
         setCollaborators(
