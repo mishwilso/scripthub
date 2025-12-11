@@ -2,15 +2,14 @@
 // TODO: Conditional read more, only if there is more to read
 // TODO: Change Chapter Icon
 // TODO: Make BookOverview actually navigatable
-
+// TODO: View All Notifications Button?
 
 "use client";
 
 import { useEffect, useState } from "react";
 
 import { BookData, getBookById, getBookWordCount } from "@/lib/api/books";
-import { BookStats, getBookStats } from '@/lib/api/bookStats';
-
+import { BookStats, getBookStats } from "@/lib/api/bookStats";
 
 import Button from "@/components/ui/Button";
 import IconButton from "@/components/ui/IconButton";
@@ -30,15 +29,18 @@ import { FaArrowTrendUp } from "react-icons/fa6";
 import { FaRegCalendar } from "react-icons/fa6";
 import { FaCodeBranch } from "react-icons/fa6";
 
-
 import {
   CollaboratorRole,
   getBookCollaborators,
 } from "@/lib/api/collaborators";
 
-import { BookActivity, getBookActivity, formatBookActivity} from "@/lib/api/bookactivity";
+import {
+  BookActivity,
+  getBookActivity,
+  formatBookActivity,
+} from "@/lib/api/bookactivity";
 
-import { capitalizeFirstLetter, toTitleCase } from "@/lib/utils/formatString"
+import { capitalizeFirstLetter, toTitleCase } from "@/lib/utils/formatString";
 
 interface Collaborator {
   user_profile: string | null | undefined;
@@ -55,8 +57,7 @@ export default function BookOverview() {
   const [bookActivity, setBookActivity] = useState<BookActivity[]>([]);
   const [fullDescription, setFullDescription] = useState(false);
 
-  const [stats, setStats] = useState<BookStats>()
-
+  const [stats, setStats] = useState<BookStats>();
 
   const router = useRouter();
 
@@ -67,16 +68,16 @@ export default function BookOverview() {
   useEffect(() => {
     async function loadBook() {
       try {
-
-        const [bookData, collaboratorsData, bookActivityData, statsData] = await Promise.all([
-          getBookById(params.bookId),
-          getBookCollaborators(params.bookId),
-          getBookActivity(params.bookId, 3),
-          getBookStats(params.bookId)
-        ])
+        const [bookData, collaboratorsData, bookActivityData, statsData] =
+          await Promise.all([
+            getBookById(params.bookId),
+            getBookCollaborators(params.bookId),
+            getBookActivity(params.bookId, 3),
+            getBookStats(params.bookId),
+          ]);
 
         setBook(bookData);
-        setBookActivity(bookActivityData)
+        setBookActivity(bookActivityData);
         setCollaborators(
           collaboratorsData.map((collab) => {
             return {
@@ -87,7 +88,6 @@ export default function BookOverview() {
           })
         );
         setStats(statsData);
-
       } catch (error) {
         console.error("Error loading book:", error);
         setError(true);
@@ -132,7 +132,12 @@ export default function BookOverview() {
             Back
           </Button>
 
-          <div className="relative w-72 aspect-[2/3] rounded-lg overflow-hidden">
+          <div
+            className="relative w-72 aspect-[2/3] rounded-lg overflow-hidden"
+            style={{
+              boxShadow: "-8px 10px 10px 6px rgba(0, 0, 0, 0.15)",
+            }}
+          >
             {book?.cover_url ? (
               <Image
                 src={book?.cover_url}
@@ -215,7 +220,9 @@ export default function BookOverview() {
 
             <div>
               <p className="font-light text-2xl">{stats?.chapterCount}</p>
-              <p className="text-xs text-primary-base">~ {stats?.avgWordsPerChapter} per chapter</p>
+              <p className="text-xs text-primary-base">
+                ~ {stats?.avgWordsPerChapter} per chapter
+              </p>
             </div>
           </Card>
 
@@ -227,7 +234,9 @@ export default function BookOverview() {
 
             <div>
               <p className="font-light text-2xl">{stats?.totalWordCount}</p>
-              <p className="text-xs text-primary-base">+ {stats?.recentWordCount}</p>
+              <p className="text-xs text-primary-base">
+                + {stats?.recentWordCount}
+              </p>
             </div>
           </Card>
 
@@ -239,7 +248,9 @@ export default function BookOverview() {
 
             <div>
               <p className="font-light text-2xl">{stats?.branchCount}</p>
-              <p className="text-xs text-primary-base">{stats?.activeBranches} active</p>
+              <p className="text-xs text-primary-base">
+                {stats?.activeBranches} active
+              </p>
             </div>
           </Card>
 
@@ -251,7 +262,9 @@ export default function BookOverview() {
 
             <div>
               <p className="font-light text-2xl">{stats?.lastUpdatedDate}</p>
-              <p className="text-xs text-primary-base">{stats?.lastUpdatedTime}</p>
+              <p className="text-xs text-primary-base">
+                {stats?.lastUpdatedTime}
+              </p>
             </div>
           </Card>
         </div>
@@ -263,25 +276,26 @@ export default function BookOverview() {
           </div>
 
           <ul className="space-y-1 list-none bullet-line-list [&>*:not(:last-child)]:pb-5">
-              {bookActivity.map((activity) => {
-                const formatted = formatBookActivity(activity)
-                const branchName = formatted.branchName
-                return (
-                  <li key={activity.id} className="bullet-line-list items-start gap-4 text-sm ">
-                    {/* Content */}
-                    <p>{formatted.message}</p>
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs text-secondary-dark/90">{formatted.timestamp}</span>
-                    
-                      {branchName && (
-                        <Tags variant="version">{branchName}</Tags>
-                      )}
-                    </div>
+            {bookActivity.map((activity) => {
+              const formatted = formatBookActivity(activity);
+              const branchName = formatted.branchName;
+              return (
+                <li
+                  key={activity.id}
+                  className="bullet-line-list items-start gap-4 text-sm "
+                >
+                  {/* Content */}
+                  <p>{formatted.message}</p>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-secondary-dark/90">
+                      {formatted.timestamp}
+                    </span>
 
-                  </li>
-                )
-              }
-            )}
+                    {branchName && <Tags variant="version">{branchName}</Tags>}
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </Card>
 
@@ -289,15 +303,28 @@ export default function BookOverview() {
           <h3 className="text-xl font-semibold">Collaborators</h3>
 
           <div className="flex flex-wrap lg:gap-28 gap-10">
-            {collaborators.map((collaborator, index) => 
-                <div key={`${index}-${collaborator.name}`} className="flex gap-4 h-9 items-center px-2 py-6">
-                  <Avatar src={collaborator.user_profile}/>
-                  <div>
-                    <p className="font-semibold text-secondary-dark">{toTitleCase(collaborator.name)}</p>
-                    <p className={`${collaborator.role === 'owner'? "text-primary-base" : "text-secondary-base"} text-left`}>{capitalizeFirstLetter(collaborator.role)}</p>
-                  </div>
+            {collaborators.map((collaborator, index) => (
+              <div
+                key={`${index}-${collaborator.name}`}
+                className="flex gap-4 h-9 items-center px-2 py-6"
+              >
+                <Avatar src={collaborator.user_profile} />
+                <div>
+                  <p className="font-semibold text-secondary-dark">
+                    {toTitleCase(collaborator.name)}
+                  </p>
+                  <p
+                    className={`${
+                      collaborator.role === "owner"
+                        ? "text-primary-base"
+                        : "text-secondary-base"
+                    } text-left`}
+                  >
+                    {capitalizeFirstLetter(collaborator.role)}
+                  </p>
                 </div>
-            )}
+              </div>
+            ))}
           </div>
         </Card>
       </Card>
