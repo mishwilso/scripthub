@@ -1,4 +1,3 @@
-// TODO: Fix back button and cover. put into 3 column grid?
 // TODO: Add Shadows to book cover
 // TODO: Conditional read more, only if there is more to read
 // TODO: Change Chapter Icon
@@ -122,18 +121,17 @@ export default function BookOverview() {
   return (
     <div className="mt-6 flex flex-col w-full">
       <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-16 pb-6 lg:pb-0">
-        <div className="lg:row-span-2 flex items-start gap-16 justify-center lg:justify-start flex-shrink-0">
+        <div className="lg:row-span-2 relative flex items-start justify-center lg:justify-start flex-shrink-0 lg:pl-24">
           <Button
             color="tertiary"
             startIcon={<FaChevronLeft />}
             size="small"
-            className={
-              "w-auto py-3 rounded-full md:px-3 md:py-1.5 md:rounded-xl"
-            }
+            className="w-auto py-3 rounded-full md:px-3 md:py-1.5 md:rounded-xl absolute left-0 top-0"
             responsive
           >
             Back
           </Button>
+
           <div className="relative w-72 aspect-[2/3] rounded-lg overflow-hidden">
             {book?.cover_url ? (
               <Image
@@ -290,7 +288,7 @@ export default function BookOverview() {
         <Card variant="none" className="p-4 space-y-3">
           <h3 className="text-xl font-semibold">Collaborators</h3>
 
-          <div className="flex flex-wrap gap-28">
+          <div className="flex flex-wrap lg:gap-28 gap-10">
             {collaborators.map((collaborator, index) => 
                 <div key={`${index}-${collaborator.name}`} className="flex gap-4 h-9 items-center px-2 py-6">
                   <Avatar src={collaborator.user_profile}/>
