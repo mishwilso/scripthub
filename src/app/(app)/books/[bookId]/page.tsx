@@ -1,4 +1,3 @@
-// TODO: Add Shadows to book cover
 // TODO: Conditional read more, only if there is more to read
 // TODO: Change Chapter Icon
 // TODO: Make BookOverview actually navigatable
@@ -6,7 +5,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useLayoutEffect, useRef, useCallback } from "react";
 
 import { BookData, getBookById, getBookWordCount } from "@/lib/api/books";
 import { BookStats, getBookStats } from "@/lib/api/bookStats";
@@ -56,6 +55,9 @@ export default function BookOverview() {
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
   const [bookActivity, setBookActivity] = useState<BookActivity[]>([]);
   const [fullDescription, setFullDescription] = useState(false);
+  const [isTruncated, setIsTruncated] = useState(false);
+
+  const descriptionRef = useRef<HTMLParagraphElement>(null);
 
   const [stats, setStats] = useState<BookStats>();
 
@@ -64,6 +66,27 @@ export default function BookOverview() {
   const handleReadMore = () => {
     setFullDescription((prevState) => !prevState);
   };
+
+  const checkIfTruncated = useCallback(() => {
+    if (descriptionRef.current) {
+      // Compare scrollHeight (full content height) with clientHeight (visible height)
+      setIsTruncated(descriptionRef.current.scrollHeight > descriptionRef.current.clientHeight);
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    checkIfTruncated(); // Initial check on mount/layout
+
+    // Use ResizeObserver for efficient element resize detection  
+    window.addEventListener('resize', checkIfTruncated);
+
+    // Cleanup function
+    return () => {
+        window.removeEventListener('resize', checkIfTruncated);
+    };
+    
+  }, [checkIfTruncated, book?.description]);
+
 
   useEffect(() => {
     async function loadBook() {
@@ -170,7 +193,7 @@ export default function BookOverview() {
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-6 flex-1">
           <h2 className="font-bold text-3xl">{book?.title}</h2>
           <div className="flex flex-wrap gap-2">
             {book?.genres?.map((genre) => (
@@ -184,14 +207,14 @@ export default function BookOverview() {
               </Tags>
             ))}
           </div>
-          <p className={`${fullDescription ? "" : "line-clamp-5"}`}>
+          <p ref={descriptionRef} className={!fullDescription ? "line-clamp-5" : ""}>
             {book?.description || ""}
           </p>
-          <div className="flex justify-end">
+          {isTruncated &&<div className="flex justify-end">
             <Button variant="text" onClick={handleReadMore}>{`${
               fullDescription ? "Read less" : "Read more"
             }`}</Button>
-          </div>
+          </div>}
         </div>
       </div>
 
