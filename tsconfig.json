@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts",
+    "src/lib/authErrors.js",
+    "src/components/ui/Dropdown.tsx",
+    "src/components/ui/Dropdown/DropdownButton.tsx",
+    "src/components/ui/Dropdown/DropdownMenu.tsx",
+    "src/components/ui/Dropdown/DropdownOption.tsx",
+    "src/components/ui/Dropdown/notes"
+  ],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,231 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background: #fffdfb;
+  color: #5e4c3b;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+#root,
+#__next {
+  isolation: isolate;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #f7f3ef inset !important;
+}
+
+
+/* Hide scrollbar but keep functionality */
+.overflow-x-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.overflow-x-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.anchor {
+  anchor-name: --dropdown-anchor;
+}
+
+.dropdown-menu {
+  position: fixed;
+  position-anchor: --dropdown-anchor;
+  margin: 5px 0 0 5px;
+}
+
+.visually-hidden {
+  visibility: hidden;
+}
+
+/* Developer Button and Gradient Magic */
+/* Defining gradient color stops as custom CSS prps/ Allowing browser to understand how to interpolate between diff colors */
+@property --color-a {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: #679287;
+}
+
+@property --color-b {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: #9BBC74;
+}
+
+
+.developer-button {
+  background-image: linear-gradient(to right, var(--color-a), var(--color-b));
+  transition: all 0.4s ease-in-out, --color-a 0.4s ease, --color-b 0.4s ease;
+
+}
+
+.developer-button:hover {
+  --color-a: #9BBC74;
+  transform: translateY(-2px); /* Slight lift on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+}
+
+/* Turning page animation */
+.turning-page-animation {
+  perspective: 600px;
+  transform-style: preserve-3d;
+}
+
+.page-turn {
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  animation: pageTurn 3s ease-in-out infinite;
+}
+
+@keyframes pageTurn {
+  0% {
+    transform: rotateY(0deg);
+  }
+  25% {
+    transform: rotateY(-180deg);
+  }
+  50% {
+    transform: rotateY(-180deg);
+  }
+  75% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(0deg);
+  }
+}
+
+/* Error Banner Slide Animations */
+.error-banner-enter {
+  animation: slideInRight 0.3s ease-out forwards;
+}
+
+.error-banner-exit {
+  animation: slideOutRight 0.3s ease-in forwards;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+
+/* Line Betweem */
+.bullet-line-list {
+  list-style: none; /* Remove default bullet points */
+  position: relative; /* Establish positioning context for children */
+  padding: 0;
+  margin: 0;
+}
+
+.bullet-line-list li {
+  position: relative; /* Establish positioning context for its :before pseudo-element */
+  margin-bottom: .5em; /* Spacing between list items */
+  padding-left: 1em; /* Space for the custom bullet */
+}
+
+.bullet-line-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .5em; /* Center the bullet vertically */
+  transform: translateY(-50%); /* Adjust for perfect centering */
+  width: 8px; /* Size of the custom bullet */
+  height: 8px;
+  background-color: #B65733; /* Color of the custom bullet */
+  border-radius: 50%; /* Make it a circle */
+  z-index: 2;
+}
+
+.bullet-line-list li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: .2em; /* Adjust to align with the center of the bullet */
+  top: 1.5em; /* Start the line below the bullet */
+  bottom: 0; /* Extend the line to the next item's bullet */
+  width: 1.7px; /* Thickness of the line */
+  background-color: #B65733; /* Line color */
+  z-index: 1;
+}
