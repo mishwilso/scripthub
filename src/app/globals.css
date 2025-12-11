@@ -191,3 +191,41 @@ input:-webkit-autofill:active {
     opacity: 0;
   }
 }
+
+/* Line Betweem */
+.bullet-line-list {
+  list-style: none; /* Remove default bullet points */
+  position: relative; /* Establish positioning context for children */
+  padding: 0;
+  margin: 0;
+}
+
+.bullet-line-list li {
+  position: relative; /* Establish positioning context for its :before pseudo-element */
+  margin-bottom: .5em; /* Spacing between list items */
+  padding-left: 1em; /* Space for the custom bullet */
+}
+
+.bullet-line-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: .5em; /* Center the bullet vertically */
+  transform: translateY(-50%); /* Adjust for perfect centering */
+  width: 8px; /* Size of the custom bullet */
+  height: 8px;
+  background-color: #B65733; /* Color of the custom bullet */
+  border-radius: 50%; /* Make it a circle */
+  z-index: 2;
+}
+
+.bullet-line-list li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: .2em; /* Adjust to align with the center of the bullet */
+  top: 1.5em; /* Start the line below the bullet */
+  bottom: 0; /* Extend the line to the next item's bullet */
+  width: 1.7px; /* Thickness of the line */
+  background-color: #B65733; /* Line color */
+  z-index: 1;
+}

@@ -85,6 +85,7 @@ export async function updateBook(bookId: string, updates: UpdatedBook) {
   return data;
 }
 
+
 // deleteBook(bookId) - delete a book
 export async function deleteBook(bookId: string) {
   const response = await clientSupabase.from("books").delete().eq("id", bookId);
@@ -128,4 +129,26 @@ export async function getBookCoverURL(filePath: string) {
     .getPublicUrl(filePath);
 
   return data;
+}
+
+// get Book word count
+export async function getBookWordCount(bookId: string) {
+  const { data, error } = await clientSupabase
+    .from("chapters")
+    .select("word_count.sum()")
+    .eq("book_id", bookId)
+
+    if (error) throw error;
+    return data?.[0]["sum"] || 0
+}
+
+// get Book word count
+export async function getBookChapterCount(bookId: string) {
+  const { data, error } = await clientSupabase
+    .from("chapters")
+    .select("word_count.sum()")
+    .eq("book_id", bookId)
+
+    if (error) throw error;
+    return data?.[0]["sum"] || 0
 }

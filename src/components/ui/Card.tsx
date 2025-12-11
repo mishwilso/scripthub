@@ -1,15 +1,16 @@
+// Todo. Have Card extend on a div
+
+
 import React from "react";
+import { cn } from '@/lib/utils'
 
 interface CardProps {
   variant?: "outline" | "shadow" | "none";
   color?: "light" | "dark";
   rounded?: "sm" | "md" | "lg"
-  children: React.ReactNode;
-  className?: React.CSSProperties | string;
-  style?: React.CSSProperties
 }
 
-export default function Card({ variant = "outline", color="dark", rounded="md", children, style, className }: CardProps) {
+export default function Card({ className, variant = "outline", color="dark", rounded="md", children, ...props }: React.ComponentProps<"div"> & CardProps) {
   const colorStyles = {
     light: "bg-white-light",
     dark: "bg-white-dark"
@@ -27,13 +28,12 @@ export default function Card({ variant = "outline", color="dark", rounded="md", 
     lg: ""
   };
 
-  const classes = `
+  const classStyles = `
     w-full bg-white-light 
     ${roundedStyles[rounded]}
     ${variantStyles[variant]}
     ${colorStyles[color]}
-    ${className ? className : ""}
   `;
 
-  return <div className={classes} style={style}>{children}</div>;
+  return <div className={cn(classStyles, className)} {...props}>{children}</div>;
 }
