@@ -1,5 +1,8 @@
 import Card from "@/components/ui/Card";
 import Tags from "@/components/ui/Tags";
+import Button from "@/components/ui/Button";
+import { FiGitBranch } from "react-icons/fi";
+
 
 import { useState, useEffect } from "react";
 import {
@@ -9,7 +12,7 @@ import {
 } from "@/lib/api/bookactivity";
 import { useBook } from "@/context/BookContext";
 
-export default function RecentActivity() {
+export default function RecentActivity({limit}: {limit: number}) {
   const { book } = useBook();
   const [activities, setActivities] = useState<BookActivity[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -19,7 +22,7 @@ export default function RecentActivity() {
       if (!book?.id) return;
 
       try {
-        const data = await getBookActivity(book.id);
+        const data = await getBookActivity(book.id, limit);
         setActivities(data);
       } catch (error) {
         console.error("Error loading activities:", error);
@@ -33,9 +36,12 @@ export default function RecentActivity() {
 
   return (
     <Card className="p-4 space-y-3" rounded="sm">
-      <div>
-        <h3 className="text-xl font-semibold">Recent Activity</h3>
-        <p className="text-sm">Changes and updates to this book</p>
+      <div className="flex justify-between items-start">
+        <div>
+            <h3 className="text-xl font-semibold">Recent Activity</h3>
+            <p className="text-sm">Changes and updates to this book</p>
+        </div>
+        <Button>View All Activity</Button>
       </div>
 
       <ul className="space-y-1 list-none bullet-line-list [&>*:not(:last-child)]:pb-5">
@@ -56,7 +62,7 @@ export default function RecentActivity() {
                   {formatted.timestamp}
                 </span>
 
-                {branchName && <Tags variant="version">{branchName}</Tags>}
+                {branchName && <Tags variant="version"><><FiGitBranch /> {branchName}</></Tags>}
               </div>
             </li>
           );

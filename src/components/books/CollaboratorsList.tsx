@@ -1,8 +1,10 @@
 
 import Card from "@/components/ui/Card";
 import Avatar from "@/components/ui/Avatar";
+import Button from "@/components/ui/Button";
 import { useBook } from "@/context/BookContext";
 import { toTitleCase, capitalizeFirstLetter } from "@/lib/utils/formatString"
+import { FaPlus } from "react-icons/fa6";
 
 
 export default function CollaboratorsList() {
@@ -12,7 +14,10 @@ export default function CollaboratorsList() {
 
     return (
         <Card variant="none" className="p-4 space-y-3">
-            <h3 className="text-xl font-semibold">Collaborators</h3>
+            <div className={"flex justify-between items-start"}>
+                <h3 className="text-xl font-semibold">Collaborators</h3>
+                <Button color={"tertiary"} startIcon={<FaPlus />}>Invite</Button>
+            </div>
 
             <div className="flex flex-wrap lg:gap-28 gap-10">
                 {collaborators?.map((collaborator, index) => (

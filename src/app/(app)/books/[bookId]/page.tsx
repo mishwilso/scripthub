@@ -79,11 +79,10 @@ export function BookContent() {
   return (
     <div className="mt-6 flex flex-col w-full">
       <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-16 pb-6 lg:pb-0">
-        <div className="lg:row-span-2 relative flex items-start justify-center lg:justify-start flex-shrink-0 lg:pl-24">
+        <div className="lg:row-span-2 relative flex items-start justify-center lg:justify-start flex-shrink-0 lg:pl-32">
           <Button
             color="tertiary"
             startIcon={<FaChevronLeft />}
-            size="small"
             className="w-auto py-3 rounded-full md:px-3 md:py-1.5 md:rounded-xl absolute left-0 top-0"
             responsive
           >

@@ -72,7 +72,7 @@ export default function OverviewTab() {
             </div>
 
             {/* Recent Activity */}
-            <RecentActivity />
+            <RecentActivity limit={5}/>
             
 
             {/* Collaborators */}
