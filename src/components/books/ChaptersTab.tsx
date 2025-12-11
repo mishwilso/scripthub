@@ -5,7 +5,7 @@ import Dropdown from "@/components/ui/Dropdown";
 import Card from "@/components/ui/Card";
 import { FaPlus } from "react-icons/fa6";
 import { useBook } from "@/context/BookContext";
-import { getBookChapters, Chapter } from "@/lib/api/chapters";
+import { getBookMainChapters, Chapter } from "@/lib/api/chapters";
 import { FiGitBranch } from "react-icons/fi";
 import { IoIosArrowDown } from "react-icons/io";
 import { useState, useEffect, useRef } from "react";
@@ -22,7 +22,7 @@ export default function ChaptersTab() {
     async function loadChapters() {
       if (!book?.id) return;
       try {
-        const chapterData = await getBookChapters(book.id)
+        const chapterData = await getBookMainChapters(book.id)
         setChapters(chapterData)
       } catch (error) {
         console.log("Error loading chapter data: ", error)

@@ -43,6 +43,53 @@ export async function createChapter(chapterData: NewChapter) {
   return data[0];
 }
 
+export async function getChapter(chapterId: string) {
+  const { data, error } = await clientSupabase
+    .from("chapters")
+    .select("*")
+    .eq("id", chapterId)
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getBookMainChapters(bookId: string) {
+  const { data, error } = await clientSupabase
+    .from("chapters")
+    .select("*")
+    .eq("book_id", bookId)
+    .eq("is_main", true)
+    .order("order_index", { ascending: true });
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getChapterCount(bookId: string) {
+  const { count, error } = await clientSupabase
+    .from("chapters")
+    .select("*", {count: 'exact', head: true})
+    .eq("book_id", bookId)
+    .eq("is_main", true)
+    .order("order_index", { ascending: true });
+
+  if (error) throw error;
+  return count;
+}
+
+export async function getDraftCount(mainChapterId: string) {
+  const { count, error } = await clientSupabase
+    .from("chapters")
+    .select("*", {count: 'exact', head: true})
+    .eq("main_chapter_id", mainChapterId)
+    .eq("is_main", false);
+
+  if (error) throw error
+
+  return count || 0;
+}
+
 // updateChapter(chapterId, updates) - update chapter
 export async function updateChapter(
   chapterId: string,
@@ -69,23 +116,72 @@ export async function deleteChapter(chapterId: string) {
 }
 
 export async function updateChapterOrder(
-  bookId: string, 
-  chapters: {id: string, order_index: number}[]
+  bookId: string,
+  chapters: { id: string; order_index: number }[]
 ) {
-    const updates = chapters.map(chapter =>
-      clientSupabase
-      .from('chapters')
-      .update({order_index: chapter.order_index})
-      .eq('id', chapter.id)
-      .eq('book_id', bookId)
-    )
+  const updates = chapters.map((chapter) =>
+    clientSupabase
+      .from("chapters")
+      .update({ order_index: chapter.order_index })
+      .eq("id", chapter.id)
+      .eq("is_main", true)
+      .eq("book_id", bookId)
+  );
 
-    const results = await Promise.all(updates)
+  const results = await Promise.all(updates);
 
-    const errors = results.filter(r => r.error)
-    if (errors.length > 0) {
-      throw new Error('Failed to update chapter order')
-    }
+  const errors = results.filter((r) => r.error);
+  if (errors.length > 0) {
+    throw new Error("Failed to update chapter order");
+  }
 
-    return true
+  return true;
+}
+
+// Todo: RUn through this to check correctness
+export async function getChapterDrafts(mainChapterId: string) {
+  const { data, error } = await clientSupabase
+    .from("chapters")
+    .select("*")
+    .eq("main_chapter_id", mainChapterId)
+    .eq("is_main", false)
+    .order("created_at", { ascending: true });
+}
+// Create a new draft from an existing chapter/draft
+export async function createDraft(
+  sourceChapterId: string, // Can be main chapter or another draft
+  draftName: string
+) {
+  // First, get the source chapter
+  const { data: source } = await clientSupabase
+    .from("chapters")
+    .select("*")
+    .eq("id", sourceChapterId)
+    .single();
+
+  if (!source) throw new Error("Failed to create draft");
+
+  // Determine the main chapter ID
+  const mainChapterId = source.is_main ? source.id : source.main_chapter_id;
+
+  // Create the new draft
+  const { data, error } = await clientSupabase
+    .from("chapters")
+    .insert({
+      book_id: source.book_id,
+      branch_id: source.branch_id,
+      title: source.title,
+      content: source.content, // Copy content from source
+      word_count: source.word_count,
+      is_main: false,
+      main_chapter_id: mainChapterId,
+      draft_name: draftName,
+      branched_from_id: sourceChapterId,
+      user_id: source.user_id,
+      order_index: source.order_index,
+    })
+    .select()
+    .single();
+
+  return data;
 }
