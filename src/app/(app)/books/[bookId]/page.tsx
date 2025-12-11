@@ -167,6 +167,7 @@ export function BookContent() {
           </div>
         </div>
 
+        {/* Divider */}
         <div
           className={`border-b-2 border-outline-light mx-[-2.75rem] p-0 -mt-20`}
         ></div>

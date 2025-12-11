@@ -1,16 +1,57 @@
-import Button from "@/components/ui/Button"
+// TODO: Implement Drag and Drop Chapters
 
-export default function ChaptersTab(){
-    return (
-        <>
-            <div>
-                <div>
-                <h3>Chpaters ()</h3>
-                <p>Organize and manage your chapters</p>
-                </div>
+import Button from "@/components/ui/Button";
+import Dropdown from "@/components/ui/Dropdown";
+import { FaPlus } from "react-icons/fa6";
+import { useBook } from "@/context/BookContext";
+import { FiGitBranch } from "react-icons/fi";
+import { IoIosArrowDown } from "react-icons/io";
 
-            </div>
-        
-        </>
-    )
+export default function ChaptersTab() {
+  const { book, stats } = useBook();
+
+  return (
+    <>
+      {/* Header */}
+      <div className="flex justify-between">
+        <div>
+          <h3 className="text-xl font-semibold">
+            Chapters ({stats?.chapterCount})
+          </h3>
+          <p className="text-sm">Organize and manage your chapters</p>
+        </div>
+        <div className="flex gap-4 items-start">
+          <BranchOptions />
+          <Button startIcon={<FaPlus />}>New Chapter</Button>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div
+        className={`border-b-2 border-outline-light mx-[-2.75rem] p-0 -mt-20`}
+      ></div>
+
+      {/* Chapter Section */}
+    </>
+  );
+}
+
+export function BranchOptions() {
+  return (
+    <Dropdown>
+      <Dropdown.Button>
+        <div className="flex md:w-auto gap-8 w-full bg-transparent border-2 border-primary-base text-primary-base hover:bg-secondary-dark/1 active:bg-white-dark px-4 py-2 text-sm rounded-xl cursor-pointer items-center justify-center text-medium font-medium">
+          <div className={"flex gap-2 items-center"}>
+            {<FiGitBranch />}
+            <span>main</span>
+          </div>
+          {<IoIosArrowDown />}
+        </div>
+      </Dropdown.Button>
+
+      <Dropdown.Menu position="bottom span-right">
+        <Dropdown.Option>Branches coming soon...</Dropdown.Option>
+      </Dropdown.Menu>
+    </Dropdown>
+  );
 }
