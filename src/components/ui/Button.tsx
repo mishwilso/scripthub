@@ -108,7 +108,7 @@ export default function Button({
     <button
       className={cn(classes, className)}
       onClick={onClick}
-      type={type}
+      type={type} 
       disabled={disabled}
     >
       {loading ? <LoadingIcons.TailSpin stroke="#5e4c3b" width="1em" height="1em" strokeWidth="3px" /> : null}
