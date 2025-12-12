@@ -24,9 +24,16 @@ import { useRouter } from "next/navigation";
 import type { Book } from "@/lib/api/books";
 import { getRecentBooks } from "@/lib/api/books";
 
+import { getFromLocalStorage, setToLocalStorage } from '@/lib/utils/localStorage'
+
 export default function Sidebar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isDesktopOpen, setIsDesktopOpen] = useState(true);
+  const [isDesktopOpen, setIsDesktopOpen] = useState(getFromLocalStorage('sidebarOpen', true));
+
+  useEffect(() => {
+    setToLocalStorage('sidebarOpen', isDesktopOpen)
+  }, [isDesktopOpen])
+
 
   return (
     <>

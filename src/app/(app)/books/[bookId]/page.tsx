@@ -23,16 +23,36 @@ import Tags from "@/components/ui/Tags";
 import Image from "next/image";
 import { FaChevronLeft } from "react-icons/fa";
 
+import {
+  getFromLocalStorage,
+  setToLocalStorage,
+  removeFromLocalStorage,
+} from "@/lib/utils/localStorage";
+
 export function BookContent() {
   const params = useParams<{ bookId: string }>();
   const { book, stats, loading, error } = useBook();
+  const tabStorageKey = `book-${params.bookId}-activeTab`;
+
   const [activeTab, setActiveTab] = useState<
     "overview" | "chapters" | "worldbuilding" | "versions"
-  >("overview");
+  >(getFromLocalStorage(tabStorageKey, "overview"));
   const [fullDescription, setFullDescription] = useState(false);
   const [isTruncated, setIsTruncated] = useState(false);
   const descriptionRef = useRef<HTMLParagraphElement>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    setToLocalStorage(tabStorageKey, activeTab);
+  }, [activeTab, tabStorageKey]);
+
+  // Clear tab state when user leaves a book
+  useEffect(() => {
+    return () => {
+      // Cleanup on unmount
+      removeFromLocalStorage(`book-${params.bookId}-activeTab`);
+    };
+  }, [params.bookId]);
 
   const handleReadMore = () => {
     setFullDescription((prevState) => !prevState);

@@ -24,8 +24,9 @@ export async function getBookChapters(bookId: string) {
 export async function getRecentChapters(userId: string, limit: number) {
   const { data, error } = await clientSupabase
     .from("chapters")
-    .select("id, book_id, title, word_count, branch, updated_at")
+    .select("*")
     .eq("user_id", userId)
+    .eq("is_main", true)
     .limit(limit);
 
   if (error) throw error;
