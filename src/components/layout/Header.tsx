@@ -97,7 +97,7 @@ function NotificationDropdown() {
 
   return (
     <Dropdown>
-      <Dropdown.Button>
+      <Dropdown.Button asChild>
         <IconButton
           showNotification={hasUnread}
           altText="notfication"

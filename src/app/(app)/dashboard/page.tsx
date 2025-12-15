@@ -1,8 +1,8 @@
 "use client";
 
-import DashboardHero from "./components/DashboardHero";
-import BooksCarousel from "@/app/(app)/dashboard/components/BooksCarousel";
-import RecentChapters from "@/app/(app)/dashboard/components/RecentChapters";
+import DashboardHero from "../../../components/dashboard/DashboardHero";
+import BooksCarousel from "@/components/dashboard/BooksCarousel";
+import RecentChapters from "@/components/dashboard/RecentChapters";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import React from "react";

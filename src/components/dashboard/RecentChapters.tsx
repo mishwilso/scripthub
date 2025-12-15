@@ -42,7 +42,7 @@ export default function RecentChapters() {
                 word_count: chapter.word_count,
                 updated_at: chapter.updated_at,
                 book_title: book.title,
-                href: `/editor/${chapter.id}`, // or wherever chapters are edited
+                href: `books/${chapter.book_id}/chapters/${chapter.id}`, // or wherever chapters are edited
               } as ChapterCardProps;
             } catch (err) {
               console.error("Error fetching book:", err);
@@ -52,7 +52,7 @@ export default function RecentChapters() {
                 word_count: chapter.word_count,
                 updated_at: chapter.updated_at,
                 book_title: "Unknown Book",
-                href: `/editor/${chapter.id}`,
+                href: `books/${chapter.book_id}/chapters/${chapter.id}`,
               } as ChapterCardProps;
             }
           })

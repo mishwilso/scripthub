@@ -58,7 +58,7 @@ export default function ChapterCard({
 export function ChapterOptions({ href }: { href: string }) {
   return (
     <Dropdown>
-      <Dropdown.Button>
+      <Dropdown.Button asChild>
         <IconButton altText="Chapter options" variant="standard" inert={true}>
           <BsThreeDotsVertical />
         </IconButton>

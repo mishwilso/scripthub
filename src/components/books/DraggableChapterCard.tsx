@@ -80,11 +80,11 @@ export default function ChapterCard({
           </div>
         </div>
         <div className="flex w-full md:w-auto items-center justify-between gap-9">
-          <CustomLink color="secondary" href={`/editor/${chapter.id}`}>
+          <CustomLink color="secondary" href={`books/${chapter.book_id}/chapters/${chapter.id}`}>
             Continue Writing
           </CustomLink>
           <div className="hidden md:block">
-            <ChapterOptions href={"/"} />
+            <ChapterOptions href={`books/${chapter.book_id}/chapters/${chapter.id}`} />
           </div>
         </div>
       </div>

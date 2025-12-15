@@ -1,6 +1,6 @@
 "use client";
 
-import BookCard from "@/app/(app)/dashboard/components/BookCard";
+import BookCard from "@/components/dashboard/BookCard";
 import Button from "@/components/ui/Button";
 import Dropdown from "@/components/ui/Dropdown";
 
@@ -41,7 +41,7 @@ export default function BooksPage() {
   const [error, setError] = useState(false);
 
   const { user } = useAuth();
-  
+
   const router = useRouter();
 
   useEffect(() => {
@@ -171,7 +171,9 @@ export default function BooksPage() {
             <div
               key={book.id}
               className="bg-white-dark border-2 border-outline-light rounded-[18px] p-5 flex flex-col gap-4 hover:shadow-md transition-shadow duration-200 cursor-pointer group"
-              onClick={() => {router.push(`/books/${book.id}`)}}
+              onClick={() => {
+                router.push(`/books/${book.id}`);
+              }}
             >
               {/* Book Cover and Title */}
               <div className="flex gap-4 items-start">
@@ -237,7 +239,11 @@ export default function BooksPage() {
                           className={`text-sm text-neutral-dark ${
                             selectedBook === book.id ? "" : "line-clamp-4"
                           } cursor-pointer hover:text-secondary-dark transition-colors`}
-                          onClick={() => console.log("May implement descriptione expansion later")}
+                          onClick={() =>
+                            console.log(
+                              "May implement descriptione expansion later"
+                            )
+                          }
                           title="Click to expand/collapse"
                         >
                           {book.description}
@@ -257,7 +263,7 @@ export default function BooksPage() {
                           />
                           <span>{book.chapter_count}</span>
                         </div>
-                        
+
                         {/* TODO: Figure out Draft/Version Count per chapter */}
                         {/* Draft ?? count  */}
                         {/* <div
@@ -282,7 +288,9 @@ export default function BooksPage() {
                             size={18}
                             className="text-secondary-base"
                           />
-                          <span>{formatRelativeTime(new Date(book.updated_at))}</span>
+                          <span>
+                            {formatRelativeTime(new Date(book.updated_at))}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -322,7 +330,11 @@ export default function BooksPage() {
                 <div className="hidden md:flex items-center justify-center">
                   <div
                     className="w-10 h-14 rounded overflow-hidden flex-shrink-0 relative"
-                    style={{ backgroundColor: book.book_color ? book.book_color : "#FFFFFF" }}
+                    style={{
+                      backgroundColor: book.book_color
+                        ? book.book_color
+                        : "#FFFFFF",
+                    }}
                   >
                     {book.cover_url ? (
                       <Image
@@ -332,9 +344,7 @@ export default function BooksPage() {
                         className="object-cover"
                       />
                     ) : (
-                      <div>
-
-                      </div>
+                      <div></div>
                     )}
                   </div>
                 </div>
@@ -345,7 +355,11 @@ export default function BooksPage() {
                     {/* Mobile cover */}
                     <div
                       className="md:hidden w-10 h-14 rounded overflow-hidden flex-shrink-0 relative"
-                      style={{ backgroundColor: book.book_color ? book.book_color : "#FFFFFF" }}
+                      style={{
+                        backgroundColor: book.book_color
+                          ? book.book_color
+                          : "#FFFFFF",
+                      }}
                     >
                       {book.cover_url && (
                         <Image
@@ -370,7 +384,6 @@ export default function BooksPage() {
                   <span className="md:hidden font-medium mr-2">Chapters:</span>
                   <span>{book.chapter_count}</span>
                 </div>
-
 
                 {/* Word Count */}
                 <div className="flex items-center text-sm text-neutral-dark">

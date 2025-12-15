@@ -139,7 +139,7 @@ export async function updateChapterOrder(
   return true;
 }
 
-// Todo: RUn through this to check correctness
+// TODO: Run through this to check correctness
 export async function getChapterDrafts(mainChapterId: string) {
   const { data, error } = await clientSupabase
     .from("chapters")
@@ -147,9 +147,14 @@ export async function getChapterDrafts(mainChapterId: string) {
     .eq("main_chapter_id", mainChapterId)
     .eq("is_main", false)
     .order("created_at", { ascending: true });
+
+  if (error) throw error
+
+  return data
 }
+
 // Create a new draft from an existing chapter/draft
-export async function createDraft(
+export async function createChapterDraft(
   sourceChapterId: string, // Can be main chapter or another draft
   draftName: string
 ) {
