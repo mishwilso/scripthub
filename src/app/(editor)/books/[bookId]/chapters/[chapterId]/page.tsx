@@ -1,15 +1,20 @@
+'use client'
+
 import { ChapterEditorProvider } from '@/context/ChapterEditorContext'
 import ChapterEditor from '@/components/editor/ChapterEditor'
+import { useParams } from 'next/navigation'
+import { BookProvider } from '@/context/BookContext'
 
-export default function ChapterEditorPage({ 
-  params 
-}: { 
-  params: { bookId: string; chapterId: string } 
-}) {
+export default function ChapterEditorPage() {
+
+  const params = useParams<{bookId: string, chapterId: string}>()
+
   return (
-    <ChapterEditorProvider bookId={params.bookId} chapterId={params.chapterId}>
-      <ChapterEditor />
-    </ChapterEditorProvider>
+    <BookProvider bookId={params.bookId}>
+      <ChapterEditorProvider bookId={params.bookId} chapterId={params.chapterId}>
+        <ChapterEditor />
+      </ChapterEditorProvider>
+    </BookProvider>
   )
 }
 

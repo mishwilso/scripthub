@@ -104,6 +104,31 @@ input:-webkit-autofill:active {
   visibility: hidden;
 }
 
+/* Scrollbar styling for dropdown menus */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: #7E7065;
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: #5e4c3b;
+}
+
+/* Firefox scrollbar */
+.overflow-y-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #7E7065 transparent;
+}
+
 /* Developer Button and Gradient Magic */
 /* Defining gradient color stops as custom CSS prps/ Allowing browser to understand how to interpolate between diff colors */
 @property --color-a {

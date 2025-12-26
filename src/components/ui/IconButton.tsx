@@ -39,9 +39,8 @@ export default function IconButton({
   showNotification = false,
   notificationColor = "#B65733", // default to primary-base
   className,
-  inert = false
+  inert = false,
 }: IconButtonProps) {
-
   const colorStyles = {
     primary: {
       standard: "bg-transparent text-secondary-dark hover:bg-neutral-dark/10",
@@ -57,8 +56,7 @@ export default function IconButton({
       standard: "bg-transparent text-primary-base hover:bg-primary-dark/10",
       tonal:
         "bg-primary-dark/10 text-primary-base hover:primary-dark hover:text-white-base",
-      filled:
-        "bg-primary-base text-text-white-base hover:primary-dark",
+      filled: "bg-primary-base text-text-white-base hover:primary-dark",
       outlined:
         "bg-transparent border-2 border-primary-base text-primary-base hover:text-primary-dark",
     },
@@ -116,7 +114,7 @@ export default function IconButton({
     "disabled:opacity-50 disabled:transition-none disabled:hover-none pointer-events-none";
 
   return (
-    <div className="relative inline-block flex-shrink-0">
+    <div className={` relative inline-block flex-shrink-0 ${className}`}>
       <button
         className={`
           ${baseStyle}
@@ -134,10 +132,10 @@ export default function IconButton({
       >
         <span className={iconSizeClasses[size]}>{children}</span>
       </button>
-      
+
       {/* Notification dot */}
       {showNotification && (
-        <span 
+        <span
           className="absolute top-2 right-0 h-2.5 w-2.5 rounded-full border-2 border-white"
           style={{ backgroundColor: notificationColor }}
         />

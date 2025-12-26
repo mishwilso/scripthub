@@ -6,7 +6,7 @@ import { FaLeaf } from "react-icons/fa";
 import { RxDashboard } from "react-icons/rx";
 import { VscLibrary } from "react-icons/vsc";
 
-import { FiChevronLeft } from 'react-icons/fi';
+import { FiType } from 'react-icons/fi';
 import { LuBook } from "react-icons/lu";
 import { FiTable } from "react-icons/fi";
 import { SlMagnifier } from "react-icons/sl";
@@ -17,25 +17,24 @@ import { FiUsers } from "react-icons/fi";
 import { TbUpload } from "react-icons/tb";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 
-
 import ToolOption from "./ToolOption";
+import Tooltip from "../ui/Tooltip";
 
-import { useState } from "react";
-
-interface ToolsSidebarProps {
+interface ToolsPanelProps {
+  activeTool: string
   isOpen: boolean; // Desktop state
   mobileOpen: boolean; // Mobile state
   onToggle: () => void; // Desktop toggle
   onClose: () => void; // Mobile close
 }
 
-export default function ToolsSidebar({
+export default function ToolPanel({
+  activeTool,
   isOpen,
   mobileOpen,
   onToggle,
   onClose,
-}: ToolsSidebarProps) {
-
+}: ToolsPanelProps) {
   return (
     <>
       {/* Mobile Slide Drawer */}
@@ -61,7 +60,7 @@ export default function ToolsSidebar({
         className={`hidden md:flex md:sticky top-0 shrink-0 h-screen
                     bg-white-input border-l border-neutral-dark/20
                     transition-all duration-300 ease-in-out group/toolsbar overflow-hidden
-                    ${isOpen ? "w-80" : "w-14"}`}
+                    ${isOpen ? "w-80" : "w-0"}`}
       >
         <ToolsDetails isOpen={isOpen} onToggle={onToggle} />
       </aside>
@@ -80,10 +79,6 @@ export function ToolsDetails({
   onToggle,
   isMobile = false,
 }: ToolsDetailsProps) {
-
-  const [activeView, setActiveView] = useState<string>('menu');
-
-
   return (
     <nav className="flex flex-col w-full h-full">
       {/* Mobile Header */}
@@ -91,14 +86,9 @@ export function ToolsDetails({
 
       {/* Desktop Header */}
       <div className="hidden md:flex relative items-center justify-between h-14 px-4 py-5 border-b border-neutral-dark/10 overflow-hidden shrink-0">
-        {activeView !== 'menu' && (
-          <button onClick={() => setActiveView('menu')}>
-            <FiChevronLeft />
-          </button>
-        )}
+
 
         {/* Header Title - only show when open */}
-        {activeView === 'menu' && 
         <h2
           className={`text-lg font-semibold text-secondary-dark transition-opacity duration-300 ${
             isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -106,7 +96,6 @@ export function ToolsDetails({
         >
           Tools
         </h2>
-        }
 
         {/* Toggle button - shows on sidebar hover */}
         {!isMobile && onToggle && (
@@ -127,20 +116,6 @@ export function ToolsDetails({
         )}
       </div>
 
-      {/* Content Area */}
-      <div className="flex flex-col flex-1 h-full">
-        {activeView === 'menu' && <ToolMenu onSelectTool={setActiveView} isOpen={isOpen}/>}
-        {activeView !== 'menu' && <Placeholder isOpen={isOpen} />}
-      </div>
-      
-    </nav>
-  );
-}
-
-
-const ToolMenu = ({onSelectTool, isOpen}: {onSelectTool: (tool: string) => void, isOpen: boolean}) => {
-  return (
-    <>
       {/* Tools Content Area - Fixed height to fit on screen */}
       <div className="flex flex-col px-0.5 py-2 gap-0.5">
         <ToolOption
@@ -148,70 +123,60 @@ const ToolMenu = ({onSelectTool, isOpen}: {onSelectTool: (tool: string) => void,
           label="World Building"
           isOpen={isOpen}
           altText="World Building"
-          onClick={() => onSelectTool('worldbuilding')}
         />
         <ToolOption
           icon={<LuBook size={20} />}
           label="Format"
           isOpen={isOpen}
           altText="Format"
-          onClick={() => onSelectTool('format')}
         />
         <ToolOption
           icon={<FiTable size={20} />}
           label="Outline"
           isOpen={isOpen}
           altText="Outline"
-          onClick={() => onSelectTool('outline')}
         />
         <ToolOption
           icon={<SlMagnifier size={20} />}
           label="Find and Replace"
           isOpen={isOpen}
           altText="Find and Replace"
-          onClick={() => onSelectTool('find')}
         />
         <ToolOption
           icon={<FiEdit3 size={20} />}
           label="Spell Check"
           isOpen={isOpen}
           altText="Spell Check"
-          onClick={() => onSelectTool('spellcheck')}
         />
         <ToolOption
           icon={<RxCounterClockwiseClock size={20} />}
           label="Version History"
           isOpen={isOpen}
           altText="Version History"
-          onClick={() => onSelectTool('history')}
         />
         <ToolOption
           icon={<FaRegComments size={20} />}
           label="Comment"
           isOpen={isOpen}
           altText="Comment"
-          onClick={() => onSelectTool('comment')}
         />
         <ToolOption
           icon={<FiUsers size={20} />}
           label="Collaborators"
           isOpen={isOpen}
           altText="Collaborators"
-          onClick={() => onSelectTool('collaborators')}
         />
         <ToolOption
           icon={<TbUpload size={20} />}
           label="Share and Export"
           isOpen={isOpen}
           altText="Share and Export"
-          onClick={() => onSelectTool('export')}
         />
         <ToolOption
           icon={<AiOutlineInfoCircle size={20} />}
           label="Draft Info"
           isOpen={isOpen}
           altText="Draft Info"
-          onClick={() => onSelectTool('info')}
         />
       </div>
 
@@ -220,28 +185,15 @@ const ToolMenu = ({onSelectTool, isOpen}: {onSelectTool: (tool: string) => void,
 
       {/* Footer - Green Leaf Button at Bottom Right */}
       <div className="px-2 pb-2 flex justify-end shrink-0">
-        <div className="relative group">
+        <Tooltip text="Meet the Developer" position="left" disabled={isOpen}>
           <button
             className="developer-button flex items-center justify-center w-10 h-10 rounded-md"
             aria-label="Meet the Developer"
           >
             <FaLeaf size={18} color="#FFFFFF" />
           </button>
-          {/* Tooltip - only show when closed */}
-          {!isOpen && (
-            <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-neutral-dark text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
-              Meet the Developer
-            </div>
-          )}
-        </div>
+        </Tooltip>
       </div>
-    </>
+    </nav>
   );
-};
-
-const Placeholder = ({ isOpen }: { isOpen: boolean }) => {
-  return (
-    <div className="flex flex-col items-center justify-center flex-1"> 
-    </div>
-  )
 }

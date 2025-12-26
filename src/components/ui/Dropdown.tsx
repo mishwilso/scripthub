@@ -29,6 +29,7 @@ import DropdownButton from "./Dropdown/DropdownButton";
 import DropdownOption from "./Dropdown/DropdownOption";
 import DropdownDivider from "./Dropdown/DropdownDivider";
 import DropdownHeader from "./Dropdown/DropdownHeader";
+import DropdownFooter from "./Dropdown/DropdownFooter";
 
 export interface DropdownContextType {
   isOpen: boolean;
@@ -88,6 +89,7 @@ Dropdown.Button = DropdownButton;
 Dropdown.Menu = DropdownMenu;
 Dropdown.Option = DropdownOption;
 Dropdown.Divider = DropdownDivider;
-Dropdown.Header = DropdownHeader
+Dropdown.Header = DropdownHeader;
+Dropdown.Footer = DropdownFooter;
 
 export default Dropdown;
