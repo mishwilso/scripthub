@@ -39,7 +39,7 @@ export default function ToolsSidebar({
     <>
       {/* Mobile Slide Drawer */}
       <aside
-        className={`md:hidden fixed z-40 inset-y-0 right-0 w-64
+        className={`lg:hidden fixed z-40 inset-y-0 right-0 w-72
                     bg-white-input border-l border-neutral-dark/20
                     transform transition-transform duration-300
                     ${mobileOpen ? "translate-x-0" : "translate-x-full"}`}
@@ -50,14 +50,14 @@ export default function ToolsSidebar({
       {/* Mobile Overlay */}
       {mobileOpen && (
         <div
-          className="md:hidden fixed inset-0 bg-black/50 z-30"
+          className="lg:hidden fixed inset-0 bg-black/50 z-30"
           onClick={onClose}
         />
       )}
 
       {/* Desktop Sidebar - needs to be sticky to take up space and stay in place :) */}
       <aside
-        className={`hidden md:flex md:sticky top-0 shrink-0 h-screen
+        className={`hidden lg:flex lg:sticky top-0 shrink-0 h-screen
                     bg-white-input border-l border-neutral-dark/20
                     transition-all duration-300 ease-in-out group/toolsbar overflow-hidden
                     ${isOpen ? "w-80" : "w-14"}`}

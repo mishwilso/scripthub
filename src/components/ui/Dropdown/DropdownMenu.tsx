@@ -57,7 +57,7 @@ export default function DropdownMenu({
 
   const containerClassStyle = `
     ${size} rounded-md
-    bg-white-light outline-1 -outline-offset-1 outline-outline-light
+    bg-white-base outline-1 -outline-offset-1 outline-outline-light
     shadow-md
     transition-all duration-200 ease-in-out
     ${
@@ -65,7 +65,7 @@ export default function DropdownMenu({
         ? "opacity-100 scale-100"
         : "visually-hidden opacity-0 scale-95 pointer-events-none"
     }
-    z-10
+    z-50
     flex flex-col
   `;
 

@@ -26,9 +26,11 @@ export default function ToolBar() {
 
 
     return (
-        <div className="sticky bottom-0 bg-secondary-base rounded-2xl mb-10 py-1 px-2 flex items-center justify-center divide-x-2 divide-white-base w-fit mx-auto"> 
+        <div className="overflow-scroll-gradient">
+        <div className="overflow-x-auto overflow-y-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="z-20 lg:fixed h-fit lg:bottom-0 lg:left-0 lg:right-0 lg:bg-secondary-base lg:rounded-2xl lg:mb-10 py-1 px-2 flex items-start lg:items-center justify-center divide-x-2 divide-white-base lg:w-fit mx-auto border-b border-neutral-dark/10 lg:border-b-0 w-max lg:shadow-[0_0_25px_rgba(0,0,0,0.25)]"> 
         
-            <div className="">
+            <div className="flex items-start">
                 <Tool
                 icon={<TbArrowBackUp size={20} />}
                 label="Undo"
@@ -42,7 +44,7 @@ export default function ToolBar() {
                 />
             </div>
 
-            <div className="mx-2">
+            <div className="flex mx-2">
                 <Tool
                 icon={<BsFonts size={20} />}
                 label="Undo"
@@ -56,7 +58,7 @@ export default function ToolBar() {
                 />
             </div>
 
-            <div className="mx-2">
+            <div className="flex mx-2">
                 <Tool
                 icon={<MdFormatBold size={20} />}
                 label="Undo"
@@ -82,7 +84,7 @@ export default function ToolBar() {
                 />
             </div>
 
-            <div className="mx-2">
+            <div className="flex mx-2">
                 <Tool
                 icon={<AiOutlineLink size={20} />}
                 label="Undo"
@@ -108,7 +110,7 @@ export default function ToolBar() {
                 />
             </div>
 
-            <div className="mx-2">
+            <div className="flex mx-2">
                 <Tool
                 icon={<MdFormatIndentDecrease size={20} />}
                 label="Undo"
@@ -121,9 +123,11 @@ export default function ToolBar() {
                 onClick={() => console.log("Redo")}
                 />
             </div>
-
         
+            </div>
         </div>
+        </div>
+        
     )
 }
 
@@ -147,7 +151,7 @@ function Tool({
               >
                 <div className="flex items-center gap-3">
                   {/* Icon - stays in fixed position */}
-                  <span className="text-white-base hover:bg-neutral-light hover:text-secondary-base transition-colors delay-60 duration-300 ml-2 text-secondary-dark flex items-center justify-center p-2 shrink-0 rounded-lg" aria-label={label}>
+                  <span className="lg:text-white-base hover:bg-neutral-light hover:lg:text-secondary-base transition-colors delay-60 duration-300 ml-2 text-secondary-dark flex items-center justify-center p-2 shrink-0 rounded-lg" aria-label={label}>
                     {icon}
                   </span>
         

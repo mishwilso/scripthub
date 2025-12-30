@@ -254,3 +254,26 @@ input:-webkit-autofill:active {
   background-color: #B65733; /* Line color */
   z-index: 1;
 }
+
+/* Scroll bar gradient */
+.overflow-scroll-gradient {
+  position: relative;
+}
+.overflow-scroll-gradient::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 1.5rem;
+  background: linear-gradient(to right, white, rgba(0, 0, 0, 0.1)); /* transparent keyword is broken in Safari */
+}
+.overflow-scroll-gradient::after {
+  content: '';
+  position: absolute;
+  top:0;
+  bottom: 0;
+  left: 0;
+  width: 1.5rem;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.1), white); /* transparent keyword is broken in Safari */
+}

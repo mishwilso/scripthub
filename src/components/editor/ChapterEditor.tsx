@@ -49,7 +49,7 @@ export default function ChapterEditor() {
 
 
   return (
-    <div className="flex flex-col md:flex-row w-full h-screen overflow-hidden">
+    <div className="flex flex-col md:flex-row w-full min-h-screen">
       <BranchSidebar
         isOpen={leftSidebarOpen}
         mobileOpen={mobileSidebarOpen === 'left'}
@@ -58,15 +58,19 @@ export default function ChapterEditor() {
       />
 
       <div className="flex flex-col flex-1 min-w-0">
-        <EditorHeader
-          onToggleLeftSideBar={toggleMobileLeftSidebar}
-          onToggleRightSideBar={toggleMobileRightSidebar}
-          wordCount={wordCount}
-        />
+        <div  className="sticky top-0 bg-white-base z-10">
+          <EditorHeader
+            onToggleLeftSideBar={toggleMobileLeftSidebar}
+            onToggleRightSideBar={toggleMobileRightSidebar}
+            wordCount={wordCount}
+          />
+
+          <ToolBar />
+        </div>
 
         <EditorContent />
 
-        <ToolBar />
+        
       </div>
 
       <ToolsSidebar

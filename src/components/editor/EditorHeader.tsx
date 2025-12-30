@@ -31,6 +31,9 @@ import { IoChevronDown, IoAdd } from "react-icons/io5";
 import { getBookById } from "@/lib/api/books";
 import { useBook } from "@/context/BookContext";
 
+import { IoMenu } from "react-icons/io5";
+
+
 interface EditorHeaderProps {
   onToggleLeftSideBar: () => void;
   onToggleRightSideBar: () => void;
@@ -70,61 +73,90 @@ export default function EditorHeader({
   };
 
   return (
-    <header className="flex-col py-3 border-b border-neutral-dark/10 px-7 sticky">
-      <ChapterOptions bookTitle={book?.title || ""}/>
+    <header className="flex-col py-3 border-b border-neutral-dark/10 px-7 z-20">
+      <div className="flex flex-col lg:flex-row items-center lg:items-start ">
+          {/* Chapter title */}
+          <h1
+            ref={titleRef}
+            className="lg:hidden font-normal text-lg text-neutral-dark"
+            contentEditable={true}
+            suppressContentEditableWarning
+            onInput={onChangeTitle}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            onChange={onChangeTitle}
+          >
+            {chapter?.title}
+          </h1>
+
+        <ChapterOptions bookTitle={book?.title || ""}/>
+
+        
+        {/* Commit Button
+        <Button startIcon={<IoGitCommit />}>Commit</Button> */}
+
+      </div>
       <div className="flex items-center justify-between">
-      {/* Left Widgets */}
-      <div className="flex items-center gap-3">
-        {/* Mobile only left side bar toggle */}
-        <IconButton
-          onClick={onToggleLeftSideBar}
-          altText="Toggle Branch Tools"
-          className="lg:hidden"
-        >
-          <FaCodeBranch size={24} />
-        </IconButton>
+        {/* Left Widgets */}
+        <div className="flex items-center gap-3">
+          {/* Mobile only left side bar toggle */}
+          <IconButton
+            onClick={onToggleLeftSideBar}
+            altText="Toggle Branch Sidebar"
+            className="lg:hidden"
+            variant="standard"
+          >
+            <FaCodeBranch size={16} />
+          </IconButton>
 
-        {/* Chapter title */}
-        <h1
-          ref={titleRef}
-          className="font-normal text-xl text-neutral-dark"
-          contentEditable={true}
-          suppressContentEditableWarning
-          onInput={onChangeTitle}
-          onBlur={handleBlur}
-          onKeyDown={handleKeyDown}
-          onChange={onChangeTitle}
-        >
-          {chapter?.title}
-        </h1>
+          {/* Chapter title */}
+          <h1
+            ref={titleRef}
+            className="hidden lg:block   font-normal text-lg text-neutral-dark"
+            contentEditable={true}
+            suppressContentEditableWarning
+            onInput={onChangeTitle}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            onChange={onChangeTitle}
+          >
+            {chapter?.title}
+          </h1>
 
-        {/* Branch tag */}
-        <Tags variant="version">
-          <>
-            <FiGitBranch />
-            {currentBranch?.branch_name}
-          </>
-        </Tags>
-      </div>
+          {/* Branch tag */}
+          <Tags className="hidden lg:flex" variant="version">
+            <>
+              <FiGitBranch />
+              {currentBranch?.branch_name}
+            </>
+          </Tags>
+        </div>
 
-      {/* Right Widgets */}
-      <div className="flex items-center gap-3">
-        {/* Word Count */}
-        <span className="font-medium">
-          <b>{wordCount}</b> words
-        </span>
+        {/* Right Widgets */}
+        <div className="flex items-center gap-4">
+          {/* Word Count */}
+          <span className="font-medium">
+            <b>{wordCount}</b> words
+          </span>
 
-        {/* Vertical Divider */}
-        <div className="border-l-2 border-neutral-dark h-6"></div>
+          {/* Vertical Divider */}
+          <div className="border-l border-neutral-dark h-6"></div>
 
-        {/* Action Icons */}
-        <FiCoffee size={24} />
-        <LuTimer size={24} />
-        <IoMdNotificationsOutline size={24} />
+          {/* Action Icons */}
+          <FiCoffee size={20} />
+          <LuTimer size={20} />
+          <IoMdNotificationsOutline size={20} />
 
-        {/* Commit Button */}
-        <Button startIcon={<IoGitCommit />}>Commit</Button>
-      </div>
+          {/* Mobile only left side bar toggle */}
+          <IconButton
+            onClick={onToggleRightSideBar}
+            altText="Toggle Tool Sidebar"
+            className="lg:hidden"
+            variant="standard"
+          >
+            <IoMenu size={16} />
+          </IconButton>
+        </div>
       </div>
     </header>
   );

@@ -83,7 +83,7 @@ export default function Tooltip({
         createPortal(
           <div
             ref={tooltipRef}
-            className={`fixed px-2 py-1 bg-neutral-dark text-white text-xs rounded whitespace-nowrap pointer-events-none transition-opacity z-9999 ${className}`}
+            className={`fixed px-2 py-1 bg-neutral-dark text-white-base text-xs rounded whitespace-nowrap pointer-events-none transition-opacity z-9999 ${className}`}
             style={{
               top: `${tooltipPos.top}px`,
               left: `${tooltipPos.left}px`,

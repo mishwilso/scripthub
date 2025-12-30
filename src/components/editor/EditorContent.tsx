@@ -66,14 +66,19 @@ export default function EditorContent(){
                         heigth: '100%',
                         fontSize: '16px',
                         fontFamily: 'Georgia, serif',
+                        position: "relative",
+                        zIndex: '0',
+
                     },
                     '.cm-scroller': {
                         overflowX: 'hidden',
                         overflowY: 'auto',
+                        overflow: 'visible',
                         fontFamily: 'Georgia, serif',
                     },
                     '.cm-content': {
-                        minHeight: '100%',
+                        padding: '1.5rem',
+                        minHeight: '100vh',
                         maxWidth: '800px',
                         margin: '0 auto',
                         caretColor: '#8b5a3c',
@@ -85,6 +90,8 @@ export default function EditorContent(){
                     },
                     '&.cm-focused': {
                         outline: 'none',
+                    },
+                    '.cm-editor': {
                     },
                 }),
             ],
@@ -127,7 +134,7 @@ export default function EditorContent(){
 
     return (
         // Editor container
-        <div ref={editorRef} className="flex-1 overflow-hidden" />
+        <div ref={editorRef} className="flex-1 min-h-screen relative z-0" />
     )
 
 }
