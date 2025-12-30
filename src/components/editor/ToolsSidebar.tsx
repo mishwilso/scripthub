@@ -3,8 +3,7 @@
 import { FiSidebar } from "react-icons/fi";
 import { FaLeaf } from "react-icons/fa";
 
-import { RxDashboard } from "react-icons/rx";
-import { VscLibrary } from "react-icons/vsc";
+import { BsFonts } from "react-icons/bs";
 
 import { FiChevronLeft } from 'react-icons/fi';
 import { LuBook } from "react-icons/lu";
@@ -144,14 +143,14 @@ const ToolMenu = ({onSelectTool, isOpen}: {onSelectTool: (tool: string) => void,
       {/* Tools Content Area - Fixed height to fit on screen */}
       <div className="flex flex-col px-0.5 py-2 gap-0.5">
         <ToolOption
-          icon={<VscLibrary size={20} />}
+          icon={<LuBook size={20} />}
           label="World Building"
           isOpen={isOpen}
           altText="World Building"
           onClick={() => onSelectTool('worldbuilding')}
         />
         <ToolOption
-          icon={<LuBook size={20} />}
+          icon={<BsFonts size={20} />}
           label="Format"
           isOpen={isOpen}
           altText="Format"

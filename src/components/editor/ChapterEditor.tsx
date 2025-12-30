@@ -5,6 +5,7 @@ import {
 import EditorHeader from "./EditorHeader";
 import BranchSidebar from "./BranchSidebar";
 import ToolsSidebar from "./ToolsSidebar";
+import ToolBar from "./ToolBar";
 
 import EditorContent from "./EditorContent";
 
@@ -64,6 +65,8 @@ export default function ChapterEditor() {
         />
 
         <EditorContent />
+
+        <ToolBar />
       </div>
 
       <ToolsSidebar
