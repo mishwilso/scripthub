@@ -37,6 +37,7 @@ interface ChapterEditorContextType {
   content: string;
   updateContent: (newContent: string) => void;
   wordCount: number;
+  updateWordCount: (newWordCount: number) => void;
 
   // Save status
   isSaving: boolean;
@@ -85,9 +86,7 @@ export function ChapterEditorProvider({
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-  const wordCount = useMemo(() => {
-    return content.trim().split(/\s+/).filter(Boolean).length;
-  }, [content]);
+  const [wordCount, setWordCount] = useState(chapter?.word_count || 0);
 
   // Load initial data
   useEffect(() => {
@@ -130,6 +129,10 @@ export function ChapterEditorProvider({
   const updateContent = (newContent: string) => {
     setContent(newContent);
   };
+
+  const updateWordCount = (newWordCount: number) => {
+    setWordCount(newWordCount);
+  }
 
   const changeTitle = async (newTitle: string) => {
     if (!currentDraft) return;
@@ -225,7 +228,8 @@ export function ChapterEditorProvider({
         switchDraft,
         content,
         updateContent,
-        wordCount, // This is now derived, not state
+        wordCount,
+        updateWordCount, // This is now derived, not state
         isSaving,
         lastSaved,
         hasUnsavedChanges,

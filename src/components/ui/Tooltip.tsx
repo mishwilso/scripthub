@@ -1,6 +1,7 @@
 "use client";
 
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 interface TooltipProps {
   children: ReactNode;
@@ -17,25 +18,81 @@ export default function Tooltip({
   disabled = false,
   className = "",
 }: TooltipProps) {
+  const [isVisible, setIsVisible] = useState(false);
+  const [tooltipPos, setTooltipPos] = useState({ top: 0, left: 0 });
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isVisible || !triggerRef.current || !tooltipRef.current) return;
+
+    const updatePosition = () => {
+      const triggerRect = triggerRef.current!.getBoundingClientRect();
+      const tooltipRect = tooltipRef.current!.getBoundingClientRect();
+
+      let top = 0;
+      let left = 0;
+
+      switch (position) {
+        case "top":
+          top = triggerRect.top - tooltipRect.height - 8;
+          left = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
+          break;
+        case "bottom":
+          top = triggerRect.bottom + 8;
+          left = triggerRect.left + triggerRect.width / 2 - tooltipRect.width / 2;
+          break;
+        case "left":
+          top = triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2;
+          left = triggerRect.left - tooltipRect.width - 8;
+          break;
+        case "right":
+          top = triggerRect.top + triggerRect.height / 2 - tooltipRect.height / 2;
+          left = triggerRect.right + 8;
+          break;
+      }
+
+      setTooltipPos({ top, left });
+    };
+
+    updatePosition();
+    window.addEventListener("scroll", updatePosition, true);
+    window.addEventListener("resize", updatePosition);
+
+    return () => {
+      window.removeEventListener("scroll", updatePosition, true);
+      window.removeEventListener("resize", updatePosition);
+    };
+  }, [isVisible, position]);
+
   if (disabled) {
     return <>{children}</>;
   }
 
-  const positionClasses = {
-    top: "bottom-full left-1/2 -translate-x-1/2 mb-2",
-    bottom: "top-full left-1/2 -translate-x-1/2 mt-2",
-    left: "right-full top-1/2 -translate-y-1/2 mr-2",
-    right: "left-full top-1/2 -translate-y-1/2 ml-2",
-  };
-
   return (
-    <div className="relative group">
-      {children}
+    <>
       <div
-        className={`absolute ${positionClasses[position]} px-2 py-1 bg-neutral-dark text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 ${className}`}
+        ref={triggerRef}
+        className="inline-block"
+        onMouseEnter={() => setIsVisible(true)}
+        onMouseLeave={() => setIsVisible(false)}
       >
-        {text}
+        {children}
       </div>
-    </div>
+      {isVisible &&
+        createPortal(
+          <div
+            ref={tooltipRef}
+            className={`fixed px-2 py-1 bg-neutral-dark text-white text-xs rounded whitespace-nowrap pointer-events-none transition-opacity z-9999 ${className}`}
+            style={{
+              top: `${tooltipPos.top}px`,
+              left: `${tooltipPos.left}px`,
+            }}
+          >
+            {text}
+          </div>,
+          document.body
+        )}
+    </>
   );
 }

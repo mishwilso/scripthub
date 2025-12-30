@@ -55,4 +55,12 @@ export function formatExactDateTime(date) {
   });
 }
 
-
+export function formatTimeAgo(date) {
+  const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+  
+  if (seconds < 60) return 'just now';
+  if (seconds < 120) return '1 minute ago';
+  if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
+  
+  return date.toLocaleTimeString();
+}

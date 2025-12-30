@@ -34,13 +34,15 @@ import { useBook } from "@/context/BookContext";
 interface EditorHeaderProps {
   onToggleLeftSideBar: () => void;
   onToggleRightSideBar: () => void;
+  wordCount: number;
 }
 
 export default function EditorHeader({
   onToggleLeftSideBar,
   onToggleRightSideBar,
+  wordCount,
 }: EditorHeaderProps) {
-  const { chapter, currentBranch, wordCount, changeTitle } = useChapterEditor();
+  const { chapter, currentBranch, changeTitle } = useChapterEditor();
   const titleRef = useRef<HTMLHeadingElement>(null);
   const { book } = useBook();
 

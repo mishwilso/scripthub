@@ -45,6 +45,10 @@ module.exports = {
       dropShadow: {
         primary: "0 0px 5px 5px rgba(241, 137, 102, 0.5)",
       },
+      zIndex: {
+        '999': '999',
+        '9999': '9999',
+      },
     },
   },
   plugins: [

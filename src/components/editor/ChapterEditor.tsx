@@ -6,15 +6,17 @@ import EditorHeader from "./EditorHeader";
 import BranchSidebar from "./BranchSidebar";
 import ToolsSidebar from "./ToolsSidebar";
 
+import EditorContent from "./EditorContent";
+
 import { getFromLocalStorage, setToLocalStorage } from '@/lib/utils/localStorage'
 
 import {useState, useEffect} from 'react'
 
 export default function ChapterEditor() {
-  const { chapter } = useChapterEditor();
+  const { wordCount, updateWordCount, content, updateContent } = useChapterEditor();
 
   // Desktop: Independent sidebar states (saved to localStorage)
-  const [leftSidebarOpen, setLeftSidebarOpen] = useState(getFromLocalStorage('editor-left-sidebar', true))
+  const [leftSidebarOpen, setLeftSidebarOpen] = useState(getFromLocalStorage('editor-left-sidebar', false))
   const [rightSidebarOpen, setRightSidebarOpen] = useState(getFromLocalStorage('editor-right-sidebar', false))
   
   // Mobile: Which sidebar is open (only one at a time)
@@ -54,11 +56,14 @@ export default function ChapterEditor() {
         onClose={() => setMobileSidebarOpen(null)}
       />
 
-      <div className="flex-1 min-w-0">
+      <div className="flex flex-col flex-1 min-w-0">
         <EditorHeader
           onToggleLeftSideBar={toggleMobileLeftSidebar}
           onToggleRightSideBar={toggleMobileRightSidebar}
+          wordCount={wordCount}
         />
+
+        <EditorContent />
       </div>
 
       <ToolsSidebar

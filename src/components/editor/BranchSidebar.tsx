@@ -6,6 +6,7 @@ import { toTitleCase } from "@/lib/utils/formatString";
 import { useState, useEffect, useContext } from "react";
 import { LuBookOpen } from "react-icons/lu";
 import Card from "../ui/Card";
+import Tooltip from "../ui/Tooltip";
 
 import { IoHome } from "react-icons/io5";
 
@@ -22,6 +23,9 @@ import {
   getFromLocalStorage,
   setToLocalStorage,
 } from "@/lib/utils/localStorage";
+
+import { MdCloudUpload, MdCloudDone, MdCloud } from 'react-icons/md'
+
 
 import { IoChevronDown, IoAdd } from "react-icons/io5";
 import { FaLeaf } from "react-icons/fa";
@@ -93,8 +97,8 @@ export function BranchDetails({
   onToggle,
   isMobile = false,
 }: NavProps) {
-  const { currentBranch, branches, mainBranch, book } = useChapterEditor();
-  const [isBranchsOpen, setIsBranchsOpen] = useState(true);
+  const { currentBranch, branches, mainBranch, book, isSaving, lastSaved } = useChapterEditor();
+  const [isBranchsOpen, setIsBranchsOpen] = useState(false);
 
   // TODO: make better safety
   if (!book) return;
@@ -133,6 +137,31 @@ export function BranchDetails({
               className="text-secondary-dark/70 hover:text-primary-base transition-colors"
             />
           </button>
+        )}
+      </div>
+
+      <div className="hidden lg:flex relative items-center justify-center">
+        {/* Cloud Save */}
+        { !isOpen && (
+          isSaving ? (
+            <Tooltip text="Saving..." position="right">
+              <div className="mt-4">
+                <MdCloudUpload size={24} className="text-secondary-dark animate-pulse" />
+              </div>
+            </Tooltip>
+            ) : lastSaved ? (
+              <Tooltip text={`Last saved: ${formatExactDateTime(lastSaved)}`} position="right">
+                <div className="mt-4">
+                  <MdCloudDone size={24} className="text-secondary-dark" />
+                </div>
+              </Tooltip>
+            ) : (
+              <Tooltip text="Not saved yet" position="right">
+                <div className="mt-4">
+                  <MdCloud size={24} className="text-secondary-dark" />
+                </div>
+              </Tooltip>
+            )
         )}
       </div>
 
@@ -251,7 +280,7 @@ export function BranchCard({
           <h3 className="font-semibold text-secondary-dark truncate text-base">
             {isMain ? "Main Branch" : toTitleCase(branch?.branch_name || "")}
           </h3>
-          {branch?.is_merged && <Tag variant="current">MERGED</Tag>}
+          {/* {branch?.is_merged && <Tag variant="current">MERGED</Tag>} */}
         </div>
 
         {/* Options Menu */}
@@ -265,7 +294,7 @@ export function BranchCard({
 
       {/* Row 2: Creator */}
       <p className="text-sm text-secondary-dark/70 mb-4">
-        {branch?.created_by || "snoople"}
+        {/* {branch?.created_by || "snoople"} */}
       </p>
 
       {/* Row 3: Timestamp and User Avatar */}

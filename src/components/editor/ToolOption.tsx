@@ -20,7 +20,7 @@ export default function ToolOption({
 }: ToolOptionProps) {
 
   return (
-    <Tooltip text={label} position="right" disabled={isOpen}>
+    <Tooltip text={label} position="left" disabled={isOpen}>
       <button
         className={`relative flex items-center justify-between h-10 rounded-md hover:bg-neutral-light py-6 transition-colors overflow-hidden gap-3 w-full`}
         aria-label={altText}
