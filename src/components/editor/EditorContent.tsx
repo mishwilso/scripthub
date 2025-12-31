@@ -8,7 +8,45 @@ import { defaultKeymap, history, historyKeymap  } from '@codemirror/commands';
 import {
   useChapterEditor,
 } from "@/context/ChapterEditorContext";
+import { console } from 'inspector';
 
+function toggleWrap (
+    view: EditorView,
+    startMarker: string,
+    endMarker: string
+) {
+    
+}
+
+function wrapSelection(view: EditorView, before: string, after: string){
+    // Get current selection
+    const selection = view.state.selection.main;
+    const from = selection.from
+    const to = selection.to
+
+    // Grab the selected text
+    const selectedText = view.state.doc.sliceString(from, to);
+
+    console.log(selectedText)
+
+    console.log(selectedText.substring(0))
+
+    // create the transaction to dispatch
+    view.dispatch({
+        changes: {
+            from: from,
+            to: to,
+            insert: `${before}${selectedText}${after}`
+        },
+        // move cursor to end of selection??
+        selection: {
+            anchor: from + before.length + selectedText.length + after.length
+        }
+    });
+
+    // Focus on the editor please :)
+    view.focus();
+}
 
 export default function EditorContent(){
     // Ref to hold the editor container div
@@ -16,6 +54,17 @@ export default function EditorContent(){
 
     // Ref for to hold the editor view isntance
     const viewRef = useRef<EditorView | null>(null);
+
+    // Commands
+    const italicCommand = (view: EditorView) => {
+        wrapSelection(view, "*", "*")
+        return true;
+    }
+
+    // Custom Keymap?
+    const customKeymap = keymap.of([
+        { key: "Mod-i", run: italicCommand},
+    ]);
 
     const {
         content,
@@ -35,12 +84,16 @@ export default function EditorContent(){
             return text.trim().split(/\s+/).filter(word => word.length > 0).length;
         }
 
+
         // Create the initial editor state!!
         const startState = EditorState.create({
             doc: content,
             extensions: [
                 // Basic key bindingings
                 keymap.of([...defaultKeymap, ...historyKeymap]),
+
+                // Custom keymap
+                customKeymap,
 
                 // Enable undo/redo history
                 history(),
@@ -97,7 +150,6 @@ export default function EditorContent(){
             ],
         });
 
-
         // Editor view that we mount in the container!
         const view = new EditorView({
             state: startState,
@@ -106,6 +158,18 @@ export default function EditorContent(){
 
         // Store the view in the red- so we can get it later
         viewRef.current = view;
+
+        // Get the current posititon of the cursor
+        const cursor = view.state.selection.main.head;
+
+        // Dispatch a change at and to the cursor :)
+        view.dispatch({
+            changes: {
+                from: cursor,
+                to: cursor,
+                insert: "Hello!"
+            }
+        });
 
         // Cleanup function 
         return () => {

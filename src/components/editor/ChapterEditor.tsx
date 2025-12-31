@@ -9,56 +9,76 @@ import ToolBar from "./ToolBar";
 
 import EditorContent from "./EditorContent";
 
-import { getFromLocalStorage, setToLocalStorage } from '@/lib/utils/localStorage'
+import {
+  getFromLocalStorage,
+  setToLocalStorage,
+} from "@/lib/utils/localStorage";
 
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from "react";
 
 export default function ChapterEditor() {
-  const { wordCount, updateWordCount, content, updateContent } = useChapterEditor();
+  const { wordCount, updateWordCount, content, updateContent } =
+    useChapterEditor();
 
   // Desktop: Independent sidebar states (saved to localStorage)
-  const [leftSidebarOpen, setLeftSidebarOpen] = useState(getFromLocalStorage('editor-left-sidebar', false))
-  const [rightSidebarOpen, setRightSidebarOpen] = useState(getFromLocalStorage('editor-right-sidebar', false))
-  
-  // Mobile: Which sidebar is open (only one at a time)
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState<'left' | 'right' | null>(null)
-  
-  // Toggle functions for desktop
-  const toggleLeftSidebar = () => setLeftSidebarOpen(!leftSidebarOpen)
-  const toggleRightSidebar = () => setRightSidebarOpen(!rightSidebarOpen)
-  
+  const [leftSidebarOpen, setLeftSidebarOpen] = useState(
+    getFromLocalStorage("editor-left-sidebar", false)
+  );
+  const [rightSidebarOpen, setRightSidebarOpen] = useState(
+    getFromLocalStorage("editor-right-sidebar", false)
+  );
 
+  // Mobile: Which sidebar is open (only one at a time)
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState<
+    "left" | "right" | null
+  >(null);
+
+  // Toggle functions for desktop
+  const toggleLeftSidebar = () => setLeftSidebarOpen(!leftSidebarOpen);
+  const toggleRightSidebar = () => setRightSidebarOpen(!rightSidebarOpen);
 
   // Toggle functions for mobile (from header)
   const toggleMobileLeftSidebar = () => {
-    setMobileSidebarOpen(mobileSidebarOpen === 'left' ? null : 'left')
-  }
-  
+    setMobileSidebarOpen(mobileSidebarOpen === "left" ? null : "left");
+  };
+
   const toggleMobileRightSidebar = () => {
-    setMobileSidebarOpen(mobileSidebarOpen === 'right' ? null : 'right')
-  }
+    setMobileSidebarOpen(mobileSidebarOpen === "right" ? null : "right");
+  };
 
   useEffect(() => {
-      setToLocalStorage('editor-left-sidebar', leftSidebarOpen)
-    }, [leftSidebarOpen])
+    setToLocalStorage("editor-left-sidebar", leftSidebarOpen);
+  }, [leftSidebarOpen]);
 
   useEffect(() => {
-      setToLocalStorage('editor-right-sidebar', rightSidebarOpen)
-    }, [rightSidebarOpen])
-  
+    setToLocalStorage("editor-right-sidebar", rightSidebarOpen);
+  }, [rightSidebarOpen]);
 
+  useEffect(() => {
+    const handleKeyCombination = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        console.log("Combo Ctrl/Cmd + K detected - Save action triggered");
+      };
+    };
+
+    window.addEventListener("keydown", handleKeyCombination);
+
+    return () => window.removeEventListener("keydown", handleKeyCombination);
+
+  }, []);
 
   return (
     <div className="flex flex-col md:flex-row w-full min-h-screen">
       <BranchSidebar
         isOpen={leftSidebarOpen}
-        mobileOpen={mobileSidebarOpen === 'left'}
+        mobileOpen={mobileSidebarOpen === "left"}
         onToggle={toggleLeftSidebar}
         onClose={() => setMobileSidebarOpen(null)}
       />
 
       <div className="flex flex-col flex-1 min-w-0">
-        <div  className="sticky top-0 bg-white-base z-10">
+        <div className="sticky top-0 bg-white-base z-10">
           <EditorHeader
             onToggleLeftSideBar={toggleMobileLeftSidebar}
             onToggleRightSideBar={toggleMobileRightSidebar}
@@ -69,13 +89,11 @@ export default function ChapterEditor() {
         </div>
 
         <EditorContent />
-
-        
       </div>
 
       <ToolsSidebar
         isOpen={rightSidebarOpen}
-        mobileOpen={mobileSidebarOpen === 'right'}
+        mobileOpen={mobileSidebarOpen === "right"}
         onToggle={toggleRightSidebar}
         onClose={() => setMobileSidebarOpen(null)}
       />
