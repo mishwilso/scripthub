@@ -1,3 +1,15 @@
+/**
+ * Plan: User preses arrow key at a possition like 5
+ * "hello **world**"
+ * 0123456789...
+ *
+ * Cursor at 5 (before the *)
+ * with the atomic it should say 6-7 are atomic
+ * meaning code mirror skips 6 -7 and lands cursor at 8 ('w)
+ *
+ * user does the
+ */
+
 "use client";
 
 import { useEffect, useRef } from "react";
@@ -11,6 +23,7 @@ import {
   ViewUpdate,
   WidgetType,
 } from "@codemirror/view";
+import { RangeSet, RangeSetBuilder } from "@codemirror/state";
 import { markdown } from "@codemirror/lang-markdown";
 import { syntaxHighlighting, HighlightStyle } from "@codemirror/language";
 import { tags } from "@lezer/highlight";
@@ -25,6 +38,15 @@ const scriptHubHighlightingStyle = HighlightStyle.define([
 ]);
 
 const markdownPatterns = [
+  // Bold + Italic: ***text***
+  {
+    regex: /\*\*\*(.+?)\*\*\*/g,
+    style: "font-weight: bold; font-style: italic;",
+    markerLen: 3,
+    open: "***",
+    close: "***",
+  },
+  // Bold: **text**
   {
     regex: /\*\*(.+?)\*\*/g,
     style: "font-weight: bold;",
@@ -32,6 +54,7 @@ const markdownPatterns = [
     open: "**",
     close: "**",
   },
+  // Strikethrough: ~~text~~
   {
     regex: /~~(.+?)~~/g,
     style: "text-decoration: line-through;",
@@ -39,6 +62,7 @@ const markdownPatterns = [
     open: "~~",
     close: "~~",
   },
+  // Underline: __text__
   {
     regex: /__(.+?)__/g,
     style: "text-decoration: underline;",
@@ -46,14 +70,54 @@ const markdownPatterns = [
     open: "__",
     close: "__",
   },
+  // Italic: *text* (simpler regex)
   {
-    regex: /(?<!\*)\*([^*]+?)\*(?!\*)/g,
+    regex: /\*([^*]+?)\*/g,
     style: "font-style: italic;",
     markerLen: 1,
     open: "*",
     close: "*",
   },
 ];
+
+// atomic ranges
+const atomicRanges = ViewPlugin.fromClass(
+  class {
+    constructor(view: EditorView) {}
+
+    update(update: ViewUpdate) {}
+  },
+  {
+    provide: (plugin) =>
+      EditorView.atomicRanges.of((view) => {
+        const ranges: Range<Decoration>[] = [];
+        const text = view.state.doc.toString();
+
+        markdownPatterns.forEach(({ regex, markerLen }) => {
+          let match;
+          const regexCopy = new RegExp(regex.source, regex.flags);
+
+          while ((match = regexCopy.exec(text)) !== null) {
+            const from = match.index;
+            const to = from + match[0].length;
+            const contentStart = from + markerLen;
+            const contentEnd = to - markerLen;
+
+            // Make opening marker atomic
+            ranges.push(
+              Decoration.mark({ class: "atomic" }).range(from, contentStart)
+            );
+            // Make closing marker atomic
+            ranges.push(
+              Decoration.mark({ class: "atomic" }).range(contentEnd, to)
+            );
+          }
+        });
+
+        return RangeSet.of(ranges, true);
+      }),
+  }
+);
 
 // ViewPlugin that finds **bold** patterns and applies decorations
 // This hides the ** markers and makes the text bold
@@ -90,7 +154,6 @@ const FormattingPlugin = ViewPlugin.fromClass(
           decorations.push(
             Decoration.mark({
               class: "cm-marker-hidden",
-              atomic: true,
             }).range(from, contentStart)
           );
 
@@ -106,7 +169,6 @@ const FormattingPlugin = ViewPlugin.fromClass(
           decorations.push(
             Decoration.mark({
               class: "cm-marker-hidden",
-              atomic: true,
             }).range(contentEnd, to)
           );
         }
@@ -299,16 +361,16 @@ export default function EditorContent() {
     return true;
   };
 
-  const underlineCommand = ( view: EditorView ) => {
+  const underlineCommand = (view: EditorView) => {
     toggleWrap(view, "__", "__");
     return true;
-  }
+  };
 
   // Custom Keymap?
   const customKeymap = keymap.of([
     { key: "Mod-i", preventDefault: true, run: italicCommand },
     { key: "Mod-b", preventDefault: true, run: boldCommand },
-    { key: "Mod-u", preventDefault: true, run: underlineCommand},
+    { key: "Mod-u", preventDefault: true, run: underlineCommand },
     { key: "Backspace", run: handleBackspace },
   ]);
 
@@ -332,6 +394,8 @@ export default function EditorContent() {
       extensions: [
         // Bold formatting: hides ** markers and styles text
         FormattingPlugin,
+
+        atomicRanges,
 
         customKeymap,
 
@@ -395,6 +459,7 @@ export default function EditorContent() {
             display: "none",
             fontSize: "0",
             width: "0",
+            letterSpacing: "-em",
           },
         }),
       ],
