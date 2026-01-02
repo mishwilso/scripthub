@@ -8,7 +8,7 @@
  *
  * Current features:
  * - Rich text editing with basic formatting
- * - Bold (Ctrl+B), Italic (Ctrl+I), Underline (Ctrl+U)
+ * - Bold (Ctrl+B or **text**), Italic (Ctrl+I or *text*), Underline (Ctrl+U or __text__)
  * - Word count tracking
  * - Content sync with ChapterEditorContext
  *
@@ -19,7 +19,7 @@
 
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
-import { $getRoot } from "lexical";
+import { $getRoot, $createParagraphNode, $createTextNode } from "lexical";
 import { useChapterEditor } from "@/context/ChapterEditorContext";
 
 // Lexical core
@@ -30,6 +30,11 @@ import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
+import { TRANSFORMERS } from "@lexical/markdown";
+
+// Styles
+import "./EditorContent.css";
 
 /**
  * ContentSyncPlugin - Syncs content with ChapterEditorContext
@@ -67,36 +72,14 @@ function ContentSyncPlugin() {
         const root = $getRoot();
         root.clear();
 
-        // For now, just set plain text - we'll add formatting support later
-        root.append(
-          root.importJSON({
-            children: [
-              {
-                children: [
-                  {
-                    detail: 0,
-                    format: 0,
-                    mode: "normal",
-                    style: "",
-                    text: content,
-                    type: "text",
-                    version: 1,
-                  },
-                ],
-                direction: "ltr",
-                format: "",
-                indent: 0,
-                type: "paragraph",
-                version: 1,
-              },
-            ],
-            direction: "ltr",
-            format: "",
-            indent: 0,
-            type: "root",
-            version: 1,
-          })
-        );
+        // Split content into paragraphs and create nodes
+        const paragraphs = content.split("\n");
+        paragraphs.forEach((paragraphText) => {
+          const paragraph = $createParagraphNode();
+          const textNode = $createTextNode(paragraphText);
+          paragraph.append(textNode);
+          root.append(paragraph);
+        });
       });
     }
   }, [content, editor]);
@@ -129,40 +112,9 @@ function LexicalEditor() {
     <LexicalComposer initialConfig={initialConfig}>
       <div className="editor-container">
         <RichTextPlugin
-          contentEditable={
-            <ContentEditable
-              className="editor-content-editable"
-              style={{
-                fontSize: "16px",
-                fontFamily: "Georgia, serif",
-                lineHeight: "1.6",
-                padding: "1.5rem",
-                maxWidth: "800px",
-                margin: "0 auto",
-                minHeight: "100vh",
-                caretColor: "#8b5a3c",
-                outline: "none",
-                wordWrap: "break-word",
-                whiteSpace: "pre-wrap",
-              }}
-            />
-          }
+          contentEditable={<ContentEditable className="editor-content-editable" />}
           placeholder={
-            <div
-              className="editor-placeholder"
-              style={{
-                position: "absolute",
-                top: "1.5rem",
-                left: "1.5rem",
-                maxWidth: "800px",
-                margin: "0 auto",
-                color: "#999",
-                fontSize: "16px",
-                fontFamily: "Georgia, serif",
-                pointerEvents: "none",
-                userSelect: "none",
-              }}
-            >
+            <div className="editor-placeholder">
               Start writing your chapter...
             </div>
           }
@@ -172,39 +124,12 @@ function LexicalEditor() {
         {/* Undo/Redo support */}
         <HistoryPlugin />
 
+        {/* Markdown shortcuts: **bold**, *italic*, __underline__ */}
+        <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+
         {/* Sync content with ChapterEditorContext */}
         <ContentSyncPlugin />
       </div>
-
-      <style jsx global>{`
-        .editor-container {
-          flex: 1;
-          min-height: 100vh;
-          position: relative;
-          z-index: 0;
-        }
-
-        .editor-content-editable {
-          position: relative;
-        }
-
-        /* Format styling */
-        .editor-text-bold {
-          font-weight: bold;
-        }
-
-        .editor-text-italic {
-          font-style: italic;
-        }
-
-        .editor-text-underline {
-          text-decoration: underline;
-        }
-
-        .editor-paragraph {
-          margin: 0;
-        }
-      `}</style>
     </LexicalComposer>
   );
 }
@@ -215,17 +140,7 @@ function LexicalEditor() {
  */
 const EditorContent = dynamic(() => Promise.resolve(LexicalEditor), {
   ssr: false,
-  loading: () => (
-    <div
-      className="editor-container"
-      style={{
-        flex: 1,
-        minHeight: "100vh",
-        position: "relative",
-        zIndex: 0,
-      }}
-    />
-  ),
+  loading: () => <div className="editor-loading" />,
 });
 
 export default EditorContent;
