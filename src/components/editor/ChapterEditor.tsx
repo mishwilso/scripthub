@@ -15,6 +15,14 @@ import {
 } from "@/lib/utils/localStorage";
 
 import { useState, useEffect } from "react";
+import { LexicalComposer } from "@lexical/react/LexicalComposer";
+
+import { AutoLinkNode, LinkNode } from "@lexical/link";
+import { ListNode, ListItemNode } from "@lexical/list";
+import { TableNode, TableCellNode, TableRowNode } from "@lexical/table";
+import { CodeNode } from "@lexical/code";
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 
 export default function ChapterEditor() {
   const { wordCount, updateWordCount, content, updateContent } =
@@ -68,35 +76,71 @@ export default function ChapterEditor() {
 
   }, []);
 
+  // Edicator Plugin
+  const theme = {
+    text: {
+      bold: "editor-text-bold",
+      italic: "editor-text-italic",
+      underline: "editor-text-underline",
+    },
+    paragraph: "editor-paragraph",
+  };
+
+  const initialConfig = {
+    namespace: "ScriptHubEditor",
+    theme,
+    onError: (error: Error) => {
+      console.error("Lexical error:", error);
+    },
+    nodes: [
+        LinkNode,
+        AutoLinkNode,
+        ListNode,
+        ListItemNode,
+        TableNode,
+        TableCellNode,
+        TableRowNode,
+        HorizontalRuleNode,
+        CodeNode,
+        HeadingNode,
+        LinkNode,
+        ListNode,
+        ListItemNode,
+        QuoteNode,
+      ],
+  };
+
   return (
-    <div className="flex flex-col md:flex-row w-full min-h-screen">
-      <BranchSidebar
-        isOpen={leftSidebarOpen}
-        mobileOpen={mobileSidebarOpen === "left"}
-        onToggle={toggleLeftSidebar}
-        onClose={() => setMobileSidebarOpen(null)}
-      />
+    <LexicalComposer initialConfig={initialConfig}>
+      <div className="flex flex-col md:flex-row w-full min-h-screen">
+        <BranchSidebar
+          isOpen={leftSidebarOpen}
+          mobileOpen={mobileSidebarOpen === "left"}
+          onToggle={toggleLeftSidebar}
+          onClose={() => setMobileSidebarOpen(null)}
+        />
 
-      <div className="flex flex-col flex-1 min-w-0">
-        <div className="sticky top-0 bg-white-base z-10">
-          <EditorHeader
-            onToggleLeftSideBar={toggleMobileLeftSidebar}
-            onToggleRightSideBar={toggleMobileRightSidebar}
-            wordCount={wordCount}
-          />
+        <div className="flex flex-col flex-1 min-w-0">
+          <div className="sticky top-0 bg-white-base z-10">
+            <EditorHeader
+              onToggleLeftSideBar={toggleMobileLeftSidebar}
+              onToggleRightSideBar={toggleMobileRightSidebar}
+              wordCount={wordCount}
+            />
 
-          <ToolBar />
+            <ToolBar />
+          </div>
+
+          <EditorContent />
         </div>
 
-        <EditorContent />
+        <ToolsSidebar
+          isOpen={rightSidebarOpen}
+          mobileOpen={mobileSidebarOpen === "right"}
+          onToggle={toggleRightSidebar}
+          onClose={() => setMobileSidebarOpen(null)}
+        />
       </div>
-
-      <ToolsSidebar
-        isOpen={rightSidebarOpen}
-        mobileOpen={mobileSidebarOpen === "right"}
-        onToggle={toggleRightSidebar}
-        onClose={() => setMobileSidebarOpen(null)}
-      />
-    </div>
+    </LexicalComposer>
   );
 }

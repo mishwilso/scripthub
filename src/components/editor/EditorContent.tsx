@@ -32,13 +32,6 @@ import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 
-import { AutoLinkNode, LinkNode } from "@lexical/link";
-import { ListNode, ListItemNode } from "@lexical/list";
-import { TableNode, TableCellNode, TableRowNode } from "@lexical/table";
-import { CodeNode } from "@lexical/code";
-import { HeadingNode, QuoteNode } from "@lexical/rich-text";
-import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
-
 // Styles
 import "./EditorContent.css";
 
@@ -109,41 +102,7 @@ function ContentSyncPlugin() {
  * LexicalEditor - The actual Lexical editor component
  */
 function LexicalEditor() {
-  const theme = {
-    text: {
-      bold: "editor-text-bold",
-      italic: "editor-text-italic",
-      underline: "editor-text-underline",
-    },
-    paragraph: "editor-paragraph",
-  };
-
-  const initialConfig = {
-    namespace: "ScriptHubEditor",
-    theme,
-    onError: (error: Error) => {
-      console.error("Lexical error:", error);
-    },
-    nodes: [
-        LinkNode,
-        AutoLinkNode,
-        ListNode,
-        ListItemNode,
-        TableNode,
-        TableCellNode,
-        TableRowNode,
-        HorizontalRuleNode,
-        CodeNode,
-        HeadingNode,
-        LinkNode,
-        ListNode,
-        ListItemNode,
-        QuoteNode,
-      ],
-  };
-
   return (
-    <LexicalComposer initialConfig={initialConfig}>
       <div className="editor-container">
         <RichTextPlugin
           contentEditable={<ContentEditable className="editor-content-editable" />}
@@ -164,7 +123,6 @@ function LexicalEditor() {
         {/* Sync content with ChapterEditorContext */}
         <ContentSyncPlugin />
       </div>
-    </LexicalComposer>
   );
 }
 
