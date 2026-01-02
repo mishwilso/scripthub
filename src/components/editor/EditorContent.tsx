@@ -31,7 +31,13 @@ import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
-import { TRANSFORMERS } from "@lexical/markdown";
+
+import { AutoLinkNode, LinkNode } from "@lexical/link";
+import { ListNode, ListItemNode } from "@lexical/list";
+import { TableNode, TableCellNode, TableRowNode } from "@lexical/table";
+import { CodeNode } from "@lexical/code";
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 
 // Styles
 import "./EditorContent.css";
@@ -106,6 +112,22 @@ function LexicalEditor() {
     onError: (error: Error) => {
       console.error("Lexical error:", error);
     },
+    nodes: [
+        LinkNode,
+        AutoLinkNode,
+        ListNode,
+        ListItemNode,
+        TableNode,
+        TableCellNode,
+        TableRowNode,
+        HorizontalRuleNode,
+        CodeNode,
+        HeadingNode,
+        LinkNode,
+        ListNode,
+        ListItemNode,
+        QuoteNode,
+      ],
   };
 
   return (
@@ -125,7 +147,7 @@ function LexicalEditor() {
         <HistoryPlugin />
 
         {/* Markdown shortcuts: **bold**, *italic*, __underline__ */}
-        <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+        <MarkdownShortcutPlugin />
 
         {/* Sync content with ChapterEditorContext */}
         <ContentSyncPlugin />
