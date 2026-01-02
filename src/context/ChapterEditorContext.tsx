@@ -5,9 +5,11 @@ import {
   useContext,
   useState,
   useEffect,
-  useMemo,
+  useRef,
   ReactNode,
+  useCallback,
 } from "react";
+import { useDebounce } from "@/hooks/useDebounce";
 import { Book, getBookById } from "@/lib/api/books";
 import {
   Chapter,
@@ -18,6 +20,7 @@ import {
 } from "@/lib/api/chapters";
 import { createBookActivity } from "@/lib/api/bookactivity";
 import { BookBranch, getBookBranches } from "@/lib/api/bookbranches";
+import { timeStamp } from "console";
 
 interface ChapterEditorContextType {
   // Branch and Book
@@ -84,9 +87,14 @@ export function ChapterEditorProvider({
   const [content, setContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const [wordCount, setWordCount] = useState(chapter?.word_count || 0);
+
+  // Save after 2 secs of no typing
+  const debouncedContent = useDebounce(content, 2000);
+
+  // Ref for unsaved changes
+  const hasUnsavedChanges = useRef(false);
 
   // Load initial data
   useEffect(() => {
@@ -99,7 +107,7 @@ export function ChapterEditorProvider({
 
       setBook(bookData);
       setBranches(branchData);
-      setMainBranch(branchData.find((b) => b.is_main) || branchData[0])
+      setMainBranch(branchData.find((b) => b.is_main) || branchData[0]);
       setCurrentBranch(branchData.find((b) => b.is_main) || branchData[0]);
       setChapter(chapterData);
       setCurrentDraft(chapterData);
@@ -111,28 +119,100 @@ export function ChapterEditorProvider({
   }, [bookId, chapterId]);
 
   // Update unchaved changed when content change
-  useEffect(() => {
-    setHasUnsavedChanges(true);
-  }, [content]);
+  // useEffect(() => {
+  //   setHasUnsavedChanges(true);
+  // }, [content]);
 
   // Autosave every 30 seconds
-  useEffect(() => {
-    if (!hasUnsavedChanges) return;
+  // useEffect(() => {
+  //   if (!hasUnsavedChanges) return;
 
-    const timer = setTimeout(() => {
-      saveContent();
+  //   const timer = setTimeout(() => {
+  //     saveContent();
+  //   }, 30000);
+
+  //   return () => clearTimeout(timer);
+  // }, [content, hasUnsavedChanges]);
+
+  // Saving Logic!
+
+  // Immediate: goes to state happens everytime we type
+  const updateContent = useCallback((newContent: string) => {
+    setContent(newContent);
+    hasUnsavedChanges.current = true;
+  }, []);
+
+  // Debounced: whenever theres a pause with the user typing
+  useEffect(() => {
+    if (!chapterId) return;
+
+    const localKey = `scripthub_draft_${chapterId}`;
+    const draftData = {
+      content: debouncedContent,
+      timeStamp: new Date().toISOString,
+      chapterId: chapterId,
+      bookId: bookId,
+    };
+
+    localStorage.setItem(localKey, JSON.stringify(draftData));
+    console.log("Saved to localStorage");
+  }, [debouncedContent, chapterId, bookId]);
+
+  // Periodic: push to databse every 30 secs
+  useEffect(() => {
+    if (!chapterId || !hasUnsavedChanges.current) return;
+
+    const intervalId = setInterval(async () => {
+      await saveContent();
     }, 30000);
 
-    return () => clearTimeout(timer);
-  }, [content, hasUnsavedChanges]);
+    return () => clearInterval(intervalId);
+  }, [chapterId]);
 
-  const updateContent = (newContent: string) => {
-    setContent(newContent);
-  };
+  // On unmount aka when user reloads page: save immediately
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges.current) {
+        // goes to localStorage
+        const localKey = `scripthub_draft_${chapterId}`;
+        localStorage.setItem(
+          localKey,
+          JSON.stringify({
+            content,
+            timestamp: new Date().toISOString(),
+            chapterId: chapterId,
+          })
+        );
+
+        // TODO: Implement warning user of unsaved changes
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden && hasUnsavedChanges.current) {
+        saveContent(); // Try to save when tab becomes hidden
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+
+      // Save
+      if (hasUnsavedChanges.current) {
+        saveContent();
+      }
+    };
+  }, [content, chapterId]);
 
   const updateWordCount = (newWordCount: number) => {
     setWordCount(newWordCount);
-  }
+  };
 
   const changeTitle = async (newTitle: string) => {
     if (!currentDraft) return;
@@ -147,8 +227,13 @@ export function ChapterEditorProvider({
     try {
       await updateChapter(currentDraft!.id, { content, word_count: wordCount });
 
+      hasUnsavedChanges.current = false;
       setLastSaved(new Date());
-      setHasUnsavedChanges(false);
+      console.log("Saved to database");
+
+      // clear local after succeful db save
+      const localKey = `scripthub_draft_${chapterId}`;
+      localStorage.removeItem(localKey);
     } catch (error) {
       console.error("Error saving:", error);
     } finally {

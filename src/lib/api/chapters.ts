@@ -45,6 +45,10 @@ export async function createChapter(chapterData: NewChapter) {
 }
 
 export async function getChapter(chapterId: string) {
+  // check local!!
+  const localKey = `scripthub_draft_${chapterId}`;
+  const localDraft = localStorage.getItem(localKey);
+
   const { data, error } = await clientSupabase
     .from("chapters")
     .select("*")
@@ -52,6 +56,20 @@ export async function getChapter(chapterId: string) {
     .single();
 
   if (error) throw error;
+
+  if (localDraft) {
+    const draft = JSON.parse(localDraft);
+    const localTimestamp = new Date(draft.timestamp);
+    const dbTimestamp = new Date(data?.updated_at || "");
+
+    if (localTimestamp > dbTimestamp) {
+      // Local is newer - use it and show a notification
+      console.log("📝 Using local draft (newer than database)");
+
+      return { data, content: draft.content };
+    }
+  }
+
   return data;
 }
 
@@ -70,7 +88,7 @@ export async function getBookMainChapters(bookId: string) {
 export async function getChapterCount(bookId: string) {
   const { count, error } = await clientSupabase
     .from("chapters")
-    .select("*", {count: 'exact', head: true})
+    .select("*", { count: "exact", head: true })
     .eq("book_id", bookId)
     .eq("is_main", true)
     .order("order_index", { ascending: true });
@@ -82,11 +100,11 @@ export async function getChapterCount(bookId: string) {
 export async function getDraftCount(mainChapterId: string) {
   const { count, error } = await clientSupabase
     .from("chapters")
-    .select("*", {count: 'exact', head: true})
+    .select("*", { count: "exact", head: true })
     .eq("main_chapter_id", mainChapterId)
     .eq("is_main", false);
 
-  if (error) throw error
+  if (error) throw error;
 
   return count || 0;
 }
@@ -148,9 +166,9 @@ export async function getChapterDrafts(mainChapterId: string) {
     .eq("is_main", false)
     .order("created_at", { ascending: true });
 
-  if (error) throw error
+  if (error) throw error;
 
-  return data
+  return data;
 }
 
 // Create a new draft from an existing chapter/draft
