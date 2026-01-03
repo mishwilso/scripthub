@@ -132,7 +132,6 @@ export default function ForgotPasswordPage() {
                   type="text"
                   placeholder="Enter your new Password"
                   label="New Password"
-                  fullWidth
                   value={password}
                   onChange={handlePasswordChange}
                 />
@@ -140,7 +139,6 @@ export default function ForgotPasswordPage() {
                   type="password"
                   placeholder="Confirm your newPassword"
                   label="Confirm New Password"
-                  fullWidth
                   value={confirmPassword}
                   onChange={handleConfirmPasswordChange}
                 />
