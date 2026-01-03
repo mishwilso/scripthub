@@ -8,6 +8,7 @@ import {
   useRef,
   ReactNode,
   useCallback,
+  RefObject,
 } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Book, getBookById } from "@/lib/api/books";
@@ -45,7 +46,7 @@ interface ChapterEditorContextType {
   // Save status
   isSaving: boolean;
   lastSaved: Date | null;
-  hasUnsavedChanges: boolean;
+  hasUnsavedChanges: RefObject<boolean>;
 
   // Actions
   changeTitle: (newTitle: string) => Promise<void>;

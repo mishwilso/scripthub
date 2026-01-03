@@ -66,12 +66,13 @@ export async function getChapter(chapterId: string) {
       // Local is newer - use it and show a notification
       console.log("📝 Using local draft (newer than database)");
 
-      return { data, content: draft.content };
+      return { ...data, content: draft.content } as Chapter;
     }
   }
 
   return data;
 }
+
 
 export async function getBookMainChapters(bookId: string) {
   const { data, error } = await clientSupabase
