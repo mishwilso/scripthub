@@ -53,6 +53,10 @@
   text-decoration: underline;
 }
 
+.editor-text-strikethrough {
+  text-decoration: line-through;
+}
+
 /* Paragraph styles */
 .editor-paragraph {
   margin: 0;

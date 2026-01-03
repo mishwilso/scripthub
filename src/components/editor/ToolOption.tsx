@@ -18,17 +18,17 @@ export default function ToolOption({
   altText,
   onClick,
 }: ToolOptionProps) {
-
+// [#E6DBCD]
   return (
     <Tooltip text={label} position="left" disabled={isOpen}>
       <button
-        className={`relative flex items-center justify-between h-10 rounded-md hover:bg-neutral-light py-6 transition-colors overflow-hidden gap-3 w-full`}
+        className={`relative flex items-center group justify-between h-10 rounded-md hover:bg-[#E6DBCD] py-6 transition-colors overflow-hidden gap-3 w-full`}
         aria-label={altText}
         onClick={onClick}
       >
         <div className="flex items-center gap-3">
           {/* Icon - stays in fixed position */}
-          <span className="bg-[#E6DBCD] group-hover:bg-secondary-base group-hover:text-neutral-light transition-colors delay-60 duration-300 ml-2 text-secondary-dark flex items-center justify-center p-2 shrink-0 rounded-lg" aria-label={altText}>
+          <span className="bg-[#E6DBCD] border-2 border-[#E6DBCD] group-hover:bg-neutral-light group-hover:border-secondary-dark/75 transition-colors delay-60 duration-400 ml-2 text-secondary-dark flex items-center justify-center p-2 shrink-0 rounded-lg" aria-label={altText}>
             {icon}
           </span>
 

@@ -277,3 +277,19 @@ input:-webkit-autofill:active {
   width: 1.5rem;
   background: linear-gradient(to right, rgba(0, 0, 0, 0.1), white); /* transparent keyword is broken in Safari */
 }
+
+/* Fade in animation for toggleable sections */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
