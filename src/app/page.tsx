@@ -1,14 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import MainNavbar from "@/components/layout/MainNavbar";
 import CustomLink from "@/components/ui/CustomLink";
+import DeveloperModal from "@/components/ui/DeveloperModal";
 import Image from "next/image";
+import { FaLeaf } from "react-icons/fa";
 
 import heroImage from "@/assets/vectors/knowledge-base.png";
 
 export default function HomePage() {
+  const [isDeveloperModalOpen, setIsDeveloperModalOpen] = useState(false);
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col relative">
       <header className="sticky top-0 z-10">
         <MainNavbar />
       </header>
@@ -46,6 +51,29 @@ export default function HomePage() {
           </div>
         </div>
       </main>
+
+      {/* Developer Button - Bottom Left */}
+      <div className="fixed bottom-4 left-4 z-10">
+        <div className="relative group">
+          <button
+            onClick={() => setIsDeveloperModalOpen(true)}
+            className="developer-button flex items-center justify-center w-12 h-12 rounded-md shadow-lg"
+            aria-label="Meet the Developer"
+          >
+            <FaLeaf size={20} color="#FFFFFF" />
+          </button>
+          {/* Tooltip */}
+          <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-neutral-dark text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity">
+            Meet the Developer
+          </div>
+        </div>
+      </div>
+
+      {/* Developer Modal */}
+      <DeveloperModal
+        isOpen={isDeveloperModalOpen}
+        onClose={() => setIsDeveloperModalOpen(false)}
+      />
     </div>
   );
 }
