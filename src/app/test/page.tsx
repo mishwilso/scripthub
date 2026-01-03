@@ -258,9 +258,9 @@ function InputTests({
 
       <TestSection title="Input Sizes">
         <div className="space-y-6 max-w-md">
-          <Input label="Small" size="small" placeholder="Small input" />
-          <Input label="Medium" size="medium" placeholder="Medium input" />
-          <Input label="Large" size="large" placeholder="Large input" />
+          <Input label="Small" placeholder="Small input" />
+          <Input label="Medium" placeholder="Medium input" />
+          <Input label="Large" placeholder="Large input" />
         </div>
       </TestSection>
 
@@ -306,7 +306,6 @@ function InputTests({
       <TestSection title="Full Width">
         <Input
           label="Full Width Input"
-          fullWidth
           placeholder="This input spans the full width"
         />
       </TestSection>
