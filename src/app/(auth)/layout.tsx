@@ -1,9 +1,12 @@
 'use client';
 
 import MainNavbar from "@/components/layout/MainNavbar"
+import { Suspense } from "react";
+import LoadingOverlay from "@/components/ui/LoadingOverlay";
 
 export default function AuthLayout({children}: Readonly<{children: React.ReactNode}>){
     return (
+        <Suspense fallback={<div><LoadingOverlay/></div>}>
         <div className="min-h-screen flex flex-col">
             <header className="sticky top-0 z-10">
                 <MainNavbar />
@@ -12,5 +15,6 @@ export default function AuthLayout({children}: Readonly<{children: React.ReactNo
                 {children}
             </main>
         </div>
+        </Suspense>
     )
 }
