@@ -15,6 +15,7 @@ import { FaRegComments } from "react-icons/fa6";
 import { FiUsers } from "react-icons/fi";
 import { TbUpload } from "react-icons/tb";
 import { AiOutlineInfoCircle } from "react-icons/ai";
+import DeveloperModal from "@/components/ui/DeveloperModal";
 import {
   MdFormatBold,
   MdFormatItalic,
@@ -32,7 +33,8 @@ import {
   MdFormatAlignLeft,
   MdFormatAlignCenter,
   MdFormatAlignRight,
-  MdFormatAlignJustify
+  MdFormatAlignJustify,
+  MdTitle
 } from "react-icons/md";
 import { TbTextColor, TbHighlight, TbLineHeight } from "react-icons/tb";
 
@@ -159,6 +161,8 @@ export function ToolsDetails({
 
 
 const ToolMenu = ({onSelectTool, isOpen}: {onSelectTool: (tool: string) => void, isOpen: boolean}) => {
+  const [isDeveloperModalOpen, setIsDeveloperModalOpen] = useState(false);
+
   return (
     <>
       {/* Tools Content Area - Fixed height to fit on screen */}
@@ -171,7 +175,7 @@ const ToolMenu = ({onSelectTool, isOpen}: {onSelectTool: (tool: string) => void,
           onClick={() => onSelectTool('worldbuilding')}
         />
         <ToolOption
-          icon={<BsFonts size={20} />}
+          icon={<MdTitle size={20} />}
           label="Format"
           isOpen={isOpen}
           altText="Format"
@@ -242,6 +246,7 @@ const ToolMenu = ({onSelectTool, isOpen}: {onSelectTool: (tool: string) => void,
       <div className="px-2 pb-2 flex justify-end shrink-0">
         <div className="relative group">
           <button
+            onClick={() => setIsDeveloperModalOpen(true)}
             className="developer-button flex items-center justify-center w-10 h-10 rounded-md"
             aria-label="Meet the Developer"
           >
@@ -255,6 +260,12 @@ const ToolMenu = ({onSelectTool, isOpen}: {onSelectTool: (tool: string) => void,
           )}
         </div>
       </div>
+
+      {/* Developer Modal */}
+      <DeveloperModal
+        isOpen={isDeveloperModalOpen}
+        onClose={() => setIsDeveloperModalOpen(false)}
+      />
     </>
   );
 };
@@ -325,7 +336,7 @@ const Format = ({isOpen}: ToolPage) => {
             setTextOpen(!textOpen);
             console.log('TEXT section toggled:', !textOpen);
           }}
-          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-neutral-dark/60 hover:bg-neutral-light/50 transition-colors"
+          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-neutral-dark hover:bg-neutral-light/50 transition-colors"
         >
           <span>TEXT</span>
           <span className="text-lg">{textOpen ? '−' : '+'}</span>
@@ -343,7 +354,7 @@ const Format = ({isOpen}: ToolPage) => {
               >
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium">P</span>
-                  <span className="text-sm text-neutral-dark/70">{selectedHeading} ({fontSize})</span>
+                  <span className="text-sm text-neutral-dark">{selectedHeading} ({fontSize})</span>
                 </div>
                 <FiChevronDown className={`transition-transform ${headingOpen ? 'rotate-180' : ''}`} />
               </button>
@@ -362,7 +373,7 @@ const Format = ({isOpen}: ToolPage) => {
                     >
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium">{option.value.toUpperCase()}</span>
-                        <span className="text-sm text-neutral-dark/70">{option.label} ({option.size})</span>
+                        <span className="text-sm text-neutral-dark">{option.label} ({option.size})</span>
                       </div>
                       {selectedHeading === option.label && <span className="text-primary-base">✓</span>}
                     </button>
@@ -380,7 +391,7 @@ const Format = ({isOpen}: ToolPage) => {
                 }}
                 className="w-full flex items-center justify-between px-3 py-2 border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 transition-colors"
               >
-                <span className="text-sm text-neutral-dark/70">{selectedFontStyle}</span>
+                <span className="text-sm text-neutral-dark">{selectedFontStyle}</span>
                 <FiChevronDown className={`transition-transform ${fontStyleOpen ? 'rotate-180' : ''}`} />
               </button>
               {fontStyleOpen && (
@@ -395,7 +406,7 @@ const Format = ({isOpen}: ToolPage) => {
                       }}
                       className="w-full px-3 py-2 text-left hover:bg-neutral-light/50 transition-colors border-b border-neutral-dark/10 last:border-b-0"
                     >
-                      <span className="text-sm text-neutral-dark/70">{font}</span>
+                      <span className="text-sm text-neutral-dark">{font}</span>
                     </button>
                   ))}
                 </div>
@@ -411,7 +422,7 @@ const Format = ({isOpen}: ToolPage) => {
                 }}
                 className="w-full flex items-center justify-between px-3 py-2 border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 transition-colors"
               >
-                <span className="text-sm text-neutral-dark/70">{selectedFontWeight}</span>
+                <span className="text-sm text-neutral-dark">{selectedFontWeight}</span>
                 <FiChevronDown className={`transition-transform ${fontWeightOpen ? 'rotate-180' : ''}`} />
               </button>
               {fontWeightOpen && (
@@ -426,7 +437,7 @@ const Format = ({isOpen}: ToolPage) => {
                       }}
                       className="w-full px-3 py-2 text-left hover:bg-neutral-light/50 transition-colors border-b border-neutral-dark/10 last:border-b-0"
                     >
-                      <span className="text-sm text-neutral-dark/70">{weight}</span>
+                      <span className="text-sm text-neutral-dark">{weight}</span>
                     </button>
                   ))}
                 </div>
@@ -499,7 +510,7 @@ const Format = ({isOpen}: ToolPage) => {
                         <span className="text-sm">+</span>
                       </button>
                     </div>
-                    <span className="flex-1 text-xs text-neutral-dark/70">{spacing}</span>
+                    <span className="flex-1 text-xs text-neutral-dark">{spacing}</span>
                   </div>
                 ))}
               </div>
@@ -562,7 +573,7 @@ const Format = ({isOpen}: ToolPage) => {
             setStylingOpen(!stylingOpen);
             console.log('STYLING section toggled:', !stylingOpen);
           }}
-          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-neutral-dark/60 hover:bg-neutral-light/50 transition-colors"
+          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-neutral-dark hover:bg-neutral-light/50 transition-colors"
         >
           <span>STYLING</span>
           <span className="text-lg">{stylingOpen ? '−' : '+'}</span>
@@ -679,7 +690,7 @@ const Format = ({isOpen}: ToolPage) => {
             setAlignmentOpen(!alignmentOpen);
             console.log('ALIGNMENT section toggled:', !alignmentOpen);
           }}
-          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-neutral-dark/60 hover:bg-neutral-light/50 transition-colors"
+          className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-neutral-dark hover:bg-neutral-light/50 transition-colors"
         >
           <span>ALIGNMENT</span>
           <span className="text-lg">{alignmentOpen ? '−' : '+'}</span>

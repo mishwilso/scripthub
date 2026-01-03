@@ -252,7 +252,7 @@ export default function CreateBookPage() {
           custom_genres: customTags,
           is_public: false,
           title: bookTitle,
-          user_id: user.id,
+          owner_id: user.id,
           word_count: 0,
         });
 
@@ -265,7 +265,7 @@ export default function CreateBookPage() {
           custom_genres: customTags,
           is_public: false,
           title: bookTitle,
-          user_id: user.id,
+          owner_id: user.id,
           word_count: 0,
         });
 
@@ -276,6 +276,7 @@ export default function CreateBookPage() {
         if (bookData && bookData.id) {
           const chapterData = await createChapter({
             book_id: bookData.id,
+            branch_id: 'main',
             order_index: 1,
             title: "Untitled Chapter",
           });

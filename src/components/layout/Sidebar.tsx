@@ -17,6 +17,7 @@ import { FaCirclePlus } from "react-icons/fa6";
 
 import NavLink from "@/components/ui/NavLink";
 import SearchInput from "../ui/SearchInput";
+import DeveloperModal from "@/components/ui/DeveloperModal";
 
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -86,6 +87,7 @@ interface NavProps {
 
 export function Nav({ isOpen, onToggle, isMobile }: NavProps) {
   const [isRecentsOpen, setIsRecentsOpen] = useState(true);
+  const [isDeveloperModalOpen, setIsDeveloperModalOpen] = useState(false);
   const [loading, setLoading] = useState(true)
   const [books, setBooks] = useState([] as { id: string; title: string; }[]);
   const { user } = useAuth();
@@ -234,7 +236,10 @@ export function Nav({ isOpen, onToggle, isMobile }: NavProps) {
       {/* Green Leaf Button at Bottom */}
       <div className="px-2 pb-2 flex">
         <div className="relative group">
-          <button className="developer-button flex items-center justify-center w-10 h-10 rounded-md">
+          <button
+            onClick={() => setIsDeveloperModalOpen(true)}
+            className="developer-button flex items-center justify-center w-10 h-10 rounded-md"
+          >
             <FaLeaf size={18} color="#FFFFFF" />
           </button>
           {/* Tooltip - only show when closed */}
@@ -245,6 +250,12 @@ export function Nav({ isOpen, onToggle, isMobile }: NavProps) {
           )}
         </div>
       </div>
+
+      {/* Developer Modal */}
+      <DeveloperModal
+        isOpen={isDeveloperModalOpen}
+        onClose={() => setIsDeveloperModalOpen(false)}
+      />
     </nav>
   );
 }
