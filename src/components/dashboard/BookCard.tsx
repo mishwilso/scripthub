@@ -17,7 +17,7 @@ export default function BookCard({
   return (
     <div
       className="relative flex transition delay-60 duration-300 ease-in-out group-hover:-translate-y-4 group-hover:scale-105 group-hover:drop-shadow-lg "
-      z-index={10}
+      z-index={1}
       title={title}
     >
       {coverImage ? (

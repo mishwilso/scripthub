@@ -36,12 +36,12 @@ export default function DeveloperModal({ isOpen, onClose }: DeveloperModalProps)
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 z-50 animate-fade-in"
+        className="fixed inset-0 bg-black/50 z-[100] animate-fade-in"
         onClick={onClose}
       />
 
       {/* Modal */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 pointer-events-none">
         <div
           className="relative bg-white-input border border-neutral-dark/20 rounded-lg shadow-2xl max-w-md w-full p-6 pointer-events-auto animate-scale-in"
           onClick={(e) => e.stopPropagation()}

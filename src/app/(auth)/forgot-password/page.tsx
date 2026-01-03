@@ -100,7 +100,6 @@ export default function ForgotPasswordPage() {
               type="email"
               placeholder="Enter your Email"
               label="Email"
-              fullWidth
               value={email}
               onChange={handleEmailChange}
             />
