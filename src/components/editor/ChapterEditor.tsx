@@ -41,6 +41,10 @@ export default function ChapterEditor() {
     "left" | "right" | null
   >(null);
 
+  // Header visibility state for scroll behavior
+  const [showHeader, setShowHeader] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
   // Toggle functions for desktop
   const toggleLeftSidebar = () => setLeftSidebarOpen(!leftSidebarOpen);
   const toggleRightSidebar = () => setRightSidebarOpen(!rightSidebarOpen);
@@ -75,6 +79,24 @@ export default function ChapterEditor() {
     return () => window.removeEventListener("keydown", handleKeyCombination);
 
   }, []);
+
+  // Handle scroll to show/hide header
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const currentScrollY = e.currentTarget.scrollTop;
+
+    if (currentScrollY < 10) {
+      // At the top, always show header
+      setShowHeader(true);
+    } else if (currentScrollY > lastScrollY) {
+      // Scrolling down, hide header
+      setShowHeader(false);
+    } else if (currentScrollY < lastScrollY) {
+      // Scrolling up, show header
+      setShowHeader(true);
+    }
+
+    setLastScrollY(currentScrollY);
+  };
 
   // Edicator Plugin
   const theme = {
@@ -113,7 +135,7 @@ export default function ChapterEditor() {
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="flex flex-col md:flex-row w-full min-h-screen">
+      <div className="flex flex-col md:flex-row w-full h-screen overflow-hidden">
         <BranchSidebar
           isOpen={leftSidebarOpen}
           mobileOpen={mobileSidebarOpen === "left"}
@@ -121,18 +143,26 @@ export default function ChapterEditor() {
           onClose={() => setMobileSidebarOpen(null)}
         />
 
-        <div className="flex flex-col flex-1 min-w-0">
-          <div className="sticky top-0 bg-white-base z-10">
+        <div className="flex flex-col flex-1 min-w-0 h-full relative">
+          <div
+            className="top-0 left-0 right-0 transition-transform duration-300 z-10 bg-white-base"
+            style={{
+              transform: showHeader ? 'translateY(0)' : 'translateY(-100%)',
+              position: showHeader ? 'relative' : 'absolute',
+            }}
+          >
             <EditorHeader
               onToggleLeftSideBar={toggleMobileLeftSidebar}
               onToggleRightSideBar={toggleMobileRightSidebar}
               wordCount={wordCount}
             />
-
-            <ToolBar />
           </div>
 
-          <EditorContent />
+          <div className="flex-1 overflow-y-auto" onScroll={handleScroll}>
+            <EditorContent />
+          </div>
+
+          <ToolBar />
         </div>
 
         <ToolsSidebar

@@ -147,7 +147,7 @@ const ToolMenu = ({onSelectTool, isOpen}: {onSelectTool: (tool: string) => void,
   return (
     <>
       {/* Tools Content Area - Fixed height to fit on screen */}
-      <div className="flex flex-col  py-2 gap-2">
+      <div className="flex flex-col  py-2 gap-1">
         <ToolOption
           icon={<LuBook size={20} />}
           label="World Building"

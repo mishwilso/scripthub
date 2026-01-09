@@ -22,7 +22,7 @@ export default function ToolOption({
   return (
     <Tooltip text={label} position="left" disabled={isOpen}>
       <button
-        className={`relative flex items-center group justify-between h-10 hover:bg-[#E6DBCD] py-7 overflow-hidden gap-3 w-full px-2 transition-colors delay-60 duration-500 `}
+        className={`${isOpen ? 'px-2' : 'px-0'} relative flex items-center group justify-between h-10 hover:bg-[#E6DBCD] py-7 overflow-hidden gap-3 w-full transition-colors delay-60 duration-500 `}
         aria-label={altText}
         onClick={onClick}
       >

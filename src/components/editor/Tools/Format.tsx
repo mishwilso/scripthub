@@ -42,7 +42,7 @@ export default function Format ({isOpen}: {isOpen: boolean}) {
   const [selectedFontStyle, setSelectedFontStyle] = useState('Literata');
   const [selectedFontWeight, setSelectedFontWeight] = useState('Regular');
   const [fontSize, setFontSize] = useState(16);
-  const [selectedTextColor, setSelectedTextColor] = useState('#5e4c3b');
+  const [selectedTextColor, setSelectedTextColor] = useState('#78716C'); // Default to Black median shade
   const [selectedHighlightColor, setSelectedHighlightColor] = useState('#FFFFFF');
 
   // Position state for color pickers
@@ -102,16 +102,16 @@ export default function Format ({isOpen}: {isOpen: boolean}) {
   const fontWeights = ['Light', 'Regular', 'Medium', 'Semi Bold', 'Bold'];
 
   const text_colors = [
-    { name: 'Purple', value: '#A855F7' },
-    { name: 'Blue', value: '#3B82F6' },
-    { name: 'Cyan', value: '#06B6D4' },
-    { name: 'Green', value: '#10B981' },
-    { name: 'Yellow', value: '#EAB308' },
-    { name: 'Orange', value: '#F97316' },
-    { name: 'Red', value: '#EF4444' },
-    { name: 'Pink', value: '#EC4899' },
-    { name: 'Black', value: '#5e4c3b' },
-    { name: 'White', value: '#FFFFFF' },
+    { name: 'Purple', value: '#C084FC', shades: ['#7C3AED', '#A855F7', '#C084FC', '#D8B4FE', '#E9D5FF'] },
+    { name: 'Blue', value: '#60A5FA', shades: ['#2563EB', '#3B82F6', '#60A5FA', '#93C5FD', '#BFDBFE'] },
+    { name: 'Cyan', value: '#22D3EE', shades: ['#0891B2', '#06B6D4', '#22D3EE', '#67E8F9', '#A5F3FC'] },
+    { name: 'Green', value: '#34D399', shades: ['#059669', '#10B981', '#34D399', '#6EE7B7', '#A7F3D0'] },
+    { name: 'Yellow', value: '#FACC15', shades: ['#CA8A04', '#EAB308', '#FACC15', '#FDE047', '#FEF08A'] },
+    { name: 'Orange', value: '#FB923C', shades: ['#EA580C', '#F97316', '#FB923C', '#FDBA74', '#FED7AA'] },
+    { name: 'Red', value: '#F87171', shades: ['#DC2626', '#EF4444', '#F87171', '#FCA5A5', '#FECACA'] },
+    { name: 'Pink', value: '#F472B6', shades: ['#DB2777', '#EC4899', '#F472B6', '#F9A8D4', '#FBCFE8'] },
+    { name: 'Black', value: '#78716C', shades: ['#44403C', '#57534E', '#78716C', '#A8A29E', '#D6D3D1'] },
+    { name: 'White', value: '#E5E5E5', shades: ['#737373', '#A3A3A3', '#E5E5E5', '#F5F5F5', '#FAFAFA'] },
   ];
 
   const highlight_colors = [
@@ -141,9 +141,10 @@ export default function Format ({isOpen}: {isOpen: boolean}) {
             left: `${textColorPickerPosition.left}px`,
           }}
         >
+          {/* Main colors */}
           <div className="grid grid-cols-5 gap-2">
             {text_colors.map((color) => {
-              const isSelected = selectedTextColor === color.value;
+              const isColorFamilySelected = color.shades.includes(selectedTextColor);
               return (
                 <button
                   key={color.name}
@@ -151,30 +152,72 @@ export default function Format ({isOpen}: {isOpen: boolean}) {
                     console.log(`Text color selected:`, color.name);
                     setSelectedTextColor(color.value);
                   }}
-                  className="relative w-10 h-10 rounded-full hover:scale-110 transition-all duration-200 flex items-center justify-center"
+                  className="relative w-6 h-6 rounded-full hover:scale-110 transition-all duration-150 flex items-center justify-center"
                   style={{
-                    padding: isSelected ? '3px' : '0px',
-                    backgroundColor: isSelected ? color.value : 'transparent',
+                    padding: isColorFamilySelected ? '2px' : '0px',
+                    border: isColorFamilySelected ? `2px solid ${color.value}` : 'none',
                     transition: 'all 0.2s ease-in-out',
                   }}
                   title={color.name}
                 >
                   <div
-                    className="w-full h-full rounded-full transition-all duration-200"
+                    className="w-full h-full rounded-full transition-all duration-150"
                     style={{
                       backgroundColor: color.value,
-                      border: isSelected ? 'none' : '2px solid rgba(94, 76, 59, 0.2)',
+                      border: isColorFamilySelected ? 'none' : '2px solid rgba(94, 76, 59, 0.2)',
                     }}
                   />
-                  {isSelected && (
+                  {isColorFamilySelected && (
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <FiCheck size={16} color="white" strokeWidth={3} />
+                      <FiCheck size={12} color="white" strokeWidth={3} />
                     </div>
                   )}
                 </button>
               );
             })}
           </div>
+
+          {/* Shade variations - only show for selected color family */}
+          {text_colors.find(c => c.shades.includes(selectedTextColor)) && (
+            <>
+              <div className="w-full h-px bg-neutral-dark/20 my-3" />
+              <div className="flex gap-2 justify-center">
+                {text_colors
+                  .find(c => c.shades.includes(selectedTextColor))
+                  ?.shades.map((shade, index) => {
+                    const isSelected = selectedTextColor === shade;
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          console.log(`Text shade selected:`, shade);
+                          setSelectedTextColor(shade);
+                        }}
+                        className="relative w-6 h-12 rounded-full hover:scale-110 transition-all duration-150 flex items-center justify-center"
+                        style={{
+                          padding: isSelected ? '2px' : '0px',
+                          border: isSelected ? `2px solid ${shade}` : 'none',
+                        }}
+                        title={`Shade ${index + 1}`}
+                      >
+                        <div
+                          className="w-full h-full rounded-full transition-all duration-500"
+                          style={{
+                            backgroundColor: shade,
+                            border: isSelected ? 'none' : '1px solid rgba(94, 76, 59, 0.15)',
+                          }}
+                        />
+                        {isSelected && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <FiCheck size={10} color="white" strokeWidth={3} />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+              </div>
+            </>
+          )}
         </div>
       )}
 
@@ -202,16 +245,16 @@ export default function Format ({isOpen}: {isOpen: boolean}) {
                     );
                     setSelectedHighlightColor(color.value);
                   }}
-                  className="relative w-10 h-10 rounded-full hover:scale-110 transition-all duration-200 flex items-center justify-center"
+                  className="relative w-6 h-6 rounded-full hover:scale-110 transition-all duration-150 flex items-center justify-center"
                   style={{
-                    padding: isSelected ? '3px' : '0px',
-                    backgroundColor: isSelected ? color.value : 'transparent',
+                    padding: isSelected ? '2px' : '0px',
+                    border: isSelected ? `2px solid ${color.value}` : 'none',
                     transition: 'all 0.2s ease-in-out',
                   }}
                   title={isRemoveOption ? 'Remove highlight' : color.name}
                 >
                   <div
-                    className="relative w-full h-full rounded-full transition-all duration-200 flex items-center justify-center"
+                    className="relative w-full h-full rounded-full transition-all duration-500 flex items-center justify-center"
                     style={{
                       backgroundColor: color.value,
                       border: isSelected ? 'none' : '2px solid rgba(94, 76, 59, 0.2)',
@@ -219,14 +262,14 @@ export default function Format ({isOpen}: {isOpen: boolean}) {
                   >
                     {isRemoveOption && (
                       <div
-                        className="w-6 h-0.5 rotate-45"
+                        className="w-5 h-0.5 rotate-45"
                         style={{ backgroundColor: '#EF4444' }}
                       ></div>
                     )}
                   </div>
                   {isSelected && !isRemoveOption && (
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <FiCheck size={16} color="white" strokeWidth={3} />
+                      <FiCheck size={12} color="white" strokeWidth={3} />
                     </div>
                   )}
                 </button>
