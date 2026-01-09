@@ -23,6 +23,7 @@ import { TableNode, TableCellNode, TableRowNode } from "@lexical/table";
 import { CodeNode } from "@lexical/code";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
+import { TextNode, ParagraphNode } from "lexical";
 
 export default function ChapterEditor() {
   const { wordCount, updateWordCount, content, updateContent } =
@@ -105,8 +106,18 @@ export default function ChapterEditor() {
       italic: "editor-text-italic",
       underline: "editor-text-underline",
       strikethrough: "editor-text-strikethrough",
+      underlineStrikethrough: 'editor-textUnderlineStrikethrough',
     },
     paragraph: "editor-paragraph",
+    heading: {
+      h1: 'editor-heading-h1',
+      h2: 'editor-heading-h2',
+      h3: 'editor-heading-h3',
+      h4: 'editor-heading-h4',
+      h5: 'editor-heading-h5',
+      h6: 'editor-heading-h6',
+    },
+
   };
 
   const initialConfig = {
@@ -130,6 +141,8 @@ export default function ChapterEditor() {
         ListNode,
         ListItemNode,
         QuoteNode,
+        TextNode,
+        ParagraphNode
       ],
   };
 

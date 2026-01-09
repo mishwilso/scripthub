@@ -57,10 +57,40 @@
   text-decoration: line-through;
 }
 
+.editor-textUnderlineStrikethrough {
+  text-decoration-line: underline line-through;
+}
+
 /* Paragraph styles */
 .editor-paragraph {
   margin: 0;
   position: relative;
+}
+
+.editor-heading-1 {
+  font-size: 2em;
+  position: relative;
+}
+
+.editor-heading-2 {
+  font-size: 2em;
+  
+}
+
+.editor-heading-3 {
+  font-size: 2em;
+}
+
+.editor-heading-4 {
+  font-size: 2em;
+}
+
+.editor-heading-5 {
+  font-size: 2em;
+}
+
+.editor-heading-6 {
+
 }
 
 /* Loading state */

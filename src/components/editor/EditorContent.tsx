@@ -156,6 +156,7 @@ function LexicalEditor() {
         contentEditable={
           <ContentEditable className="editor-content-editable" />
         }
+        
         placeholder={
           <div className="editor-placeholder">
             Start writing your chapter...
