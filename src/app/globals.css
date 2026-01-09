@@ -309,3 +309,11 @@ input:-webkit-autofill:active {
 .animate-scale-in {
   animation: scaleIn 0.2s ease-out forwards;
 }
+
+.tooltip {
+  border-radius: 0.5em;
+  background: #fffdfb;
+  color: #5e4c3b;
+  padding: 0.2em 0.5em;
+  font-size: small;
+}

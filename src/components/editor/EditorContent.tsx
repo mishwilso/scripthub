@@ -19,7 +19,12 @@
 
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
-import { $getRoot, $createParagraphNode, $createTextNode } from "lexical";
+import {
+  $getRoot,
+  $createParagraphNode,
+  $createTextNode,
+  TextFormatType,
+} from "lexical";
 import { useChapterEditor } from "@/context/ChapterEditorContext";
 
 // Lexical core
@@ -31,6 +36,14 @@ import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
+
+import {
+  FORMAT_TEXT_COMMAND,
+  KEY_MODIFIER_COMMAND,
+  COMMAND_PRIORITY_EDITOR,
+} from "lexical";
+
+import { TRANSFORMERS, $convertFromMarkdownString } from "@lexical/markdown";
 
 // Styles
 import "./EditorContent.css";
@@ -98,31 +111,73 @@ function ContentSyncPlugin() {
   return <OnChangePlugin onChange={handleChange} ignoreSelectionChange />;
 }
 
+const STRIKTHROUGH_TRANSFORMER = {
+  format: ["strikethrough"] as TextFormatType[],
+  tag: "~~",
+  type: "text-format" as const,
+};
+
+export function StrikethroughPlugin(): null {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    return editor.registerCommand(
+      KEY_MODIFIER_COMMAND,
+      (payload: KeyboardEvent) => {
+        const event = payload;
+
+        if (
+          event.key.toLowerCase() === "x" &&
+          (event.metaKey || event.ctrlKey) &&
+          event.shiftKey
+        ) {
+          event.preventDefault();
+          console.log("Strikethrough Triggered");
+          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough");
+          return true; // Indicates command was handled
+        }
+
+        return false; // Let other handlers process it
+      },
+      COMMAND_PRIORITY_EDITOR
+    );
+  }, [editor]);
+
+  return null;
+}
+
 /**
  * LexicalEditor - The actual Lexical editor component
  */
 function LexicalEditor() {
   return (
-      <div className="editor-container">
-        <RichTextPlugin
-          contentEditable={<ContentEditable className="editor-content-editable" />}
-          placeholder={
-            <div className="editor-placeholder">
-              Start writing your chapter...
-            </div>
-          }
-          ErrorBoundary={LexicalErrorBoundary}
-        />
+    <div className="editor-container">
+      <RichTextPlugin
+        contentEditable={
+          <ContentEditable className="editor-content-editable" />
+        }
+        placeholder={
+          <div className="editor-placeholder">
+            Start writing your chapter...
+          </div>
+        }
+        ErrorBoundary={LexicalErrorBoundary}
+      />
 
-        {/* Undo/Redo support */}
-        <HistoryPlugin />
+      {/* Undo/Redo support */}
+      <HistoryPlugin />
 
-        {/* Markdown shortcuts: **bold**, *italic*, __underline__ */}
-        <MarkdownShortcutPlugin />
+      {/* Markdown shortcuts: **bold**, *italic*, __underline__ */}
+      <MarkdownShortcutPlugin
+        transformers={[...TRANSFORMERS, STRIKTHROUGH_TRANSFORMER]}
+      />
 
-        {/* Sync content with ChapterEditorContext */}
-        <ContentSyncPlugin />
-      </div>
+      {/* Sync content with ChapterEditorContext */}
+      <ContentSyncPlugin />
+
+      {/* Adds Strikethrough Command to EDitor */}
+      <StrikethroughPlugin />
+    </div>
   );
 }
 

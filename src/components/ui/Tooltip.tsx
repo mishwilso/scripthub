@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 
 interface TooltipProps {
   children: ReactNode;
-  text: string;
+  text: string | ReactNode;
   position?: "top" | "bottom" | "left" | "right";
   disabled?: boolean;
   className?: string;
@@ -83,7 +83,7 @@ export default function Tooltip({
         createPortal(
           <div
             ref={tooltipRef}
-            className={`fixed px-2 py-1 bg-neutral-dark text-white-base text-xs rounded whitespace-nowrap pointer-events-none transition-opacity z-9999 ${className}`}
+            className={`fixed px-2 py-1 bg-neutral-dark text-white-base  rounded whitespace-nowrap pointer-events-none transition-opacity z-9999 ${className}`}
             style={{
               top: `${tooltipPos.top}px`,
               left: `${tooltipPos.left}px`,

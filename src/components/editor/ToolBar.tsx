@@ -14,6 +14,7 @@ import {
   COMMAND_PRIORITY_CRITICAL, 
   CAN_REDO_COMMAND, 
   SELECTION_CHANGE_COMMAND,
+  KEY_MODIFIER_COMMAND,
   COMMAND_PRIORITY_EDITOR} from "lexical";
 
 import { $patchStyleText } from "@lexical/selection";
@@ -72,6 +73,25 @@ export default function ToolBar() {
       });
     }
 
+    // const handleKeyDown = (event: KeyboardEvent) => {
+    //   if (
+    //     event.key === 'x' && 
+    //     (event.metaKey || event.ctrlKey) && 
+    //     event.shiftKey
+    //   ) {
+
+    //     event.preventDefault;
+    //     event.stopPropagation;
+
+    //     editor.update(() => {
+    //     editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
+    //     })
+        
+    //   }
+
+    //     return true;
+    // }
+
     useEffect(() => {
 
       editor.registerCommand(
@@ -123,6 +143,7 @@ export default function ToolBar() {
                 <Tool
                 icon={<TbArrowBackUp size={20} />}
                 label="Undo"
+                tooltip={<p>Undo    <span className="tooltip">Ctrl</span> <span className="tooltip">Z</span></p>}
                 onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)}
                 disabled={!canUndo}
                 />
@@ -130,6 +151,7 @@ export default function ToolBar() {
                 <Tool
                 icon={<TbArrowForwardUp size={20} />}
                 label="Redo"
+                tooltip={<p>Redo    <span className="tooltip">Shift</span> <span className="tooltip">Ctrl</span> <span className="tooltip">Z</span></p>}
                 onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)}
                 disabled={!canRedo}
                 />
@@ -160,7 +182,8 @@ export default function ToolBar() {
             <div className="flex mx-2 gap-1">
                 <Tool
                 icon={<MdFormatBold size={20} />}
-                label="Bold Ctrl + B"
+                label="Bold"
+                tooltip={<p>Bold    <span className="tooltip">Ctrl</span> <span className="tooltip">B</span></p>}
                 onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold')}
                 active={isBold}
                 />
@@ -168,6 +191,7 @@ export default function ToolBar() {
                 <Tool
                 icon={<MdFormatItalic size={20} />}
                 label="Italic"
+                tooltip={<p>Italic    <span className="tooltip">Ctrl</span> <span className="tooltip">I</span></p>}
                 onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic')}
                 active={isItalic}
                 />
@@ -175,6 +199,7 @@ export default function ToolBar() {
                 <Tool
                 icon={<MdFormatUnderlined size={20} />}
                 label="Underline"
+                tooltip={<p>Underline    <span className="tooltip">Ctrl</span> <span className="tooltip">U</span></p>}
                 onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline')}
                 active={isUnderlined}
                 />
@@ -182,6 +207,7 @@ export default function ToolBar() {
                 <Tool
                 icon={<MdStrikethroughS size={20} />}
                 label="Strikethrough"
+                tooltip={<p>Strikethrough    <span className="tooltip">Shift</span> <span className="tooltip">Ctrl</span> <span className="tooltip">X</span></p>}
                 onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough')}
                 active={isStrikethrough}
                 />
@@ -237,6 +263,7 @@ export default function ToolBar() {
 interface ToolOptionProps {
   icon: React.ReactNode;
   label: string;
+  tooltip?: React.ReactNode;
   onClick?: () => void;
   disabled?: boolean;
   active?: boolean;
@@ -245,12 +272,13 @@ interface ToolOptionProps {
 function Tool({
   icon,
   label,
+  tooltip,
   onClick,
   disabled,
   active
 }: ToolOptionProps) {
     return(
-            <Tooltip text={label} position="top">
+            <Tooltip text={tooltip || label} position="top">
               <button
                 className={`relative flex items-center justify-center h-10 rounded-md transition-colors 
                   overflow-hidden gap-3 w-full disabled:opacity-55 border
