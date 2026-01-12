@@ -67,30 +67,47 @@
   position: relative;
 }
 
-.editor-heading-1 {
+/* Heading styles */
+.editor-heading-h1 {
   font-size: 2em;
-  position: relative;
+  font-weight: bold;
+  line-height: 1.2;
+  margin: 0.67em 0;
 }
 
-.editor-heading-2 {
-  font-size: 2em;
-  
+.editor-heading-h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  line-height: 1.3;
+  margin: 0.5em 0;
 }
 
-.editor-heading-3 {
-  font-size: 2em;
+.editor-heading-h3 {
+  font-size: 1.25em;
+  font-weight: bold;
+  line-height: 1.4;
+  margin: 0.5em 0;
 }
 
-.editor-heading-4 {
-  font-size: 2em;
+.editor-heading-h4 {
+  font-size: 1.1em;
+  font-weight: bold;
+  line-height: 1.4;
+  margin: 0.5em 0;
 }
 
-.editor-heading-5 {
-  font-size: 2em;
+.editor-heading-h5 {
+  font-size: 1em;
+  font-weight: bold;
+  line-height: 1.4;
+  margin: 0.5em 0;
 }
 
-.editor-heading-6 {
-
+.editor-heading-h6 {
+  font-size: 0.9em;
+  font-weight: bold;
+  line-height: 1.4;
+  margin: 0.5em 0;
 }
 
 /* Loading state */
