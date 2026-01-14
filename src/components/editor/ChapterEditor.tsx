@@ -24,6 +24,7 @@ import { CodeNode } from "@lexical/code";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import { TextNode, ParagraphNode } from "lexical";
+import { CaptionNode } from "./nodes/CaptionNode";
 
 export default function ChapterEditor() {
   const { wordCount, updateWordCount, content, updateContent } =
@@ -117,6 +118,7 @@ export default function ChapterEditor() {
       h5: 'editor-heading-h5',
       h6: 'editor-heading-h6',
     },
+    caption: "editor-caption",
 
   };
 
@@ -142,7 +144,8 @@ export default function ChapterEditor() {
         ListItemNode,
         QuoteNode,
         TextNode,
-        ParagraphNode
+        ParagraphNode,
+        CaptionNode
       ],
   };
 

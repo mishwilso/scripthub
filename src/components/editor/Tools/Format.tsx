@@ -1,3 +1,238 @@
+/**
+ * Format Tool Component
+ *
+ * This component provides text formatting controls for the Lexical editor.
+ * It handles text styling, colors, alignment, and various formatting options.
+ *
+ * ============================================================================
+ * LEXICAL EDITOR INTEGRATION NOTES
+ * ============================================================================
+ *
+ * 1. GETTING EDITOR CONTEXT:
+ *    - Import: import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+ *    - Usage: const [editor] = useLexicalComposerContext();
+ *    - This component needs to be a child of <LexicalComposer> to access the editor
+ *
+ * 2. APPLYING TEXT FORMATTING:
+ *    - Bold/Italic/Underline/Strikethrough:
+ *      editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold' | 'italic' | 'underline' | 'strikethrough');
+ *
+ *    - Text Color:
+ *      import { $patchStyleText } from "@lexical/selection";
+ *      editor.update(() => {
+ *        const selection = $getSelection();
+ *        if ($isRangeSelection(selection)) {
+ *          $patchStyleText(selection, { color: '#FF0000' });
+ *        }
+ *      });
+ *
+ *    - Background/Highlight Color:
+ *      editor.update(() => {
+ *        const selection = $getSelection();
+ *        if ($isRangeSelection(selection)) {
+ *          $patchStyleText(selection, { 'background-color': '#FFFF00' });
+ *        }
+ *      });
+ *
+ *    - Font Size:
+ *      editor.update(() => {
+ *        const selection = $getSelection();
+ *        if ($isRangeSelection(selection)) {
+ *          $patchStyleText(selection, { 'font-size': '24px' });
+ *        }
+ *      });
+ *
+ *    - Font Family:
+ *      editor.update(() => {
+ *        const selection = $getSelection();
+ *        if ($isRangeSelection(selection)) {
+ *          $patchStyleText(selection, { 'font-family': 'Arial, sans-serif' });
+ *        }
+ *      });
+ *
+ *    - Font Weight:
+ *      editor.update(() => {
+ *        const selection = $getSelection();
+ *        if ($isRangeSelection(selection)) {
+ *          $patchStyleText(selection, { 'font-weight': '700' }); // 300=light, 400=regular, 500=medium, 600=semibold, 700=bold
+ *        }
+ *      });
+ *
+ * 3. HEADINGS (Block-level formatting):
+ *    import { $setBlocksType } from "@lexical/selection";
+ *    import { $createHeadingNode, HeadingNode } from "@lexical/rich-text";
+ *
+ *    // Register HeadingNode in editor config: nodes: [HeadingNode]
+ *
+ *    const formatHeading = (headingTag: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6') => {
+ *      editor.update(() => {
+ *        const selection = $getSelection();
+ *        if ($isRangeSelection(selection)) {
+ *          $setBlocksType(selection, () => $createHeadingNode(headingTag));
+ *        }
+ *      });
+ *    };
+ *
+ *    // Convert back to paragraph:
+ *    import { $createParagraphNode } from "lexical";
+ *    editor.update(() => {
+ *      const selection = $getSelection();
+ *      if ($isRangeSelection(selection)) {
+ *        $setBlocksType(selection, () => $createParagraphNode());
+ *      }
+ *    });
+ *
+ * 4. TEXT ALIGNMENT:
+ *    import { FORMAT_ELEMENT_COMMAND } from "lexical";
+ *    editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left' | 'center' | 'right' | 'justify');
+ *
+ * 5. LISTS:
+ *    import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, REMOVE_LIST_COMMAND } from "@lexical/list";
+ *    import { ListNode, ListItemNode } from "@lexical/list";
+ *
+ *    // Register nodes: nodes: [ListNode, ListItemNode]
+ *
+ *    // Bulleted list:
+ *    editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
+ *
+ *    // Numbered list:
+ *    editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
+ *
+ *    // Remove list:
+ *    editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined);
+ *
+ * 6. INDENTATION:
+ *    import { INDENT_CONTENT_COMMAND, OUTDENT_CONTENT_COMMAND } from "lexical";
+ *    editor.dispatchCommand(INDENT_CONTENT_COMMAND, undefined);
+ *    editor.dispatchCommand(OUTDENT_CONTENT_COMMAND, undefined);
+ *
+ * 7. QUOTES:
+ *    import { $createQuoteNode, QuoteNode } from "@lexical/rich-text";
+ *    import { $setBlocksType } from "@lexical/selection";
+ *
+ *    // Register node: nodes: [QuoteNode]
+ *
+ *    editor.update(() => {
+ *      const selection = $getSelection();
+ *      if ($isRangeSelection(selection)) {
+ *        $setBlocksType(selection, () => $createQuoteNode());
+ *      }
+ *    });
+ *
+ * 8. CODE BLOCKS:
+ *    import { $createCodeNode, CodeNode } from "@lexical/code";
+ *    import { $setBlocksType } from "@lexical/selection";
+ *
+ *    // Register node: nodes: [CodeNode]
+ *
+ *    editor.update(() => {
+ *      const selection = $getSelection();
+ *      if ($isRangeSelection(selection)) {
+ *        $setBlocksType(selection, () => $createCodeNode());
+ *      }
+ *    });
+ *
+ * 9. LINKS:
+ *    import { TOGGLE_LINK_COMMAND, LinkNode } from "@lexical/link";
+ *
+ *    // Register node: nodes: [LinkNode]
+ *
+ *    // Add link:
+ *    editor.dispatchCommand(TOGGLE_LINK_COMMAND, 'https://example.com');
+ *
+ *    // Remove link:
+ *    editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
+ *
+ * 10. CLEAR FORMATTING:
+ *     import { $getSelection, $isRangeSelection } from "lexical";
+ *     import { $patchStyleText } from "@lexical/selection";
+ *
+ *     const clearFormatting = () => {
+ *       editor.update(() => {
+ *         const selection = $getSelection();
+ *         if ($isRangeSelection(selection)) {
+ *           // Clear inline styles
+ *           $patchStyleText(selection, {
+ *             'font-size': null,
+ *             'font-family': null,
+ *             'font-weight': null,
+ *             'color': null,
+ *             'background-color': null,
+ *           });
+ *           // Clear text formats
+ *           selection.getTextContent(); // forces update
+ *           if (selection.hasFormat('bold')) editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
+ *           if (selection.hasFormat('italic')) editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
+ *           if (selection.hasFormat('underline')) editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
+ *           if (selection.hasFormat('strikethrough')) editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
+ *         }
+ *       });
+ *     };
+ *
+ * 11. DETECTING CURRENT FORMAT (for active states):
+ *     useEffect(() => {
+ *       return editor.registerUpdateListener(({ editorState }) => {
+ *         editorState.read(() => {
+ *           const selection = $getSelection();
+ *           if ($isRangeSelection(selection)) {
+ *             // Check text formats
+ *             setIsBold(selection.hasFormat('bold'));
+ *             setIsItalic(selection.hasFormat('italic'));
+ *             setIsUnderline(selection.hasFormat('underline'));
+ *             setIsStrikethrough(selection.hasFormat('strikethrough'));
+ *
+ *             // Check inline styles (color, font-size, etc.)
+ *             const style = selection.style;
+ *             // Parse style string or use $getSelectionStyleValueForProperty
+ *           }
+ *         });
+ *       });
+ *     }, [editor]);
+ *
+ * 12. LINE SPACING / LETTER SPACING:
+ *     editor.update(() => {
+ *       const selection = $getSelection();
+ *       if ($isRangeSelection(selection)) {
+ *         $patchStyleText(selection, {
+ *           'line-height': '1.5',      // Line height
+ *           'letter-spacing': '0.05em', // Letter spacing
+ *           'word-spacing': '0.1em',    // Word spacing
+ *         });
+ *       }
+ *     });
+ *
+ *     // For paragraph spacing, you may need custom CSS or a custom node
+ *
+ * ============================================================================
+ * REQUIRED IMPORTS FOR FULL IMPLEMENTATION
+ * ============================================================================
+ *
+ * import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+ * import {
+ *   $getSelection,
+ *   $isRangeSelection,
+ *   $createParagraphNode,
+ *   FORMAT_TEXT_COMMAND,
+ *   FORMAT_ELEMENT_COMMAND,
+ *   INDENT_CONTENT_COMMAND,
+ *   OUTDENT_CONTENT_COMMAND,
+ * } from "lexical";
+ * import { $patchStyleText, $setBlocksType } from "@lexical/selection";
+ * import { $createHeadingNode } from "@lexical/rich-text";
+ * import { $createQuoteNode } from "@lexical/rich-text";
+ * import { $createCodeNode } from "@lexical/code";
+ * import { TOGGLE_LINK_COMMAND } from "@lexical/link";
+ * import {
+ *   INSERT_ORDERED_LIST_COMMAND,
+ *   INSERT_UNORDERED_LIST_COMMAND,
+ *   REMOVE_LIST_COMMAND,
+ * } from "@lexical/list";
+ *
+ * ============================================================================
+ * IMPLEMENTATION TODOS
+ * ============================================================================
+ */
+
 import { useState, useRef, useEffect } from "react";
 
 import {
@@ -23,8 +258,14 @@ import {
 import { TbTextColor, TbHighlight, TbLineHeight } from "react-icons/tb";
 
 import { FiChevronLeft, FiChevronDown, FiCheck } from 'react-icons/fi';
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { $getSelection, $isRangeSelection, FORMAT_TEXT_COMMAND, FORMAT_ELEMENT_COMMAND } from "lexical";
+import { $getSelectionStyleValueForProperty, $patchStyleText, $setBlocksType } from "@lexical/selection";
+import { $isHeadingNode, HeadingTagType } from "@lexical/rich-text";
 
 export default function Format ({isOpen}: {isOpen: boolean}) {
+  const [editor] = useLexicalComposerContext();
+
   const [textOpen, setTextOpen] = useState(true);
   const [stylingOpen, setStylingOpen] = useState(false);
   const [alignmentOpen, setAlignmentOpen] = useState(false);
@@ -38,12 +279,72 @@ export default function Format ({isOpen}: {isOpen: boolean}) {
   const [highlightPickerOpen, setHighlightPickerOpen] = useState(false);
 
   // Current selections
-  const [selectedHeading, setSelectedHeading] = useState('Paragraph');
+  // TODO: These should sync with the current selection in the editor
+  // Use editor.registerUpdateListener to detect current format state
+  const [selectedHeading, setSelectedHeading] = useState('p');
   const [selectedFontStyle, setSelectedFontStyle] = useState('Literata');
   const [selectedFontWeight, setSelectedFontWeight] = useState('Regular');
   const [fontSize, setFontSize] = useState(16);
   const [selectedTextColor, setSelectedTextColor] = useState('#78716C'); // Default to Black median shade
   const [selectedHighlightColor, setSelectedHighlightColor] = useState('#FFFFFF');
+
+  // TODO: Add active states for formatting buttons (detect from selection)
+  // const [isBold, setIsBold] = useState(false);
+  // const [isItalic, setIsItalic] = useState(false);
+  // const [isUnderline, setIsUnderline] = useState(false);
+  // const [isStrikethrough, setIsStrikethrough] = useState(false);
+  // const [currentAlignment, setCurrentAlignment] = useState<'left' | 'center' | 'right' | 'justify'>('left');
+
+  // 
+  const headingStyleMap = new Map<HeadingTagType, string>([
+    ['h1', 'Heading 1'],
+    ['h2', 'Heading 2'],
+    ['h3', 'Heading 3'],
+    ['h4', 'Heading 4'],
+    ['h5', 'Heading 5'],
+    ['h6', 'Heading 6'],
+  ])
+
+  // TODO: Register update listener to detect current format from selection
+  // useEffect(() => {
+  //   return editor.registerUpdateListener(({ editorState }) => {
+  //     editorState.read(() => {
+  //       const selection = $getSelection();
+  //       if ($isRangeSelection(selection)) {
+  //         // Detect text formats
+  //         setIsBold(selection.hasFormat('bold'));
+  //         setIsItalic(selection.hasFormat('italic'));
+  //         setIsUnderline(selection.hasFormat('underline'));
+  //         setIsStrikethrough(selection.hasFormat('strikethrough'));
+  //
+  //         // Detect inline styles (font-size, color, etc.)
+  //         // Use $getSelectionStyleValueForProperty or parse selection.style
+  //
+  //         // Detect block type (heading, paragraph, etc.)
+  //         // const anchorNode = selection.anchor.getNode();
+  //         // Check parent node type
+  //       }
+  //     });
+  //   });
+  // }, [editor]);
+
+  useEffect(() => {
+    // listen to updates from the editor
+    return editor.registerUpdateListener(({ editorState }) => {
+      editorState.read(() => {
+        const selection = $getSelection();
+        
+        if ($isRangeSelection(selection)){
+          // Now we grab the text formats :)
+          // setSelectedHeading($getSelectionStyleValueForProperty())
+          const node = selection.getNodes()[0];
+          setSelectedHeading($isHeadingNode(node) 
+          ? headingStyleMap.get(node.getTag()) ?? "Paragraph" 
+          : "Paragraph");
+        }
+      });
+    });
+  },[editor]);
 
   // Position state for color pickers
   const [textColorPickerPosition, setTextColorPickerPosition] = useState({ top: 0, left: 0 });
@@ -89,17 +390,120 @@ export default function Format ({isOpen}: {isOpen: boolean}) {
     };
   }, [colorPickerOpen, highlightPickerOpen]);
 
+  // TODO: Implement heading change handler
+  // const applyHeading = (headingTag: 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'caption') => {
+  //   editor.update(() => {
+  //     const selection = $getSelection();
+  //     if ($isRangeSelection(selection)) {
+  //       if (headingTag === 'p' || headingTag === 'caption') {
+  //         $setBlocksType(selection, () => $createParagraphNode());
+  //       } else {
+  //         $setBlocksType(selection, () => $createHeadingNode(headingTag));
+  //       }
+  //     }
+  //   });
+  // };
+
   const headingOptions = [
     { label: 'Paragraph', value: 'p', size: 16 },
     { label: 'Heading 1', value: 'h1', size: 32 },
     { label: 'Heading 2', value: 'h2', size: 24 },
     { label: 'Heading 3', value: 'h3', size: 20 },
     { label: 'Heading 4', value: 'h4', size: 18 },
+    { label: 'Heading 5', value: 'h5', size: 16 },
+    { label: 'Heading 6', value: 'h6', size: 14 },
     { label: 'Caption', value: 'caption', size: 12 },
   ];
 
+  // TODO: Implement font family change handler
+  // const applyFontFamily = (fontFamily: string) => {
+  //   editor.update(() => {
+  //     const selection = $getSelection();
+  //     if ($isRangeSelection(selection)) {
+  //       $patchStyleText(selection, { 'font-family': fontFamily });
+  //     }
+  //   });
+  // };
+
   const fontStyles = ['Literata', 'Arial', 'Times New Roman', 'Courier New'];
+
+  // TODO: Implement font weight change handler
+  // const applyFontWeight = (weight: string) => {
+  //   const weightMap: Record<string, string> = {
+  //     'Light': '300',
+  //     'Regular': '400',
+  //     'Medium': '500',
+  //     'Semi Bold': '600',
+  //     'Bold': '700',
+  //   };
+  //   editor.update(() => {
+  //     const selection = $getSelection();
+  //     if ($isRangeSelection(selection)) {
+  //       $patchStyleText(selection, { 'font-weight': weightMap[weight] });
+  //     }
+  //   });
+  // };
+
   const fontWeights = ['Light', 'Regular', 'Medium', 'Semi Bold', 'Bold'];
+
+  // TODO: Implement font size change handler
+  // const applyFontSize = (size: number) => {
+  //   editor.update(() => {
+  //     const selection = $getSelection();
+  //     if ($isRangeSelection(selection)) {
+  //       $patchStyleText(selection, { 'font-size': `${size}px` });
+  //     }
+  //   });
+  // };
+
+  // TODO: Implement text color change handler
+  // const applyTextColor = (color: string) => {
+  //   editor.update(() => {
+  //     const selection = $getSelection();
+  //     if ($isRangeSelection(selection)) {
+  //       $patchStyleText(selection, { color: color });
+  //     }
+  //   });
+  // };
+
+  // TODO: Implement highlight/background color change handler
+  // const applyHighlightColor = (color: string) => {
+  //   editor.update(() => {
+  //     const selection = $getSelection();
+  //     if ($isRangeSelection(selection)) {
+  //       // Use null to remove highlight
+  //       $patchStyleText(selection, { 'background-color': color === '#FFFFFF' ? null : color });
+  //     }
+  //   });
+  // };
+
+  // TODO: Implement line spacing handlers
+  // const applyLineHeight = (value: string) => {
+  //   editor.update(() => {
+  //     const selection = $getSelection();
+  //     if ($isRangeSelection(selection)) {
+  //       $patchStyleText(selection, { 'line-height': value });
+  //     }
+  //   });
+  // };
+  //
+  // const applyLetterSpacing = (value: string) => {
+  //   editor.update(() => {
+  //     const selection = $getSelection();
+  //     if ($isRangeSelection(selection)) {
+  //       $patchStyleText(selection, { 'letter-spacing': value });
+  //     }
+  //   });
+  // };
+  //
+  // const applyWordSpacing = (value: string) => {
+  //   editor.update(() => {
+  //     const selection = $getSelection();
+  //     if ($isRangeSelection(selection)) {
+  //       $patchStyleText(selection, { 'word-spacing': value });
+  //     }
+  //   });
+  // };
 
   const text_colors = [
     { name: 'Purple', value: '#C084FC', shades: ['#7C3AED', '#A855F7', '#C084FC', '#D8B4FE', '#E9D5FF'] },
@@ -533,27 +937,34 @@ export default function Format ({isOpen}: {isOpen: boolean}) {
         {stylingOpen && (
           <div className="px-4 py-3 space-y-3 animate-fade-in">
             {/* Bold, Italic, Strikethrough, Underline */}
+            {/* TODO: Add active state styling (e.g., bg-primary-base/20) when format is active */}
+            {/* TODO: Use isBold, isItalic, etc. states to show active state */}
             <div className="grid grid-cols-4 gap-2">
               <button
                 onClick={() => console.log('Bold clicked')}
+                // TODO: onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold')}
+                // TODO: Add className conditionally: ${isBold ? 'bg-primary-base/20 border-primary-base' : ''}
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdFormatBold size={20} />
               </button>
               <button
                 onClick={() => console.log('Italic clicked')}
+                // TODO: onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic')}
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdFormatItalic size={20} />
               </button>
               <button
                 onClick={() => console.log('Strikethrough clicked')}
+                // TODO: onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough')}
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdFormatStrikethrough size={20} />
               </button>
               <button
                 onClick={() => console.log('Underline clicked')}
+                // TODO: onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline')}
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdFormatUnderlined size={20} />
@@ -561,27 +972,33 @@ export default function Format ({isOpen}: {isOpen: boolean}) {
             </div>
 
             {/* Lists and Indents */}
+            {/* TODO: Add list state detection - check if current block is in a list */}
             <div className="grid grid-cols-4 gap-2">
               <button
                 onClick={() => console.log('Bulleted list clicked')}
+                // TODO: onClick={() => editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined)}
+                // TODO: Toggle list off if already in bulleted list: editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined)
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdFormatListBulleted size={20} />
               </button>
               <button
                 onClick={() => console.log('Numbered list clicked')}
+                // TODO: onClick={() => editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined)}
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdFormatListNumbered size={20} />
               </button>
               <button
                 onClick={() => console.log('Indent increase clicked')}
+                // TODO: onClick={() => editor.dispatchCommand(INDENT_CONTENT_COMMAND, undefined)}
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdFormatIndentIncrease size={20} />
               </button>
               <button
                 onClick={() => console.log('Indent decrease clicked')}
+                // TODO: onClick={() => editor.dispatchCommand(OUTDENT_CONTENT_COMMAND, undefined)}
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdFormatIndentDecrease size={20} />
@@ -592,24 +1009,45 @@ export default function Format ({isOpen}: {isOpen: boolean}) {
             <div className="grid grid-cols-4 gap-2">
               <button
                 onClick={() => console.log('Quote clicked')}
+                // TODO: onClick={() => {
+                //   editor.update(() => {
+                //     const selection = $getSelection();
+                //     if ($isRangeSelection(selection)) {
+                //       $setBlocksType(selection, () => $createQuoteNode());
+                //     }
+                //   });
+                // }}
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdFormatQuote size={20} />
               </button>
               <button
                 onClick={() => console.log('Code block clicked')}
+                // TODO: onClick={() => {
+                //   editor.update(() => {
+                //     const selection = $getSelection();
+                //     if ($isRangeSelection(selection)) {
+                //       $setBlocksType(selection, () => $createCodeNode());
+                //     }
+                //   });
+                // }}
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdCode size={20} />
               </button>
               <button
                 onClick={() => console.log('Link clicked')}
+                // TODO: Open a modal/popover to enter URL, then:
+                // editor.dispatchCommand(TOGGLE_LINK_COMMAND, url);
+                // If already a link, use: editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdLink size={20} />
               </button>
               <button
                 onClick={() => console.log('Clear formatting clicked')}
+                // TODO: Implement clearFormatting() function (see notes at top of file)
+                // Should clear: bold, italic, underline, strikethrough, color, background-color, font-size, font-family, font-weight
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdFormatClear size={20} />
@@ -620,12 +1058,16 @@ export default function Format ({isOpen}: {isOpen: boolean}) {
             <div className="grid grid-cols-4 gap-2">
               <button
                 onClick={() => console.log('Image clicked')}
+                // TODO: Open file picker or image URL modal
+                // Then insert image node into editor
+                // May need custom ImageNode - see Lexical ImageNode plugin
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdImage size={20} />
               </button>
               <button
                 onClick={() => console.log('Clear formatting clicked')}
+                // TODO: Same as above - implement clearFormatting()
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdFormatClear size={20} />
@@ -649,27 +1091,34 @@ export default function Format ({isOpen}: {isOpen: boolean}) {
         </button>
         {alignmentOpen && (
           <div className="px-4 py-3 animate-fade-in">
+            {/* TODO: Add active state detection for current alignment */}
+            {/* TODO: Use currentAlignment state to highlight active button */}
             <div className="grid grid-cols-4 gap-2">
               <button
                 onClick={() => console.log('Align left clicked')}
+                // TODO: onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left')}
+                // TODO: Add active class: ${currentAlignment === 'left' ? 'bg-primary-base/20 border-primary-base' : ''}
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdFormatAlignLeft size={20} />
               </button>
               <button
                 onClick={() => console.log('Align center clicked')}
+                // TODO: onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center')}
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdFormatAlignCenter size={20} />
               </button>
               <button
                 onClick={() => console.log('Align right clicked')}
+                // TODO: onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right')}
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdFormatAlignRight size={20} />
               </button>
               <button
                 onClick={() => console.log('Align justify clicked')}
+                // TODO: onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify')}
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdFormatAlignJustify size={20} />

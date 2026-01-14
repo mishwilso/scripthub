@@ -90,24 +90,37 @@
 }
 
 .editor-heading-h4 {
-  font-size: 1.1em;
+  font-size: 1.125em;
   font-weight: bold;
   line-height: 1.4;
   margin: 0.5em 0;
 }
 
 .editor-heading-h5 {
-  font-size: 1em;
+  font-size: 1em; /* 16px */
   font-weight: bold;
   line-height: 1.4;
   margin: 0.5em 0;
 }
 
 .editor-heading-h6 {
-  font-size: 0.9em;
+  font-size: 0.9em; /* 14px */
   font-weight: bold;
   line-height: 1.4;
   margin: 0.5em 0;
+}
+
+.editor-caption {
+  font-size: 0.75em; /* 12px */
+  font-style: italic;
+  text-align: center;
+  font-weight: bold;
+
+  color: #6b7280;
+  margin: 0.5rem 0;
+  padding: 0.25rem;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 /* Loading state */
