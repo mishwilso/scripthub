@@ -137,7 +137,7 @@ export default function ToolBar() {
     return (
         <div className="overflow-scroll-gradient">
         <div className="overflow-x-auto overflow-y-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-            <div className="z-20 lg:fixed h-fit lg:bottom-0 lg:left-0 lg:right-0 lg:bg-secondary-base lg:rounded-2xl lg:mb-10 py-1 px-2 flex items-start lg:items-center justify-center divide-x-2 divide-secondary-dark lg:divide-white-base lg:w-fit mx-auto border-b border-neutral-dark/10 lg:border-b-0 w-max lg:shadow-[0_0_25px_rgba(0,0,0,0.25)]"> 
+            <div className="z-0 lg:fixed h-fit lg:bottom-0 lg:left-0 lg:right-0 lg:bg-secondary-base lg:rounded-2xl lg:mb-10 py-1 px-2 flex items-start lg:items-center justify-center divide-x-2 divide-secondary-dark lg:divide-white-base lg:w-fit mx-auto border-b border-neutral-dark/10 lg:border-b-0 w-max lg:shadow-[0_0_25px_rgba(0,0,0,0.25)]"> 
         
             <div className="flex items-start mr-2 gap-1">
                 <Tool
@@ -154,14 +154,6 @@ export default function ToolBar() {
                 tooltip={<p>Redo    <span className="tooltip">Shift</span> <span className="tooltip">Ctrl</span> <span className="tooltip">Z</span></p>}
                 onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)}
                 disabled={!canRedo}
-                />
-            </div>
-
-            <div className="flex mx-2 gap-1">
-              <Tool
-                icon={<MdTitle className="" size={20} />}
-                label="Format"
-                onClick={() => console.log("Format")}
                 />
             </div>
 
