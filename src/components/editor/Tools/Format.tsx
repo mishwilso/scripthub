@@ -233,7 +233,7 @@
  * ============================================================================
  */
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 
 import {
   MdFormatBold,
@@ -313,14 +313,18 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
   // const [currentAlignment, setCurrentAlignment] = useState<'left' | 'center' | 'right' | 'justify'>('left');
 
   //
-  const headingStyleMap = new Map<HeadingTagType, string>([
-    ["h1", "Heading 1"],
-    ["h2", "Heading 2"],
-    ["h3", "Heading 3"],
-    ["h4", "Heading 4"],
-    ["h5", "Heading 5"],
-    ["h6", "Heading 6"],
-  ]);
+  const headingStyleMap = useMemo(
+    () =>
+      new Map<HeadingTagType, string>([
+        ["h1", "Heading 1"],
+        ["h2", "Heading 2"],
+        ["h3", "Heading 3"],
+        ["h4", "Heading 4"],
+        ["h5", "Heading 5"],
+        ["h6", "Heading 6"],
+      ]),
+    []
+  );
 
   // TODO: Register update listener to detect current format from selection
   // useEffect(() => {
@@ -359,17 +363,10 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
           setSelectedHeading(
             $isHeadingNode(element)
               ? headingStyleMap.get(element.getTag()) ?? "None Found"
-              : element.getType() === "caption" ? "Caption" : "Paragraph"
+              : element.getType() === "caption"
+              ? "Caption"
+              : "Paragraph"
           );
-
-          // console.log({
-          //   nodeType: anchorNode.getType(),
-          //   nodeKey: anchorNode.getKey(),
-          //   elementType: element.getType(),
-          //   elementKey: element.getKey(),
-          //   isHeading: $isHeadingNode(element),
-          //   tag: $isHeadingNode(element) ? element.getTag() : "not a heading",
-          // });
         }
       });
     });
