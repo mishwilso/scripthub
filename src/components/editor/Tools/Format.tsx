@@ -326,6 +326,13 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
     []
   );
 
+  const getButtonClass = (isActive: boolean) =>
+  `flex items-center justify-center aspect-square border rounded-md transition-colors ${
+    isActive 
+      ? 'bg-primary-base/20 border-primary-base' 
+      : 'border-neutral-dark/20 hover:bg-neutral-light/30 active:bg-neutral-dark/20'
+  }`;
+
   // TODO: Register update listener to detect current format from selection
   // useEffect(() => {
   //   return editor.registerUpdateListener(({ editorState }) => {
@@ -1069,31 +1076,26 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
             {/* TODO: Use isBold, isItalic, etc. states to show active state */}
             <div className="grid grid-cols-4 gap-2">
               <button
-                onClick={() => console.log("Bold clicked")}
-                // TODO: onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold')}
-                // TODO: Add className conditionally: ${isBold ? 'bg-primary-base/20 border-primary-base' : ''}
-                className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
+                onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold')}
+                className={getButtonClass(isBold)}
               >
                 <MdFormatBold size={20} />
               </button>
               <button
-                onClick={() => console.log("Italic clicked")}
-                // TODO: onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic')}
-                className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
+                onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic')}
+                className={getButtonClass(isItalic)}  
               >
                 <MdFormatItalic size={20} />
               </button>
               <button
-                onClick={() => console.log("Strikethrough clicked")}
-                // TODO: onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough')}
-                className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
+                onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough')}
+                className={getButtonClass(isStrikethrough)}
               >
                 <MdFormatStrikethrough size={20} />
               </button>
               <button
-                onClick={() => console.log("Underline clicked")}
-                // TODO: onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline')}
-                className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
+                onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline')}
+                className={getButtonClass(isUnderline)}
               >
                 <MdFormatUnderlined size={20} />
               </button>
