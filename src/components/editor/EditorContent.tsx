@@ -25,6 +25,7 @@ import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin"
 
 // Plugins
 import { ContentSyncPlugin } from "./plugin/ContentSyncPlugin";
@@ -70,7 +71,9 @@ function LexicalEditor() {
       {/* Adds Strikethrough Command to EDitor */}
       <StrikethroughPlugin />
 
-      {/* Adds  */}
+      {/* Adds Lists*/}
+      <ListPlugin />
+
     </div>
   );
 }

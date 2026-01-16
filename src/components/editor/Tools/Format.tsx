@@ -277,6 +277,15 @@ import {
 } from "@lexical/rich-text";
 import { $createCaptionNode } from "../nodes/CaptionNode";
 
+import {
+  $isListNode,
+  INSERT_ORDERED_LIST_COMMAND,
+  INSERT_UNORDERED_LIST_COMMAND,
+  ListNode,
+  REMOVE_LIST_COMMAND,
+} from "@lexical/list";
+import { $getNearestNodeOfType } from "@lexical/utils";
+
 type HeadingTag = "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "caption";
 
 export default function Format({ isOpen }: { isOpen: boolean }) {
@@ -311,6 +320,8 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
   const [isUnderline, setIsUnderline] = useState(false);
   const [isStrikethrough, setIsStrikethrough] = useState(false);
   // const [currentAlignment, setCurrentAlignment] = useState<'left' | 'center' | 'right' | 'justify'>('left');
+  const [isUnorderedList, setIsUnorderedList] = useState(false);
+  const [isOrderedList, setIsOrderedList] = useState(false);
 
   //
   const headingStyleMap = useMemo(
@@ -327,11 +338,11 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
   );
 
   const getButtonClass = (isActive: boolean) =>
-  `flex items-center justify-center aspect-square border rounded-md transition-colors ${
-    isActive 
-      ? 'bg-primary-base/20 border-primary-base' 
-      : 'border-neutral-dark/20 hover:bg-neutral-light/30 active:bg-neutral-dark/20'
-  }`;
+    `flex items-center justify-center aspect-square border rounded-md transition-colors ${
+      isActive
+        ? "bg-primary-base/20 border-primary-base"
+        : "border-neutral-dark/20 hover:bg-neutral-light/30 active:bg-neutral-dark/20"
+    }`;
 
   // TODO: Register update listener to detect current format from selection
   // useEffect(() => {
@@ -367,6 +378,7 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
               ? anchorNode
               : anchorNode.getTopLevelElementOrThrow();
 
+          // Set Heading
           setSelectedHeading(
             $isHeadingNode(element)
               ? headingStyleMap.get(element.getTag()) ?? "None Found"
@@ -374,6 +386,23 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
               ? "Caption"
               : "Paragraph"
           );
+
+          // Set text formats
+          setIsBold(selection.hasFormat("bold"));
+          setIsItalic(selection.hasFormat("italic"));
+          setIsUnderline(selection.hasFormat("underline"));
+          setIsStrikethrough(selection.hasFormat("strikethrough"));
+
+          // Set list type
+          const listNode = $getNearestNodeOfType(anchorNode, ListNode);
+          if (listNode) {
+            const listType = listNode.getListType();
+            setIsUnorderedList(listType === "bullet");
+            setIsOrderedList(listType === "number");
+          } else {
+            setIsUnorderedList(false);
+            setIsOrderedList(false);
+          }
         }
       });
     });
@@ -1071,30 +1100,35 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
         </button>
         {stylingOpen && (
           <div className="px-4 py-3 space-y-3 animate-fade-in">
-            {/* Bold, Italic, Strikethrough, Underline */}
-            {/* TODO: Add active state styling (e.g., bg-primary-base/20) when format is active */}
-            {/* TODO: Use isBold, isItalic, etc. states to show active state */}
             <div className="grid grid-cols-4 gap-2">
               <button
-                onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold')}
+                onClick={() =>
+                  editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold")
+                }
                 className={getButtonClass(isBold)}
               >
                 <MdFormatBold size={20} />
               </button>
               <button
-                onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic')}
-                className={getButtonClass(isItalic)}  
+                onClick={() =>
+                  editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic")
+                }
+                className={getButtonClass(isItalic)}
               >
                 <MdFormatItalic size={20} />
               </button>
               <button
-                onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough')}
+                onClick={() =>
+                  editor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough")
+                }
                 className={getButtonClass(isStrikethrough)}
               >
                 <MdFormatStrikethrough size={20} />
               </button>
               <button
-                onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline')}
+                onClick={() =>
+                  editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline")
+                }
                 className={getButtonClass(isUnderline)}
               >
                 <MdFormatUnderlined size={20} />
@@ -1105,17 +1139,30 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
             {/* TODO: Add list state detection - check if current block is in a list */}
             <div className="grid grid-cols-4 gap-2">
               <button
-                onClick={() => console.log("Bulleted list clicked")}
-                // TODO: onClick={() => editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined)}
-                // TODO: Toggle list off if already in bulleted list: editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined)
-                className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
+                onClick={() =>
+                  isUnorderedList
+                    ? editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined)
+                    : editor.dispatchCommand(
+                        INSERT_UNORDERED_LIST_COMMAND,
+                        undefined
+                      )
+                }
+                className={getButtonClass(isUnorderedList)}
               >
                 <MdFormatListBulleted size={20} />
               </button>
               <button
-                onClick={() => console.log("Numbered list clicked")}
-                // TODO: onClick={() => editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined)}
-                className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
+                onClick={
+                  isOrderedList
+                    ? () =>
+                        editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined)
+                    : () =>
+                        editor.dispatchCommand(
+                          INSERT_ORDERED_LIST_COMMAND,
+                          undefined
+                        )
+                }
+                className={getButtonClass(isOrderedList)}
               >
                 <MdFormatListNumbered size={20} />
               </button>

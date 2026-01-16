@@ -118,7 +118,14 @@ export default function ChapterEditor() {
       h6: 'editor-heading-h6',
     },
     caption: "editor-caption",
-
+    list: {
+      nested: {
+        listitem: 'editor-nested-listitem'
+      },
+      ol: 'editor-ol',
+      ul: 'editor-ul',
+      listitem: 'editor-listitem',
+    }
   };
 
   const initialConfig = {
@@ -139,8 +146,6 @@ export default function ChapterEditor() {
         CodeNode,
         HeadingNode,
         LinkNode,
-        ListNode,
-        ListItemNode,
         QuoteNode,
         TextNode,
         ParagraphNode,
