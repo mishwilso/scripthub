@@ -1,5 +1,4 @@
 import {
-  ChapterEditorProvider,
   useChapterEditor,
 } from "@/context/ChapterEditorContext";
 import EditorHeader from "./EditorHeader";
@@ -27,7 +26,7 @@ import { TextNode, ParagraphNode } from "lexical";
 import { CaptionNode } from "./nodes/CaptionNode";
 
 export default function ChapterEditor() {
-  const { wordCount, updateWordCount, content, updateContent } =
+  const { wordCount } =
     useChapterEditor();
 
   // Desktop: Independent sidebar states (saved to localStorage)

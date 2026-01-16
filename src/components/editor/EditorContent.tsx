@@ -28,13 +28,15 @@ import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPl
 
 // Plugins
 import { ContentSyncPlugin } from "./plugin/ContentSyncPlugin";
-import { StrikethroughPlugin, STRIKTHROUGH_TRANSFORMER } from "./plugin/StrikethroughPlugin";
+import {
+  StrikethroughPlugin,
+  STRIKTHROUGH_TRANSFORMER,
+} from "./plugin/StrikethroughPlugin";
 
 import { TRANSFORMERS } from "@lexical/markdown";
 
 // Styles
 import "./EditorContent.css";
-
 
 /**
  * LexicalEditor - The actual Lexical editor component
@@ -46,7 +48,6 @@ function LexicalEditor() {
         contentEditable={
           <ContentEditable className="editor-content-editable" />
         }
-        
         placeholder={
           <div className="editor-placeholder">
             Start writing your chapter...

@@ -289,10 +289,10 @@ export default function Format ({isOpen}: {isOpen: boolean}) {
   const [selectedHighlightColor, setSelectedHighlightColor] = useState('#FFFFFF');
 
   // TODO: Add active states for formatting buttons (detect from selection)
-  // const [isBold, setIsBold] = useState(false);
-  // const [isItalic, setIsItalic] = useState(false);
-  // const [isUnderline, setIsUnderline] = useState(false);
-  // const [isStrikethrough, setIsStrikethrough] = useState(false);
+  const [isBold, setIsBold] = useState(false);
+  const [isItalic, setIsItalic] = useState(false);
+  const [isUnderline, setIsUnderline] = useState(false);
+  const [isStrikethrough, setIsStrikethrough] = useState(false);
   // const [currentAlignment, setCurrentAlignment] = useState<'left' | 'center' | 'right' | 'justify'>('left');
 
   // 
@@ -341,6 +341,12 @@ export default function Format ({isOpen}: {isOpen: boolean}) {
           setSelectedHeading($isHeadingNode(node) 
           ? headingStyleMap.get(node.getTag()) ?? "Paragraph" 
           : "Paragraph");
+          
+          //Detect text formats
+          setIsBold(selection.hasFormat('bold'));
+          setIsItalic(selection.hasFormat('italic'));
+          setIsUnderline(selection.hasFormat('underline'));
+          setIsStrikethrough(selection.hasFormat('strikethrough'));
         }
       });
     });
