@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -20,7 +21,7 @@ import {
   createChapterDraft,
 } from "@/lib/api/chapters";
 import { createBookActivity } from "@/lib/api/bookactivity";
-import { BookBranch, getBookBranches } from "@/lib/api/bookbranches";
+import { BookBranch, getBookBranches, createBranch as createBranchAPI } from "@/lib/api/bookbranches";
 import { timeStamp } from "console";
 
 interface ChapterEditorContextType {
@@ -53,6 +54,7 @@ interface ChapterEditorContextType {
   saveContent: () => Promise<void>;
   commitChanges: (message: string) => Promise<void>;
   createDraft: (name: string) => Promise<void>;
+  createBranch: (name: string) => Promise<{ success: boolean; error?: string; branch?: BookBranch }>;
 
   // Permissions
   canEdit: boolean;
@@ -290,6 +292,35 @@ export function ChapterEditorProvider({
     setDrafts((prevDrafts) => [...prevDrafts, newDraft]);
   };
 
+  const createBranch = async (name: string): Promise<{ success: boolean; error?: string; branch?: BookBranch }> => {
+    try {
+      const branchData = await createBranchAPI(bookId, { branch_name: name });
+
+      if (branchData && branchData.length > 0) {
+        // Refresh branches list
+        const updatedBranches = await getBookBranches(bookId);
+        setBranches(updatedBranches);
+
+        return { success: true, branch: branchData[0] as BookBranch };
+      }
+
+      return { success: false, error: "Failed to create draft" };
+    } catch (error: unknown) {
+      // Check for duplicate name error (Supabase unique constraint violation)
+      if (error && typeof error === 'object' && 'code' in error && error.code === '23505') {
+        return { success: false, error: "A draft with this name already exists. Please choose a different name." };
+      }
+
+      // Check for error message containing duplicate indication
+      if (error instanceof Error && error.message?.toLowerCase().includes('duplicate')) {
+        return { success: false, error: "A draft with this name already exists. Please choose a different name." };
+      }
+
+      console.error("Error creating branch:", error);
+      return { success: false, error: "Failed to create draft. Please try again." };
+    }
+  };
+
   const refreshChapter = async () => {
     const chapterData = await getChapter(chapterId);
     setChapter(chapterData);
@@ -323,6 +354,7 @@ export function ChapterEditorProvider({
         saveContent,
         commitChanges,
         createDraft,
+        createBranch,
         canEdit: true,
         canComment: true,
         refreshChapter,
