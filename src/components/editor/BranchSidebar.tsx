@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import { useChapterEditor } from "@/context/ChapterEditorContext";
@@ -39,6 +41,7 @@ import { IoTrashOutline } from "react-icons/io5";
 import { FaUserCircle } from "react-icons/fa";
 import { BookBranch } from "@/lib/api/bookbranches";
 import Tag from "../ui/Tags";
+import CreateDraftModal from "./CreateDraftModal";
 
 interface BranchSidebarProps {
   isOpen: boolean; // Desktop state
@@ -97,13 +100,26 @@ export function BranchDetails({
   onToggle,
   isMobile = false,
 }: NavProps) {
-  const { currentBranch, branches, mainBranch, book, isSaving, lastSaved } = useChapterEditor();
+  const { currentBranch, branches, mainBranch, book, isSaving, lastSaved, createBranch } = useChapterEditor();
   const [isBranchsOpen, setIsBranchsOpen] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
+  const handleCreateDraft = async (name: string) => {
+    const result = await createBranch(name);
+
+    // Auto-expand drafts section after successful creation
+    if (result.success) {
+      setIsBranchsOpen(true);
+    }
+
+    return result;
+  };
 
   // TODO: make better safety
-  if (!book) return;
+  if (!book) return null;
 
   return (
+    <>
     <nav className="flex flex-col w-full h-full">
       {/* Mobile Header */}
       <div className="md:hidden"></div>
@@ -185,7 +201,7 @@ export function BranchDetails({
               >
                 <GoGitBranch size={16} className="text-secondary-dark" />
                 <h2 className="text-sm font-semibold text-secondary-dark">
-                  Branches
+                  Drafts
                 </h2>
                 <span className="text-sm font-semibold text-secondary-dark/60">
                   ({branches?.length - 1 || 0})
@@ -200,11 +216,9 @@ export function BranchDetails({
 
               {/* Add Branch Icon Button */}
               <button
-                onClick={() => {
-                  // TODO: Implement create branch
-                }}
+                onClick={() => setShowCreateModal(true)}
                 className="w-6 h-6 flex items-center justify-center bg-primary-base hover:bg-primary-dark rounded-full transition-colors shrink-0"
-                aria-label="Create new branch"
+                aria-label="Create new draft"
               >
                 <IoAdd size={16} className="text-white-base text-semibold" />
               </button>
@@ -250,7 +264,16 @@ export function BranchDetails({
           )}
         </div>
       </div>
+
     </nav>
+
+      {/* Create Draft Modal - rendered outside nav to avoid stacking context issues */}
+      <CreateDraftModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onCreateDraft={handleCreateDraft}
+      />
+    </>
   );
 }
 
@@ -264,8 +287,10 @@ export function BranchCard({
   const { currentBranch } = useChapterEditor();
   const isActive = currentBranch?.id === branch?.id;
 
+
   return (
     <Card
+      // TODO: Add onClick={handleBranchClick} after implementing
       className={`px-3 py-2.5 transition-all cursor-pointer group bg-[#FFFDFB]/80 border border-secondary-dark/20 
         hover:border-2 hover:border-neutral-dark hover:shadow-sm hover:bg-[#FFFDFB]
       ${
@@ -278,7 +303,7 @@ export function BranchCard({
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 flex-1 min-w-0">
           <h3 className="font-semibold text-secondary-dark truncate text-base">
-            {isMain ? "Main Branch" : toTitleCase(branch?.branch_name || "")}
+            {isMain ? "Main Draft" : toTitleCase(branch?.branch_name || "")}
           </h3>
           {/* {branch?.is_merged && <Tag variant="current">MERGED</Tag>} */}
         </div>
@@ -320,6 +345,7 @@ export function BranchCard({
   );
 }
 
+
 export function BranchOptions({
   isMain,
   branchId,
@@ -336,25 +362,44 @@ export function BranchOptions({
       </Dropdown.Button>
 
       <Dropdown.Menu position="top span-left">
+        {/* onClick: Navigate to /books/[bookId]/compare?branch=branchId */}
+        {/* Or open a compare modal/side-by-side view */}
         {!isMain && (
-          <Dropdown.Option startIcon={<GoGitCompare />}>
+          <Dropdown.Option
+            startIcon={<GoGitCompare />}
+            onClick={() => console.log("TODO: Navigate to compare view")}
+          >
             Compare with Main
           </Dropdown.Option>
         )}
 
-        <Dropdown.Option startIcon={<HiOutlineDuplicate />}>
+        {/* onClick: Open modal to name duplicate, then call duplicateBranch API */}
+        <Dropdown.Option
+          startIcon={<HiOutlineDuplicate />}
+          onClick={() => console.log("TODO: Open duplicate branch modal")}
+        >
           Duplicate Branch
         </Dropdown.Option>
 
-        <Dropdown.Option startIcon={<MdOutlineRemoveRedEye />}>
+        {/* onClick: Open BranchDetailsModal with branch info */}
+        <Dropdown.Option
+          startIcon={<MdOutlineRemoveRedEye />}
+          onClick={() => console.log("TODO: Open branch details modal")}
+        >
           View Details
         </Dropdown.Option>
 
+        {/* onClick: Open DeleteBranchModal for confirmation */}
+        {/* On confirm: call deleteBranch API, refresh list, switch to main if needed */}
         {!isMain && (
           <>
             <Dropdown.Divider />
 
-            <Dropdown.Option startIcon={<IoTrashOutline />} danger>
+            <Dropdown.Option
+              startIcon={<IoTrashOutline />}
+              danger
+              onClick={() => console.log("TODO: Open delete confirmation modal")}
+            >
               Delete Branch
             </Dropdown.Option>
           </>

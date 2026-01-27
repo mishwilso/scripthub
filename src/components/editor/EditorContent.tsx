@@ -1,18 +1,7 @@
 /**
  * EditorContent - Lexical-based chapter editor
  *
- * Replaced CodeMirror on 2026-01-02 to enable better support for:
- * - Tracked changes with inline accept/reject
- * - Split-pane merge view
- * - Custom change decorations
- *
- * Current features:
- * - Rich text editing with basic formatting
- * - Bold (Ctrl+B or **text**), Italic (Ctrl+I or *text*), Underline (Ctrl+U or __text__)
- * - Word count tracking
- * - Content sync with ChapterEditorContext
- *
- * Future: Will add custom nodes for InsertionNode, DeletionNode for merge UI
+ * Replaced CodeMirror on 2026-01-02 
  */
 
 "use client";

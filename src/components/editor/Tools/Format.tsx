@@ -264,6 +264,8 @@ import {
   FORMAT_TEXT_COMMAND,
   FORMAT_ELEMENT_COMMAND,
   $createParagraphNode,
+  OUTDENT_CONTENT_COMMAND,
+  INDENT_CONTENT_COMMAND,
 } from "lexical";
 import {
   $getSelectionStyleValueForProperty,
@@ -1167,15 +1169,17 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
                 <MdFormatListNumbered size={20} />
               </button>
               <button
-                onClick={() => console.log("Indent increase clicked")}
-                // TODO: onClick={() => editor.dispatchCommand(INDENT_CONTENT_COMMAND, undefined)}
+                onClick={() =>
+                  editor.dispatchCommand(INDENT_CONTENT_COMMAND, undefined)
+                }
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdFormatIndentIncrease size={20} />
               </button>
               <button
-                onClick={() => console.log("Indent decrease clicked")}
-                // TODO: onClick={() => editor.dispatchCommand(OUTDENT_CONTENT_COMMAND, undefined)}
+                onClick={() =>
+                  editor.dispatchCommand(OUTDENT_CONTENT_COMMAND, undefined)
+                }
                 className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
               >
                 <MdFormatIndentDecrease size={20} />
