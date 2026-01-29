@@ -18,7 +18,7 @@ ScriptHub helps writers manage their creative projects with features inspired by
 ## Features (In Development)
 
 - [x] User authentication (signup, login, email verification)
-- [ ] Book/project management
+- [x] Book/project management
 - [ ] Chapter organization
 - [ ] Version control for chapters
 - [ ] Branch narratives (alternate storylines)
@@ -88,8 +88,7 @@ This project is for portfolio/educational purposes.
 
 ## Author
 
-**M** - CS Graduate & Web Developer
+**Mish :)** - CS Graduate & Web Developer
 
 ---
 
-_Built with ☕ and a love for storytelling_

@@ -1,5 +1,4 @@
-// Chapters API Functions
-// In lib/api/chapters.ts:
+
 
 import { clientSupabase } from "@/lib/supabase/client";
 import { Tables, TablesInsert, TablesUpdate } from "../supabase/database.types";
@@ -8,7 +7,6 @@ export type Chapter = Tables<"chapters">;
 type NewChapter = TablesInsert<"chapters">;
 type UpdatedChapter = TablesUpdate<"chapters">;
 
-// getBookChapters(bookId) - all chapters for a book
 export async function getBookChapters(bookId: string) {
   const { data, error } = await clientSupabase
     .from("chapters")
@@ -20,7 +18,10 @@ export async function getBookChapters(bookId: string) {
   return data;
 }
 
-// getRecentChapters(userId, limit) - recently updated chapters
+/**
+ * Get recently updated MAIN chapters for a user (excludes drafts)
+ * Used for "Recent Work" dashboard widget.
+ */
 export async function getRecentChapters(userId: string, limit: number) {
   const { data, error } = await clientSupabase
     .from("chapters")
@@ -33,7 +34,7 @@ export async function getRecentChapters(userId: string, limit: number) {
   return data;
 }
 
-// createChapter(chapterData) - create new chapter
+
 export async function createChapter(chapterData: NewChapter) {
   const { data, error } = await clientSupabase
     .from("chapters")
@@ -44,8 +45,9 @@ export async function createChapter(chapterData: NewChapter) {
   return data[0];
 }
 
+
 export async function getChapter(chapterId: string) {
-  // check local!!
+  // Check localStorage for newer unsaved content
   const localKey = `scripthub_draft_${chapterId}`;
   const localDraft = localStorage.getItem(localKey);
 
@@ -86,6 +88,7 @@ export async function getBookMainChapters(bookId: string) {
   return data;
 }
 
+
 export async function getChapterCount(bookId: string) {
   const { count, error } = await clientSupabase
     .from("chapters")
@@ -97,6 +100,7 @@ export async function getChapterCount(bookId: string) {
   if (error) throw error;
   return count;
 }
+
 
 export async function getDraftCount(mainChapterId: string) {
   const { count, error } = await clientSupabase
@@ -113,7 +117,7 @@ export async function getDraftCount(mainChapterId: string) {
 // updateChapter(chapterId, updates) - update chapter
 export async function updateChapter(
   chapterId: string,
-  updates: UpdatedChapter
+  updates: UpdatedChapter,
 ) {
   const { data, error } = await clientSupabase
     .from("chapters")
@@ -137,7 +141,7 @@ export async function deleteChapter(chapterId: string) {
 
 export async function updateChapterOrder(
   bookId: string,
-  chapters: { id: string; order_index: number }[]
+  chapters: { id: string; order_index: number }[],
 ) {
   const updates = chapters.map((chapter) =>
     clientSupabase
@@ -145,7 +149,7 @@ export async function updateChapterOrder(
       .update({ order_index: chapter.order_index })
       .eq("id", chapter.id)
       .eq("is_main", true)
-      .eq("book_id", bookId)
+      .eq("book_id", bookId),
   );
 
   const results = await Promise.all(updates);
@@ -175,7 +179,7 @@ export async function getChapterDrafts(mainChapterId: string) {
 // Create a new draft from an existing chapter/draft
 export async function createChapterDraft(
   sourceChapterId: string, // Can be main chapter or another draft
-  draftName: string
+  draftName: string,
 ) {
   // First, get the source chapter
   const { data: source } = await clientSupabase
