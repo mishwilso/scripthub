@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -21,7 +20,11 @@ import {
   createChapterDraft,
 } from "@/lib/api/chapters";
 import { createBookActivity } from "@/lib/api/bookactivity";
-import { BookBranch, getBookBranches, createBranch as createBranchAPI } from "@/lib/api/bookbranches";
+import {
+  BookBranch,
+  getBookBranches,
+  createBranch as createBranchAPI,
+} from "@/lib/api/bookbranches";
 import { timeStamp } from "console";
 
 interface ChapterEditorContextType {
@@ -33,7 +36,7 @@ interface ChapterEditorContextType {
   switchBranch: (branchId: string) => Promise<void>;
 
   // Chapter and Draft
-  chapter: Chapter | null;
+  mainChapter: Chapter | null;
   currentDraft: Chapter | null;
   drafts: Chapter[];
   switchDraft: (draftId: string) => Promise<void>;
@@ -53,8 +56,12 @@ interface ChapterEditorContextType {
   changeTitle: (newTitle: string) => Promise<void>;
   saveContent: () => Promise<void>;
   commitChanges: (message: string) => Promise<void>;
-  createDraft: (name: string) => Promise<void>;
-  createBranch: (name: string) => Promise<{ success: boolean; error?: string; branch?: BookBranch }>;
+  createDraft: (
+    name: string,
+  ) => Promise<{ success: boolean; error?: string; draft?: Chapter }>;
+  createBranch: (
+    name: string,
+  ) => Promise<{ success: boolean; error?: string; branch?: BookBranch }>;
 
   // Permissions
   canEdit: boolean;
@@ -83,7 +90,7 @@ export function ChapterEditorProvider({
   const [currentBranch, setCurrentBranch] = useState<BookBranch | null>(null);
   const [branches, setBranches] = useState<BookBranch[]>([]);
 
-  const [chapter, setChapter] = useState<Chapter | null>(null);
+  const [mainChapter, setMainChapter] = useState<Chapter | null>(null);
   const [currentDraft, setCurrentDraft] = useState<Chapter | null>(null);
   const [drafts, setDrafts] = useState<Chapter[]>([]);
 
@@ -91,7 +98,7 @@ export function ChapterEditorProvider({
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
-  const [wordCount, setWordCount] = useState(chapter?.word_count || 0);
+  const [wordCount, setWordCount] = useState(currentDraft?.word_count || 0);
 
   // Save after 2 secs of no typing
   const debouncedContent = useDebounce(content, 2000);
@@ -112,7 +119,7 @@ export function ChapterEditorProvider({
       setBranches(branchData);
       setMainBranch(branchData.find((b) => b.is_main) || branchData[0]);
       setCurrentBranch(branchData.find((b) => b.is_main) || branchData[0]);
-      setChapter(chapterData);
+      setMainChapter(chapterData);
       setCurrentDraft(chapterData);
       setDrafts(draftData);
       setContent(chapterData.content || "");
@@ -138,6 +145,29 @@ export function ChapterEditorProvider({
   // }, [content, hasUnsavedChanges]);
 
   // Saving Logic!
+  const saveContent = useCallback(async () => {
+    if (!currentDraft) return;
+
+    setIsSaving(true);
+    try {
+      console.log("Saving Content for ChapterId: ", currentDraft.id);
+
+      // Update chapter content
+      await updateChapter(currentDraft!.id, { content, word_count: wordCount });
+
+      hasUnsavedChanges.current = false;
+      setLastSaved(new Date());
+      console.log("Saved to database");
+
+      // clear local after succeful db save
+      const localKey = `scripthub_draft_${chapterId}`;
+      localStorage.removeItem(localKey);
+    } catch (error) {
+      console.error("Error saving:", error);
+    } finally {
+      setIsSaving(false);
+    }
+  }, [chapterId, content, currentDraft, wordCount]);
 
   // Immediate: goes to state happens everytime we type
   const updateContent = useCallback((newContent: string) => {
@@ -152,7 +182,7 @@ export function ChapterEditorProvider({
     const localKey = `scripthub_draft_${chapterId}`;
     const draftData = {
       content: debouncedContent,
-      timeStamp: new Date().toISOString,
+      timeStamp: new Date().toISOString(),
       chapterId: chapterId,
       bookId: bookId,
     };
@@ -163,14 +193,14 @@ export function ChapterEditorProvider({
 
   // Periodic: push to databse every 30 secs
   useEffect(() => {
-    if (!chapterId || !hasUnsavedChanges.current) return;
-
     const intervalId = setInterval(async () => {
+      if (!chapterId || !hasUnsavedChanges.current) return;
+
       await saveContent();
     }, 30000);
 
     return () => clearInterval(intervalId);
-  }, [chapterId]);
+  }, [chapterId, saveContent]);
 
   // On unmount aka when user reloads page: save immediately
   useEffect(() => {
@@ -184,12 +214,11 @@ export function ChapterEditorProvider({
             content,
             timestamp: new Date().toISOString(),
             chapterId: chapterId,
-          })
+          }),
         );
 
         // TODO: Implement warning user of unsaved changes
         e.preventDefault();
-        e.returnValue = "";
       }
     };
 
@@ -223,27 +252,6 @@ export function ChapterEditorProvider({
     await updateChapter(currentDraft!.id, { title: newTitle });
   };
 
-  const saveContent = async () => {
-    if (!currentDraft) return;
-
-    setIsSaving(true);
-    try {
-      await updateChapter(currentDraft!.id, { content, word_count: wordCount });
-
-      hasUnsavedChanges.current = false;
-      setLastSaved(new Date());
-      console.log("Saved to database");
-
-      // clear local after succeful db save
-      const localKey = `scripthub_draft_${chapterId}`;
-      localStorage.removeItem(localKey);
-    } catch (error) {
-      console.error("Error saving:", error);
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
   const switchBranch = async (branchId: string) => {
     const branch = branches.find((b) => b.id === branchId);
     if (!branch) return;
@@ -252,11 +260,11 @@ export function ChapterEditorProvider({
   };
 
   const switchDraft = async (draftId: string) => {
-    const draft = drafts.find((d) => d.id === draftId) || chapter;
+    const draft = drafts.find((d) => d.id === draftId) || mainChapter;
     if (!draft) return;
 
     // Save current draft first if there are changes
-    if (hasUnsavedChanges) {
+    if (hasUnsavedChanges.current) {
       await saveContent();
     }
 
@@ -271,7 +279,7 @@ export function ChapterEditorProvider({
     // Create commit in book_activity
     await createBookActivity(bookId, "commit", {
       commit_message: message,
-      chapter_name: chapter?.title,
+      chapter_name: mainChapter?.title,
       branch_name: "main",
     });
   };
@@ -279,20 +287,23 @@ export function ChapterEditorProvider({
   const createDraft = async (name: string) => {
     if (!currentDraft) {
       console.error("No current draft to branch from");
-      return;
+      return { success: false, error: "No current draft to branch from" };
     }
 
     const newDraft = await createChapterDraft(currentDraft!.id, name);
 
     if (!newDraft) {
       console.error("Failed to create draft");
-      return;
+      return { success: false, error: "Failed to create draft" };
     }
 
     setDrafts((prevDrafts) => [...prevDrafts, newDraft]);
+    return { success: true, draft: newDraft };
   };
 
-  const createBranch = async (name: string): Promise<{ success: boolean; error?: string; branch?: BookBranch }> => {
+  const createBranch = async (
+    name: string,
+  ): Promise<{ success: boolean; error?: string; branch?: BookBranch }> => {
     try {
       const branchData = await createBranchAPI(bookId, { branch_name: name });
 
@@ -307,23 +318,42 @@ export function ChapterEditorProvider({
       return { success: false, error: "Failed to create draft" };
     } catch (error: unknown) {
       // Check for duplicate name error (Supabase unique constraint violation)
-      if (error && typeof error === 'object' && 'code' in error && error.code === '23505') {
-        return { success: false, error: "A draft with this name already exists. Please choose a different name." };
+      if (
+        error &&
+        typeof error === "object" &&
+        "code" in error &&
+        error.code === "23505"
+      ) {
+        return {
+          success: false,
+          error:
+            "A draft with this name already exists. Please choose a different name.",
+        };
       }
 
       // Check for error message containing duplicate indication
-      if (error instanceof Error && error.message?.toLowerCase().includes('duplicate')) {
-        return { success: false, error: "A draft with this name already exists. Please choose a different name." };
+      if (
+        error instanceof Error &&
+        error.message?.toLowerCase().includes("duplicate")
+      ) {
+        return {
+          success: false,
+          error:
+            "A draft with this name already exists. Please choose a different name.",
+        };
       }
 
       console.error("Error creating branch:", error);
-      return { success: false, error: "Failed to create draft. Please try again." };
+      return {
+        success: false,
+        error: "Failed to create draft. Please try again.",
+      };
     }
   };
 
   const refreshChapter = async () => {
     const chapterData = await getChapter(chapterId);
-    setChapter(chapterData);
+    setMainChapter(chapterData);
   };
 
   const refreshBranches = async () => {
@@ -338,7 +368,7 @@ export function ChapterEditorProvider({
         mainBranch,
         currentBranch,
         branches,
-        chapter,
+        mainChapter,
         currentDraft,
         drafts,
         switchBranch,
@@ -370,7 +400,7 @@ export function useChapterEditor() {
   const context = useContext(ChapterEditorContext);
   if (!context) {
     throw new Error(
-      "useChapterEditor must be used within ChapterEditorProvider"
+      "useChapterEditor must be used within ChapterEditorProvider",
     );
   }
 

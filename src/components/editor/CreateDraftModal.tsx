@@ -1,16 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { CgClose } from "react-icons/cg";
 import { GoGitBranch } from "react-icons/go";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
+import { Chapter } from "@/lib/api/chapters";
 
 interface CreateDraftModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreateDraft: (name: string) => Promise<{ success: boolean; error?: string }>;
+  onCreateDraft: (
+    name: string,
+  ) => Promise<{ success: boolean; error?: string; draft?: Chapter }>;
 }
 
 export default function CreateDraftModal({
@@ -21,28 +24,19 @@ export default function CreateDraftModal({
   const [draftName, setDraftName] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
 
-  // Track if component is mounted for portal
-  useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
-  }, []);
-
-  // Reset state when modal opens/closes
-  useEffect(() => {
-    if (isOpen) {
-      setDraftName("");
-      setError(null);
-      setIsCreating(false);
-    }
-  }, [isOpen]);
+  const handleClose = useCallback(() => {
+    setDraftName("");
+    setError(null);
+    setIsCreating(false);
+    onClose();
+  }, [onClose]);
 
   // Close modal on Escape key press
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && !isCreating) {
-        onClose();
+        handleClose();
       }
     };
 
@@ -55,7 +49,7 @@ export default function CreateDraftModal({
       document.removeEventListener("keydown", handleEscape);
       document.body.style.overflow = "unset";
     };
-  }, [isOpen, isCreating, onClose]);
+  }, [isOpen, isCreating, handleClose]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,21 +77,21 @@ export default function CreateDraftModal({
     const result = await onCreateDraft(trimmedName);
 
     if (result.success) {
-      onClose();
+      handleClose();
     } else {
       setError(result.error || "Failed to create draft");
       setIsCreating(false);
     }
   };
 
-  if (!isOpen || !mounted) return null;
+  if (!isOpen) return null;
 
   const modalContent = (
     <>
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/50 z-[200] animate-fade-in"
-        onClick={() => !isCreating && onClose()}
+        onClick={() => !isCreating && handleClose()}
       />
 
       {/* Modal */}
@@ -108,7 +102,7 @@ export default function CreateDraftModal({
         >
           {/* Close Button */}
           <button
-            onClick={() => !isCreating && onClose()}
+            onClick={() => !isCreating && handleClose()}
             disabled={isCreating}
             className="absolute top-4 right-4 p-2 rounded-md hover:bg-neutral-light/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Close modal"
@@ -159,7 +153,7 @@ export default function CreateDraftModal({
                 type="button"
                 variant="outlined"
                 color="tertiary"
-                onClick={onClose}
+                onClick={handleClose}
                 disabled={isCreating}
               >
                 Cancel

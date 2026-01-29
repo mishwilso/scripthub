@@ -1,6 +1,4 @@
-import {
-  useChapterEditor,
-} from "@/context/ChapterEditorContext";
+import { useChapterEditor } from "@/context/ChapterEditorContext";
 import EditorHeader from "./EditorHeader";
 import BranchSidebar from "./BranchSidebar";
 import ToolsSidebar from "./ToolsSidebar";
@@ -26,15 +24,14 @@ import { TextNode, ParagraphNode } from "lexical";
 import { CaptionNode } from "./nodes/CaptionNode";
 
 export default function ChapterEditor() {
-  const { wordCount } =
-    useChapterEditor();
+  const { wordCount, saveContent } = useChapterEditor();
 
   // Desktop: Independent sidebar states (saved to localStorage)
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(
-    getFromLocalStorage("editor-left-sidebar", false)
+    getFromLocalStorage("editor-left-sidebar", false),
   );
   const [rightSidebarOpen, setRightSidebarOpen] = useState(
-    getFromLocalStorage("editor-right-sidebar", false)
+    getFromLocalStorage("editor-right-sidebar", false),
   );
 
   // Mobile: Which sidebar is open (only one at a time)
@@ -68,17 +65,17 @@ export default function ChapterEditor() {
   }, [rightSidebarOpen]);
 
   useEffect(() => {
-    const handleKeyCombination = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+    const handleKeyCombination = async (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
         e.preventDefault();
-        console.log("Combo Ctrl/Cmd + K detected - Save action triggered");
-      };
+        await saveContent();
+        console.log("Combo Ctrl/Cmd + s detected - Save action triggered");
+      }
     };
 
     window.addEventListener("keydown", handleKeyCombination);
 
     return () => window.removeEventListener("keydown", handleKeyCombination);
-
   }, []);
 
   // Handle scroll to show/hide header
@@ -106,26 +103,26 @@ export default function ChapterEditor() {
       italic: "editor-text-italic",
       underline: "editor-text-underline",
       strikethrough: "editor-text-strikethrough",
-      underlineStrikethrough: 'editor-textUnderlineStrikethrough',
+      underlineStrikethrough: "editor-textUnderlineStrikethrough",
     },
     paragraph: "editor-paragraph",
     heading: {
-      h1: 'editor-heading-h1',
-      h2: 'editor-heading-h2',
-      h3: 'editor-heading-h3',
-      h4: 'editor-heading-h4',
-      h5: 'editor-heading-h5',
-      h6: 'editor-heading-h6',
+      h1: "editor-heading-h1",
+      h2: "editor-heading-h2",
+      h3: "editor-heading-h3",
+      h4: "editor-heading-h4",
+      h5: "editor-heading-h5",
+      h6: "editor-heading-h6",
     },
     caption: "editor-caption",
     list: {
       nested: {
-        listitem: 'editor-nested-listitem'
+        listitem: "editor-nested-listitem",
       },
-      ol: 'editor-ol',
-      ul: 'editor-ul',
-      listitem: 'editor-listitem',
-    }
+      ol: "editor-ol",
+      ul: "editor-ul",
+      listitem: "editor-listitem",
+    },
   };
 
   const initialConfig = {
@@ -135,22 +132,22 @@ export default function ChapterEditor() {
       console.error("Lexical error:", error);
     },
     nodes: [
-        LinkNode,
-        AutoLinkNode,
-        ListNode,
-        ListItemNode,
-        TableNode,
-        TableCellNode,
-        TableRowNode,
-        HorizontalRuleNode,
-        CodeNode,
-        HeadingNode,
-        LinkNode,
-        QuoteNode,
-        TextNode,
-        ParagraphNode,
-        CaptionNode
-      ],
+      LinkNode,
+      AutoLinkNode,
+      ListNode,
+      ListItemNode,
+      TableNode,
+      TableCellNode,
+      TableRowNode,
+      HorizontalRuleNode,
+      CodeNode,
+      HeadingNode,
+      LinkNode,
+      QuoteNode,
+      TextNode,
+      ParagraphNode,
+      CaptionNode,
+    ],
   };
 
   return (
@@ -167,8 +164,8 @@ export default function ChapterEditor() {
           <div
             className="top-0 left-0 right-0 transition-transform duration-300 z-10 bg-white-base"
             style={{
-              transform: showHeader ? 'translateY(0)' : 'translateY(-100%)',
-              position: showHeader ? 'relative' : 'absolute',
+              transform: showHeader ? "translateY(0)" : "translateY(-100%)",
+              position: showHeader ? "relative" : "absolute",
             }}
           >
             <EditorHeader
