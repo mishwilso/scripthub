@@ -25,7 +25,6 @@ import {
   getBookBranches,
   createBranch as createBranchAPI,
 } from "@/lib/api/bookbranches";
-import { timeStamp } from "console";
 
 interface ChapterEditorContextType {
   // Branch and Book
@@ -54,7 +53,7 @@ interface ChapterEditorContextType {
 
   // Actions
   changeTitle: (newTitle: string) => Promise<void>;
-  saveContent: () => Promise<void>;
+  saveContent: () => Promise<Chapter | undefined>;
   commitChanges: (message: string) => Promise<void>;
   createDraft: (
     name: string,
@@ -101,12 +100,30 @@ export function ChapterEditorProvider({
   const [wordCount, setWordCount] = useState(currentDraft?.word_count || 0);
 
   // Save after 2 secs of no typing
-  const debouncedContent = useDebounce(content, 2000);
+  const debouncedContent = useDebounce(content, 5000);
 
   // Ref for unsaved changes
   const hasUnsavedChanges = useRef(false);
 
-  // Load initial data
+  // Need refs to update database correctly
+  const contentRef = useRef(content);
+  const wordCountRef = useRef(wordCount);
+  const currentDraftRef = useRef(currentDraft);
+
+  // Keep refs in sync
+  // useState  → re-renders
+  // useRef    → lets async callbacks read current values
+  useEffect(() => {
+    contentRef.current = content;
+  }, [content]);
+  useEffect(() => {
+    wordCountRef.current = wordCount;
+  }, [wordCount]);
+  useEffect(() => {
+    currentDraftRef.current = currentDraft;
+  }, [currentDraft]);
+
+  // Update refs when state changes
   useEffect(() => {
     async function loadEditorData() {
       //Load book, branch, chapter, drafts
@@ -128,46 +145,36 @@ export function ChapterEditorProvider({
     loadEditorData();
   }, [bookId, chapterId]);
 
-  // Update unchaved changed when content change
-  // useEffect(() => {
-  //   setHasUnsavedChanges(true);
-  // }, [content]);
-
-  // Autosave every 30 seconds
-  // useEffect(() => {
-  //   if (!hasUnsavedChanges) return;
-
-  //   const timer = setTimeout(() => {
-  //     saveContent();
-  //   }, 30000);
-
-  //   return () => clearTimeout(timer);
-  // }, [content, hasUnsavedChanges]);
-
   // Saving Logic!
   const saveContent = useCallback(async () => {
-    if (!currentDraft) return;
+    const draft = currentDraftRef.current;
+    if (!draft) return;
 
     setIsSaving(true);
     try {
-      console.log("Saving Content for ChapterId: ", currentDraft.id);
+      console.log("Saving Content for ChapterId: ", draft.id);
+      console.log("Content:", contentRef.current);
 
       // Update chapter content
-      await updateChapter(currentDraft!.id, { content, word_count: wordCount });
+      const updatedChapter = await updateChapter(draft!.id, {
+        content: contentRef.current,
+        word_count: wordCountRef.current,
+      });
 
       hasUnsavedChanges.current = false;
       setLastSaved(new Date());
       console.log("Saved to database");
 
       // clear local after succeful db save
-      const localKey = `scripthub_draft_${chapterId}`;
-      localStorage.removeItem(localKey);
+      localStorage.removeItem(`scripthub_draft_${chapterId}`);
+
+      return updatedChapter as Chapter;
     } catch (error) {
       console.error("Error saving:", error);
     } finally {
       setIsSaving(false);
     }
-  }, [chapterId, content, currentDraft, wordCount]);
+  }, [chapterId]);
 
   // Immediate: goes to state happens everytime we type
   const updateContent = useCallback((newContent: string) => {
@@ -197,7 +204,7 @@ export function ChapterEditorProvider({
       if (!chapterId || !hasUnsavedChanges.current) return;
 
       await saveContent();
-    }, 30000);
+    }, 300000);
 
     return () => clearInterval(intervalId);
   }, [chapterId, saveContent]);
@@ -211,7 +218,7 @@ export function ChapterEditorProvider({
         localStorage.setItem(
           localKey,
           JSON.stringify({
-            content,
+            content: contentRef.current,
             timestamp: new Date().toISOString(),
             chapterId: chapterId,
           }),
@@ -240,7 +247,7 @@ export function ChapterEditorProvider({
         saveContent();
       }
     };
-  }, [content, chapterId]);
+  }, [chapterId, saveContent]);
 
   const updateWordCount = (newWordCount: number) => {
     setWordCount(newWordCount);
@@ -264,12 +271,42 @@ export function ChapterEditorProvider({
     if (!draft) return;
 
     // Save current draft first if there are changes
-    if (hasUnsavedChanges.current) {
-      await saveContent();
+    // and updare in-memory collection of drafts
+    console.log("Current Draft Id: ", currentDraft?.id);
+    console.log("ContentRef:", contentRef.current);
+    console.log("Has Unsaved Changes: ", hasUnsavedChanges.current);
+
+    if (hasUnsavedChanges.current && currentDraft) {
+      console.log("Switching Drafts - saved current draft");
+      const updatedChapter = await saveContent();
+
+      setDrafts((prevDrafts) =>
+        prevDrafts.map((d) => {
+          console.log(d.id, " === ", currentDraft.id);
+          return d.id === currentDraft.id
+            ? updatedChapter || {
+                ...d,
+                content: contentRef.current,
+                word_count: wordCountRef.current,
+              }
+            : d;
+        }),
+      );
+
+      setMainChapter((prevMainChapter) =>
+        prevMainChapter && prevMainChapter.id === currentDraft.id
+          ? updatedChapter || {
+              ...prevMainChapter,
+              content: contentRef.current,
+              word_count: wordCountRef.current,
+            }
+          : prevMainChapter,
+      );
     }
 
     setCurrentDraft(draft);
     setContent(draft.content || "");
+    hasUnsavedChanges.current = false; // blocks cross-draft saving (prevent data loss)
   };
 
   const commitChanges = async (message: string) => {

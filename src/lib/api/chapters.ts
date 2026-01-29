@@ -118,15 +118,16 @@ export async function getDraftCount(mainChapterId: string) {
 export async function updateChapter(
   chapterId: string,
   updates: UpdatedChapter,
-) {
+) : Promise<Chapter> {
   const { data, error } = await clientSupabase
     .from("chapters")
     .update(updates)
     .eq("id", chapterId)
+    .select()
     .single();
 
   if (error) throw error;
-  return data;
+  return data as Chapter;
 }
 
 // deleteChapter(chapterId) - delete chapter
