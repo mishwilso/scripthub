@@ -3,14 +3,13 @@
 import { useChapterEditor } from "@/context/ChapterEditorContext";
 import Link from "next/link";
 import { toTitleCase } from "@/lib/utils/formatString";
-import { useState, useEffect, useContext, useId } from "react";
-import { LuBookOpen } from "react-icons/lu";
+import { useState, useEffect, useId } from "react";
 import Card from "../ui/Card";
 import Tooltip from "../ui/Tooltip";
 
 import { IoHome } from "react-icons/io5";
 
-import Dropdown, { DropdownContext } from "../ui/Dropdown";
+import Dropdown from "../ui/Dropdown";
 import IconButton from "../ui/IconButton";
 
 import {
@@ -18,10 +17,7 @@ import {
   formatExactDateTime,
 } from "@/lib/utils/formatDates";
 
-import {
-  getFromLocalStorage,
-  setToLocalStorage,
-} from "@/lib/utils/localStorage";
+import { checkBookPermission } from "@/lib/api/collaborators";
 
 import { MdCloudUpload, MdCloudDone, MdCloud } from "react-icons/md";
 
@@ -39,6 +35,7 @@ import { BookBranch } from "@/lib/api/bookbranches";
 import Tag from "../ui/Tags";
 import CreateDraftModal from "./CreateDraftModal";
 import { Chapter } from "@/lib/api/chapters";
+import { useBook } from "@/context/BookContext";
 
 interface BranchSidebarProps {
   isOpen: boolean; // Desktop state
@@ -113,7 +110,9 @@ export function BranchDetails({
     isSaving,
     lastSaved,
     createDraft,
+    canBranch,
   } = useChapterEditor();
+
   const [isDraftsOpen, setIsDraftsOpen] = useState(isOpen);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
@@ -238,13 +237,18 @@ export function BranchDetails({
                 </button>
 
                 {/* Add Branch Icon Button */}
-                <button
-                  onClick={() => setShowCreateModal(true)}
-                  className="w-6 h-6 flex items-center justify-center bg-primary-base hover:bg-primary-dark rounded-full transition-colors shrink-0"
-                  aria-label="Create new draft"
-                >
-                  <IoAdd size={16} className="text-white-base text-semibold" />
-                </button>
+                {canBranch && (
+                  <button
+                    onClick={() => setShowCreateModal(true)}
+                    className="w-6 h-6 flex items-center justify-center bg-primary-base hover:bg-primary-dark rounded-full transition-colors shrink-0"
+                    aria-label="Create new draft"
+                  >
+                    <IoAdd
+                      size={16}
+                      className="text-white-base text-semibold"
+                    />
+                  </button>
+                )}
               </div>
 
               {/* Branches List */}
@@ -309,7 +313,12 @@ export function DraftCard({
   isMain?: boolean;
 }) {
   const { currentDraft, switchDraft } = useChapterEditor();
+  const { collaborators } = useBook();
+
   const isActive = currentDraft?.id === draft?.id;
+  const createdByUser = collaborators?.find(
+    (collab ) => collab.user_id === draft.user_id
+  )?.user || { name: "Unknown User"};
 
   return (
     <Card
@@ -343,6 +352,7 @@ export function DraftCard({
       {/* Row 2: Creator */}
       <p className="text-sm text-secondary-dark/70 mb-4">
         {/* {branch?.created_by || "snoople"} */}
+        {createdByUser?.name || "Unknown User"}
       </p>
 
       {/* Row 3: Timestamp and User Avatar */}

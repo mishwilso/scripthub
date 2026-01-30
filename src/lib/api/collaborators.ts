@@ -206,7 +206,7 @@ export async function checkBookPermission(
   }
 
   if (!user.user?.id) {
-    return { data: null, error: new Error("User not authenticated") };
+    return false;
   }
 
   // Check collaborator role
@@ -221,3 +221,4 @@ export async function checkBookPermission(
     ? requiredRole.includes(collaborator.role as CollaboratorRole)
     : false;
 }
+ 

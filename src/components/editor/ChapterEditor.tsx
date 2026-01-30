@@ -53,6 +53,7 @@ export default function ChapterEditor() {
   };
   // Load sidebar states from localStorage on mount
   useEffect(() => {
+    // eslint-disable-next-line 
     setLeftSidebarOpen(
       getFromLocalStorage<boolean>("editor-left-sidebar", false),
     );
@@ -82,7 +83,7 @@ export default function ChapterEditor() {
     window.addEventListener("keydown", handleKeyCombination);
 
     return () => window.removeEventListener("keydown", handleKeyCombination);
-  }, []);
+  }, [saveContent]);
 
   // Handle scroll to show/hide header
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {

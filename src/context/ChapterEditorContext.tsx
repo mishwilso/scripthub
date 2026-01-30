@@ -25,6 +25,7 @@ import {
   getBookBranches,
   createBranch as createBranchAPI,
 } from "@/lib/api/bookbranches";
+import { checkBookPermission } from "@/lib/api/collaborators";
 
 interface ChapterEditorContextType {
   // Branch and Book
@@ -65,6 +66,7 @@ interface ChapterEditorContextType {
   // Permissions
   canEdit: boolean;
   canComment: boolean;
+  canBranch: boolean;
 
   // Refresh functions
   refreshChapter: () => Promise<void>;
@@ -99,6 +101,9 @@ export function ChapterEditorProvider({
 
   const [wordCount, setWordCount] = useState(currentDraft?.word_count || 0);
 
+  const [canEdit, setCanEdit] = useState(false);
+  const [canBranch, setCanBranch] = useState(false);
+
   // Save after 2 secs of no typing
   const debouncedContent = useDebounce(content, 5000);
 
@@ -131,6 +136,10 @@ export function ChapterEditorProvider({
       const branchData = await getBookBranches(bookId);
       const chapterData = await getChapter(chapterId);
       const draftData = await getChapterDrafts(chapterId);
+      const editor_permission = await checkBookPermission(bookId, [
+        "owner",
+        "editor",
+      ]);
 
       setBook(bookData);
       setBranches(branchData);
@@ -140,6 +149,10 @@ export function ChapterEditorProvider({
       setCurrentDraft(chapterData);
       setDrafts(draftData);
       setContent(chapterData.content || "");
+
+      // Set permissions
+      setCanEdit(editor_permission);
+      setCanBranch(editor_permission);
     }
 
     loadEditorData();
@@ -422,8 +435,9 @@ export function ChapterEditorProvider({
         commitChanges,
         createDraft,
         createBranch,
-        canEdit: true,
+        canEdit,
         canComment: true,
+        canBranch,
         refreshChapter,
         refreshBranches,
       }}
