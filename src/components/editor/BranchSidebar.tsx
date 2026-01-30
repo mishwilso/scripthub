@@ -113,15 +113,12 @@ export function BranchDetails({
     canBranch,
   } = useChapterEditor();
 
-  const [isDraftsOpen, setIsDraftsOpen] = useState(isOpen);
+  const [isDraftsOpen, setIsDraftsOpen] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
-
-  useEffect(() => {
-    setIsDraftsOpen(isOpen);
-  }, [isOpen]);
 
   const handleCreateDraft = async (name: string) => {
     try {
+      setIsDraftsOpen(true);
       const result = await createDraft(name);
       return result;
     } catch (error) {
@@ -144,7 +141,7 @@ export function BranchDetails({
           <Link
             href={`/books/${currentBranch?.book_id}`}
             className={`transition-opacity duration-300 ${
-              isDraftsOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+              isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
             }`}
             aria-label="Go to book overview"
           >
@@ -159,11 +156,11 @@ export function BranchDetails({
             <button
               onClick={onToggle}
               className={`flex items-center justify-center w-8 h-8 rounded-md hover:bg-neutral-light transition-all shrink-0 ${
-                isDraftsOpen
+                isOpen
                   ? "opacity-0 group-hover/sidebar:opacity-100"
                   : "absolute left-1/2 -translate-x-1/2 opacity-100"
               }`}
-              aria-label={isDraftsOpen ? "Close sidebar" : "Open sidebar"}
+              aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
             >
               <FiSidebar
                 size={18}
@@ -175,7 +172,7 @@ export function BranchDetails({
 
         <div className="hidden lg:flex relative items-center justify-center">
           {/* Cloud Save */}
-          {!isDraftsOpen &&
+          {!isOpen &&
             (isSaving ? (
               <Tooltip text="Saving..." position="right">
                 <div className="mt-4">
@@ -206,14 +203,14 @@ export function BranchDetails({
         {/* Scrollable Content Area */}
         <div className="flex-1 overflow-y-auto">
           {/* Main Branch */}
-          {isDraftsOpen && (
+          {isOpen && (
             <div className="px-6 pt-6 pb-8">
               <DraftCard draft={mainChapter as Chapter} isMain />
             </div>
           )}
 
           {/* Branches Section */}
-          {isDraftsOpen && (
+          {isOpen && (
             <div className="px-6 pb-4">
               {/* Section Header */}
               <div className="mb-4 flex items-center justify-between">
@@ -286,7 +283,7 @@ export function BranchDetails({
               <FaLeaf size={18} color="#FFFFFF" />
             </button>
             {/* Tooltip - only show when closed */}
-            {!isDraftsOpen && (
+            {!isOpen && (
               <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-neutral-dark text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
                 Meet the Developer
               </div>
@@ -317,8 +314,8 @@ export function DraftCard({
 
   const isActive = currentDraft?.id === draft?.id;
   const createdByUser = collaborators?.find(
-    (collab ) => collab.user_id === draft.user_id
-  )?.user || { name: "Unknown User"};
+    (collab) => collab.user_id === draft.user_id,
+  )?.user || { name: "Unknown User" };
 
   return (
     <Card
