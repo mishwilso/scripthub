@@ -27,12 +27,8 @@ export default function ChapterEditor() {
   const { wordCount, saveContent } = useChapterEditor();
 
   // Desktop: Independent sidebar states (saved to localStorage)
-  const [leftSidebarOpen, setLeftSidebarOpen] = useState(
-    getFromLocalStorage("editor-left-sidebar", false),
-  );
-  const [rightSidebarOpen, setRightSidebarOpen] = useState(
-    getFromLocalStorage("editor-right-sidebar", false),
-  );
+  const [leftSidebarOpen, setLeftSidebarOpen] = useState(false);
+  const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
 
   // Mobile: Which sidebar is open (only one at a time)
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState<
@@ -55,13 +51,23 @@ export default function ChapterEditor() {
   const toggleMobileRightSidebar = () => {
     setMobileSidebarOpen(mobileSidebarOpen === "right" ? null : "right");
   };
+  // Load sidebar states from localStorage on mount
+  useEffect(() => {
+    setLeftSidebarOpen(
+      getFromLocalStorage<boolean>("editor-left-sidebar", false),
+    );
+
+    setRightSidebarOpen(
+      getFromLocalStorage<boolean>("editor-right-sidebar", false),
+    );
+  }, []);
 
   useEffect(() => {
-    setToLocalStorage("editor-left-sidebar", leftSidebarOpen);
+    setToLocalStorage<boolean>("editor-left-sidebar", leftSidebarOpen);
   }, [leftSidebarOpen]);
 
   useEffect(() => {
-    setToLocalStorage("editor-right-sidebar", rightSidebarOpen);
+    setToLocalStorage<boolean>("editor-right-sidebar", rightSidebarOpen);
   }, [rightSidebarOpen]);
 
   useEffect(() => {

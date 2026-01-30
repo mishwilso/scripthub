@@ -3,7 +3,7 @@
 import { useChapterEditor } from "@/context/ChapterEditorContext";
 import Link from "next/link";
 import { toTitleCase } from "@/lib/utils/formatString";
-import { useState, useEffect, useContext, use } from "react";
+import { useState, useEffect, useContext, useId } from "react";
 import { LuBookOpen } from "react-icons/lu";
 import Card from "../ui/Card";
 import Tooltip from "../ui/Tooltip";
@@ -53,8 +53,10 @@ export default function BranchSidebar({
   onToggle,
   onClose,
 }: BranchSidebarProps) {
+  console.log(typeof isOpen, isOpen);
 
-  console.log(isOpen)
+  const id = useId();
+  console.log("BranchSidebar render", id, { isOpen, mobileOpen });
 
   return (
     <>
@@ -77,14 +79,14 @@ export default function BranchSidebar({
       )}
 
       {/* Desktop Sidebar - needs to be sticky to take up space and stay in place :) */}
+      {/* Issue, isOpen is being read in as false regardless of its inital passed in state */}
       <aside
-        className={`hidden lg:flex lg:sticky 
-                    ${isOpen ? "w-80" : "w-14"}
-                    top-0 shrink-0 h-screen
-                    bg-neutral-base border-r border-neutral-dark/20
-                    transition-all duration-300 ease-in-out group/sidebar
-                    z-50
-                    `}
+        className={[
+          "hidden lg:flex lg:sticky top-0 shrink-0 h-screen",
+          "bg-neutral-base border-r border-neutral-dark/20",
+          "transition-all duration-300 ease-in-out group/sidebar z-50",
+          isOpen ? "w-80" : "w-14",
+        ].join(" ")}
       >
         <BranchDetails isOpen={isOpen} onToggle={onToggle} />
       </aside>
@@ -381,7 +383,7 @@ export function DraftOptions({
         </IconButton>
       </Dropdown.Button>
 
-      <Dropdown.Menu position="top span-left">
+      <Dropdown.Menu position="span-left top">
         {/* onClick: Navigate to /books/[bookId]/compare?branch=branchId */}
         {/* Or open a compare modal/side-by-side view */}
         {!isMain && (

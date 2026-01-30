@@ -106,7 +106,7 @@ export function ChapterOptions({ href }: { href: string }) {
         </IconButton>
       </Dropdown.Button>
 
-      <Dropdown.Menu position="top span-left">
+      <Dropdown.Menu position="span-left top">
         <Dropdown.Option startIcon={<IoEyeOutline />} href={href}>
           View in Book
         </Dropdown.Option>

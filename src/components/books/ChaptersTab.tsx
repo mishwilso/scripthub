@@ -81,7 +81,7 @@ export function BranchOptions() {
         </div>
       </Dropdown.Button>
 
-      <Dropdown.Menu position="bottom span-right">
+      <Dropdown.Menu position="span-right bottom">
         <Dropdown.Option>Branches coming soon...</Dropdown.Option>
       </Dropdown.Menu>
     </Dropdown>

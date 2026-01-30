@@ -86,7 +86,7 @@ export function BookOptions() {
         </IconButton>
       </Dropdown.Button>
 
-      <Dropdown.Menu position="top span-left">
+      <Dropdown.Menu position="span-left top">
         <Dropdown.Option startIcon={<IoSettingsOutline />}>
           Settings
         </Dropdown.Option>
