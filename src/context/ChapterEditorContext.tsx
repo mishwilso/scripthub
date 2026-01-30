@@ -168,6 +168,29 @@ export function ChapterEditorProvider({
       // clear local after succeful db save
       localStorage.removeItem(`scripthub_draft_${chapterId}`);
 
+      // Update in-memory drafts
+      setDrafts((prevDrafts) =>
+        prevDrafts.map((d) => {
+          return d.id === currentDraftRef.current?.id
+            ? updatedChapter || {
+                ...d,
+                content: contentRef.current,
+                word_count: wordCountRef.current,
+              }
+            : d;
+        }),
+      );
+
+      setMainChapter((prevMainChapter) =>
+        prevMainChapter && prevMainChapter.id === currentDraftRef.current?.id
+          ? updatedChapter || {
+              ...prevMainChapter,
+              content: contentRef.current,
+              word_count: wordCountRef.current,
+            }
+          : prevMainChapter,
+      );
+
       return updatedChapter as Chapter;
     } catch (error) {
       console.error("Error saving:", error);
@@ -279,29 +302,6 @@ export function ChapterEditorProvider({
     if (hasUnsavedChanges.current && currentDraft) {
       console.log("Switching Drafts - saved current draft");
       const updatedChapter = await saveContent();
-
-      setDrafts((prevDrafts) =>
-        prevDrafts.map((d) => {
-          console.log(d.id, " === ", currentDraft.id);
-          return d.id === currentDraft.id
-            ? updatedChapter || {
-                ...d,
-                content: contentRef.current,
-                word_count: wordCountRef.current,
-              }
-            : d;
-        }),
-      );
-
-      setMainChapter((prevMainChapter) =>
-        prevMainChapter && prevMainChapter.id === currentDraft.id
-          ? updatedChapter || {
-              ...prevMainChapter,
-              content: contentRef.current,
-              word_count: wordCountRef.current,
-            }
-          : prevMainChapter,
-      );
     }
 
     setCurrentDraft(draft);

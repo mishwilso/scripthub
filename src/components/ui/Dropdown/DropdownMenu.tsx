@@ -11,11 +11,11 @@ import { useContext, Children, isValidElement } from "react";
 interface DropdownMenuProps {
   children: React.ReactNode;
   position?:
-    | "bottom span-right"
-    | "bottom span-left"
+    | "span-right bottom"
+    | "span-left bottom"
     | "bottom"
-    | "top span-right"
-    | "top span-left"
+    | "span-right top"
+    | "span-left top"
     | "top";
   size?: string;
   maxVisibleItems?: number;
@@ -23,7 +23,7 @@ interface DropdownMenuProps {
 
 export default function DropdownMenu({
   children,
-  position = "bottom span-left",
+  position = "span-left bottom",
   size = "w-56",
   maxVisibleItems,
 }: DropdownMenuProps) {
@@ -41,9 +41,11 @@ export default function DropdownMenu({
     (child) =>
       isValidElement(child) &&
       typeof child.type !== "string" &&
-      child.type.name === "DropdownFooter"
+      child.type.name === "DropdownFooter",
   );
-  const scrollableChildren = childrenArray.filter((child) => child !== footerChild);
+  const scrollableChildren = childrenArray.filter(
+    (child) => child !== footerChild,
+  );
 
   // Calculate max height based on maxVisibleItems
   // Each item is approximately 44px (py-2 + text + margins)
@@ -65,12 +67,12 @@ export default function DropdownMenu({
         ? "opacity-100 scale-100"
         : "visually-hidden opacity-0 scale-95 pointer-events-none"
     }
-    z-50
+    z-[999]
     flex flex-col
   `;
 
   const scrollableClassStyle = `
-    ${maxVisibleItems ? 'overflow-y-auto' : ''}
+    ${maxVisibleItems ? "overflow-y-auto" : ""}
   `;
 
   return (
@@ -79,8 +81,8 @@ export default function DropdownMenu({
       style={{
         positionArea: position,
         positionAnchor: anchorName,
-        position: 'fixed',
-        margin: '5px 0 0 5px',
+        position: "fixed",
+        margin: "5px 0 0 5px",
       }}
       role="menu"
     >

@@ -3,7 +3,7 @@
 import { useChapterEditor } from "@/context/ChapterEditorContext";
 import Link from "next/link";
 import { toTitleCase } from "@/lib/utils/formatString";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, use } from "react";
 import { LuBookOpen } from "react-icons/lu";
 import Card from "../ui/Card";
 import Tooltip from "../ui/Tooltip";
@@ -53,6 +53,9 @@ export default function BranchSidebar({
   onToggle,
   onClose,
 }: BranchSidebarProps) {
+
+  console.log(isOpen)
+
   return (
     <>
       {/* Mobile Slide Drawer */}
@@ -75,10 +78,13 @@ export default function BranchSidebar({
 
       {/* Desktop Sidebar - needs to be sticky to take up space and stay in place :) */}
       <aside
-        className={`hidden lg:flex lg:sticky top-0 shrink-0 h-screen
+        className={`hidden lg:flex lg:sticky 
+                    ${isOpen ? "w-80" : "w-14"}
+                    top-0 shrink-0 h-screen
                     bg-neutral-base border-r border-neutral-dark/20
-                    transition-all duration-300 ease-in-out group/sidebar overflow-hidden
-                    ${isOpen ? "w-80" : "w-14"}`}
+                    transition-all duration-300 ease-in-out group/sidebar
+                    z-50
+                    `}
       >
         <BranchDetails isOpen={isOpen} onToggle={onToggle} />
       </aside>
@@ -106,14 +112,16 @@ export function BranchDetails({
     lastSaved,
     createDraft,
   } = useChapterEditor();
-  const [isDraftsOpen, setIsDraftsOpen] = useState(false);
+  const [isDraftsOpen, setIsDraftsOpen] = useState(isOpen);
   const [showCreateModal, setShowCreateModal] = useState(false);
+
+  useEffect(() => {
+    setIsDraftsOpen(isOpen);
+  }, [isOpen]);
 
   const handleCreateDraft = async (name: string) => {
     try {
       const result = await createDraft(name);
-      // Auto-expand drafts section after successful creation
-      setIsDraftsOpen(true);
       return result;
     } catch (error) {
       throw new Error("failed to create chapter draft");
@@ -135,7 +143,7 @@ export function BranchDetails({
           <Link
             href={`/books/${currentBranch?.book_id}`}
             className={`transition-opacity duration-300 ${
-              isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+              isDraftsOpen ? "opacity-100" : "opacity-0 pointer-events-none"
             }`}
             aria-label="Go to book overview"
           >
@@ -150,11 +158,11 @@ export function BranchDetails({
             <button
               onClick={onToggle}
               className={`flex items-center justify-center w-8 h-8 rounded-md hover:bg-neutral-light transition-all shrink-0 ${
-                isOpen
+                isDraftsOpen
                   ? "opacity-0 group-hover/sidebar:opacity-100"
                   : "absolute left-1/2 -translate-x-1/2 opacity-100"
               }`}
-              aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
+              aria-label={isDraftsOpen ? "Close sidebar" : "Open sidebar"}
             >
               <FiSidebar
                 size={18}
@@ -166,7 +174,7 @@ export function BranchDetails({
 
         <div className="hidden lg:flex relative items-center justify-center">
           {/* Cloud Save */}
-          {!isOpen &&
+          {!isDraftsOpen &&
             (isSaving ? (
               <Tooltip text="Saving..." position="right">
                 <div className="mt-4">
@@ -197,14 +205,14 @@ export function BranchDetails({
         {/* Scrollable Content Area */}
         <div className="flex-1 overflow-y-auto">
           {/* Main Branch */}
-          {isOpen && (
+          {isDraftsOpen && (
             <div className="px-6 pt-6 pb-8">
               <DraftCard draft={mainChapter as Chapter} isMain />
             </div>
           )}
 
           {/* Branches Section */}
-          {isOpen && (
+          {isDraftsOpen && (
             <div className="px-6 pb-4">
               {/* Section Header */}
               <div className="mb-4 flex items-center justify-between">
@@ -272,7 +280,7 @@ export function BranchDetails({
               <FaLeaf size={18} color="#FFFFFF" />
             </button>
             {/* Tooltip - only show when closed */}
-            {!isOpen && (
+            {!isDraftsOpen && (
               <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-neutral-dark text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50">
                 Meet the Developer
               </div>
@@ -303,11 +311,15 @@ export function DraftCard({
 
   return (
     <Card
-      // TODO: Add onClick={handleDraftClick} after implementing
-      className={`px-3 py-2.5 transition-all cursor-pointer group bg-[#FFFDFB]/80 border border-secondary-dark/20 
-        hover:border-2 hover:border-neutral-dark hover:shadow-sm hover:bg-[#FFFDFB]
-      ${isActive ? "border-2 border-neutral-dark" : ""}`}
-      variant="shadow"
+      className={`
+        ${
+          isMain
+            ? "px-3 py-2.5 transition-all cursor-pointer group bg-[#FFFDFB]/80 border-2 border-secondary-dark/20 hover:bg-[#FFFDFB]"
+            : "px-3 py-2.5 transition-all cursor-pointer group bg-[#917F74]/10 border-2 border-secondary-dark/20 hover:bg-[#FFFDFB]/30"
+        } 
+        hover:border-neutral-dark hover:shadow-sm
+      ${isActive ? " border-neutral-dark bg-[#FFFDFB]/80" : ""}`}
+      variant="outline"
       rounded="sm"
       onClick={() => switchDraft(draft.id)}
     >
@@ -321,10 +333,7 @@ export function DraftCard({
         </div>
 
         {/* Options Menu */}
-        <div
-          className="shrink-0 -mx-1 relative z-10"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <div className="shrink-0 -mx-1" onClick={(e) => e.stopPropagation()}>
           <DraftOptions isMain={isMain} draftId={draft?.id} />
         </div>
       </div>
@@ -335,10 +344,10 @@ export function DraftCard({
       </p>
 
       {/* Row 3: Timestamp and User Avatar */}
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-3 min-h-8">
         <div className="flex items-center gap-1.5">
           <IoTimeOutline size={15} className="text-secondary-base/60" />
-          <p className="text-xs text-secondary-dark/60">
+          <p className="text-sm text-secondary-dark/60">
             {formatRelativeTime(new Date(draft?.updated_at as string))}
           </p>
         </div>

@@ -45,15 +45,15 @@ export default function EditorHeader({
   onToggleRightSideBar,
   wordCount,
 }: EditorHeaderProps) {
-  const { chapter, currentBranch, changeTitle } = useChapterEditor();
+  const { mainChapter, currentBranch, changeTitle } = useChapterEditor();
   const titleRef = useRef<HTMLHeadingElement>(null);
   const { book } = useBook();
 
   useEffect(() => {
-    if (titleRef.current && titleRef.current.textContent !== chapter?.title) {
-      titleRef.current.textContent = chapter?.title || "";
+    if (titleRef.current && titleRef.current.textContent !== mainChapter?.title) {
+      titleRef.current.textContent = mainChapter?.title || "";
     }
-  }, [chapter?.title]);
+  }, [mainChapter?.title]);
 
   function onChangeTitle(e: React.FormEvent<HTMLHeadingElement>) {
     console.log(`changing to: ${e.currentTarget.textContent}`);
@@ -86,7 +86,7 @@ export default function EditorHeader({
             onKeyDown={handleKeyDown}
             onChange={onChangeTitle}
           >
-            {chapter?.title}
+            {mainChapter?.title}
           </h1>
 
         <ChapterOptions bookTitle={book?.title || ""}/>
@@ -120,7 +120,7 @@ export default function EditorHeader({
             onKeyDown={handleKeyDown}
             onChange={onChangeTitle}
           >
-            {chapter?.title}
+            {mainChapter?.title}
           </h1>
 
           {/* Branch tag */}

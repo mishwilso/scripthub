@@ -78,7 +78,7 @@ export function Dropdown({ children }:{children:React.ReactNode}) {
 
   return (
     <DropdownContext.Provider value={contextValues}>
-      <div ref={dropdownRef} className="inline-block">
+      <div ref={dropdownRef} className="relative">
         {children}
       </div>
     </DropdownContext.Provider>

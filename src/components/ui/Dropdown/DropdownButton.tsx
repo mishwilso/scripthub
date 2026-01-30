@@ -30,7 +30,7 @@ export default function DropdownButton({
     <Comp
       onClick={toggle}
       style={{ anchorName }}
-      className={`inline-flex w-full justify-center rounded-lg hover:bg-neutral-dark/10 ${
+      className={`relative inline-flex w-full justify-center rounded-lg hover:bg-neutral-dark/10  ${
         isOpen ? "bg-neutral-dark/10" : ""
       } ${className} `}
       aria-haspopup="menu"

@@ -162,9 +162,9 @@ export default function ChapterEditor() {
 
         <div className="flex flex-col flex-1 min-w-0 h-full relative">
           <div
-            className="top-0 left-0 right-0 transition-transform duration-300 z-10 bg-white-base"
+            className="left-0 right-0 transition-transform duration-300 z-10 bg-white-base"
             style={{
-              transform: showHeader ? "translateY(0)" : "translateY(-100%)",
+              transform: showHeader ? "0" : "-100%",
               position: showHeader ? "relative" : "absolute",
             }}
           >
