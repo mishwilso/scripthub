@@ -31,6 +31,7 @@ import {
   $createParagraphNode,
   OUTDENT_CONTENT_COMMAND,
   INDENT_CONTENT_COMMAND,
+  $isTextNode,
 } from "lexical";
 import {
   $getSelectionStyleValueForProperty,
@@ -74,7 +75,7 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
   // TODO: These should sync with the current selection in the editor
   // Use editor.registerUpdateListener to detect current format state
   const [selectedHeading, setSelectedHeading] = useState("Paragraph");
-  const [selectedFontStyle, setSelectedFontStyle] = useState("Literata");
+  const [selectedFontStyle, setSelectedFontStyle] = useState("Georgia");
   const [selectedFontWeight, setSelectedFontWeight] = useState("Regular");
   const [fontSize, setFontSize] = useState(16);
   const [selectedTextColor, setSelectedTextColor] = useState("#78716C"); // Default to Black median shade
@@ -92,21 +93,54 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
   const [isUnorderedList, setIsUnorderedList] = useState(false);
   const [isOrderedList, setIsOrderedList] = useState(false);
 
-  //
-  const headingOptions: { label: string; value: HeadingTag; size: number }[] =
-    useMemo(
-      () => [
-        { label: "Paragraph", value: "p", size: 16 },
-        { label: "Heading 1", value: "h1", size: 32 },
-        { label: "Heading 2", value: "h2", size: 24 },
-        { label: "Heading 3", value: "h3", size: 20 },
-        { label: "Heading 4", value: "h4", size: 18 },
-        { label: "Heading 5", value: "h5", size: 16 },
-        { label: "Heading 6", value: "h6", size: 14 },
-        { label: "Caption", value: "caption", size: 12 },
-      ],
-      [],
+  // TODO: Clean up variables - some may be redundant after implementing update listener
+  const headingOptions: {
+    label: string;
+    value: HeadingTag;
+    size: number;
+    weight: number;
+  }[] = useMemo(
+    () => [
+      { label: "Paragraph", value: "p", size: 16, weight: 400 },
+      { label: "Heading 1", value: "h1", size: 32, weight: 700 },
+      { label: "Heading 2", value: "h2", size: 24, weight: 700 },
+      { label: "Heading 3", value: "h3", size: 20, weight: 700 },
+      { label: "Heading 4", value: "h4", size: 18, weight: 700 },
+      { label: "Heading 5", value: "h5", size: 16, weight: 700 },
+      { label: "Heading 6", value: "h6", size: 14, weight: 700 },
+      { label: "Caption", value: "caption", size: 12, weight: 400 },
+    ],
+    [],
+  );
+
+  const fontWeightOptions = useMemo(
+    () => [
+      { label: "Light", value: 300 },
+      { label: "Regular", value: 400 },
+      { label: "Medium", value: 500 },
+      { label: "Semi Bold", value: 600 },
+      { label: "Bold", value: 700 },
+      { label: "Extra Bold", value: 800 },
+    ],
+    [],
+  );
+
+  const fontStyleOptions = useMemo(
+    () => [
+      { label: "Georgia", value: "Georgia, serif" },
+      { label: "Literata", value: "var(--font-literata), serif" },
+      { label: "Arial", value: "Arial, sans-serif" },
+      { label: "Times New Roman", value: "Times New Roman, serif" },
+      { label: "Courier New", value: "Courier New, monospace" },
+    ],
+    [],
+  );
+
+  const getWeightLabel = (weight: number): string => {
+    return (
+      fontWeightOptions.find((opt) => opt.value === weight)?.label ?? "Regular"
     );
+  };
 
   const getButtonClass = (isActive: boolean) =>
     `flex items-center justify-center aspect-square border rounded-md transition-colors ${
@@ -149,6 +183,19 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
             // Paragraph or default
             setSelectedHeading("Paragraph");
           }
+
+          // Set Font Style
+          const fontStyle = $getSelectionStyleValueForProperty(selection, 
+            "font-family", "",
+          )
+          setSelectedFontStyle(fontStyleOptions.find((opt) => opt.value === fontStyle)?.label ?? "Georgia");
+
+          // const inlineWeight = $getSelectionStyleValueForProperty(
+          //   selection,
+          //   "font-weight",
+          //   "",
+          // );
+          
 
           // Set text formats
           setIsBold(selection.hasFormat("bold"));
@@ -195,19 +242,30 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
             }
           }
 
-          const weightMap: Record<string, string> = {
-            "300": "Light",
-            "400": "Regular",
-            "500": "Medium",
-            "600": "Semi Bold",
-            "700": "Bold",
-          };
-          const weight = $getSelectionStyleValueForProperty(
+          const inlineWeight = $getSelectionStyleValueForProperty(
             selection,
             "font-weight",
-            "400",
-          ) as string;
-          setSelectedFontWeight(weightMap[weight]);
+            "",
+          );
+
+          if (inlineWeight) {
+            setSelectedFontWeight(getWeightLabel(parseInt(inlineWeight)));
+          } else {
+            const element = selection.anchor.getNode().getParent();
+            let blockType = "p";
+
+            if ($isHeadingNode(element)) {
+              blockType = element.getTag();
+            } else if (element?.getType() === "caption") {
+              blockType = "caption";
+            }
+            setSelectedFontWeight(
+              getWeightLabel(
+                headingOptions.find((opt) => opt.value === blockType)?.weight ??
+                  400,
+              ),
+            );
+          }
         }
       });
     });
@@ -265,6 +323,10 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
     editor.update(() => {
       const selection = $getSelection();
       if ($isRangeSelection(selection)) {
+        // Clear inline font-size and font-weight BEFORE changing block type,
+        // so the heading's CSS class defaults take over
+        $patchStyleText(selection, { "font-size": "", "font-weight": "" });
+
         if (headingTag === "p") {
           $setBlocksType(selection, () => $createParagraphNode());
         } else if (headingTag === "caption") {
@@ -272,15 +334,19 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
         } else {
           $setBlocksType(selection, () => $createHeadingNode(headingTag));
         }
-
-        $patchStyleText(selection, { "font-size": null });
       }
     });
   };
 
   // TODO: Implement font family change handler
-
-  const fontStyles = ["Literata", "Arial", "Times New Roman", "Courier New"];
+  const applyFontStyle = (font: string) => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        $patchStyleText(selection, { "font-family": font });
+      }
+    });
+  };
 
   const applyFontWeight = (weight: string) => {
     const weightMap: Record<string, string> = {
@@ -588,9 +654,9 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
                       onClick={() => {
                         setSelectedHeading(option.label);
                         setFontSize(option.size);
+                        setSelectedFontWeight(getWeightLabel(option.weight));
                         setHeadingOpen(false);
                         applyHeading(option.value);
-                        //applyFontSize(option.size);
                         console.log("Selected heading:", option.label);
                       }}
                       className="w-full flex items-center justify-between px-3 py-2 hover:bg-neutral-light/50 transition-colors border-b border-neutral-dark/10 last:border-b-0"
@@ -632,17 +698,20 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
               </button>
               {fontStyleOpen && (
                 <div className="absolute z-10 w-full mt-1 bg-white-input border border-neutral-dark/20 rounded-md shadow-lg animate-fade-in">
-                  {fontStyles.map((font) => (
+                  {fontStyleOptions.map((font) => (
                     <button
-                      key={font}
+                      key={font.label}
                       onClick={() => {
-                        setSelectedFontStyle(font);
+                        setSelectedFontStyle(font.label);
                         setFontStyleOpen(false);
-                        console.log("Selected font style:", font);
+                        applyFontStyle(font.value);
+                        console.log("Selected font style:", font.label);
                       }}
                       className="w-full px-3 py-2 text-left hover:bg-neutral-light/50 transition-colors border-b border-neutral-dark/10 last:border-b-0"
                     >
-                      <span className="text-sm text-neutral-dark">{font}</span>
+                      <span className="text-sm text-neutral-dark">
+                        {font.label}
+                      </span>
                     </button>
                   ))}
                 </div>
