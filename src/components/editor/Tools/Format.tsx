@@ -321,7 +321,9 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
   const [isItalic, setIsItalic] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
   const [isStrikethrough, setIsStrikethrough] = useState(false);
-  // const [currentAlignment, setCurrentAlignment] = useState<'left' | 'center' | 'right' | 'justify'>('left');
+  const [currentAlignment, setCurrentAlignment] = useState<
+    "left" | "center" | "right" | "justify"
+  >("left");
   const [isUnorderedList, setIsUnorderedList] = useState(false);
   const [isOrderedList, setIsOrderedList] = useState(false);
 
@@ -336,7 +338,7 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
         ["h5", "Heading 5"],
         ["h6", "Heading 6"],
       ]),
-    []
+    [],
   );
 
   const getButtonClass = (isActive: boolean) =>
@@ -383,10 +385,10 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
           // Set Heading
           setSelectedHeading(
             $isHeadingNode(element)
-              ? headingStyleMap.get(element.getTag()) ?? "None Found"
+              ? (headingStyleMap.get(element.getTag()) ?? "None Found")
               : element.getType() === "caption"
-              ? "Caption"
-              : "Paragraph"
+                ? "Caption"
+                : "Paragraph",
           );
 
           // Set text formats
@@ -405,6 +407,14 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
             setIsUnorderedList(false);
             setIsOrderedList(false);
           }
+
+          // Set font size
+          const font = $getSelectionStyleValueForProperty(
+            selection,
+            "font-size",
+            "16px",
+          );
+          setFontSize(parseInt(font));
         }
       });
     });
@@ -524,6 +534,14 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
   //     }
   //   });
   // };
+  const applyFontSize = (size: number) => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        $patchStyleText(selection, { "font-size": `${size}px` });
+      }
+    });
+  };
 
   // TODO: Implement text color change handler
   // const applyTextColor = (color: string) => {
@@ -763,7 +781,7 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
                     console.log(
                       isRemoveOption
                         ? "Highlight removed"
-                        : `Highlight color selected: ${color.name}`
+                        : `Highlight color selected: ${color.name}`,
                     );
                     setSelectedHighlightColor(color.value);
                   }}
@@ -848,6 +866,7 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
                         setFontSize(option.size);
                         setHeadingOpen(false);
                         applyHeading(option.value);
+                        applyFontSize(option.size);
                         console.log("Selected heading:", option.label);
                       }}
                       className="w-full flex items-center justify-between px-3 py-2 hover:bg-neutral-light/50 transition-colors border-b border-neutral-dark/10 last:border-b-0"
@@ -951,6 +970,7 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
                 <button
                   onClick={() => {
                     setFontSize(Math.max(8, fontSize - 1));
+                    applyFontSize(fontSize - 1);
                     console.log("Font size decreased to:", fontSize - 1);
                   }}
                   className="flex items-center justify-center w-10 h-10 hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
@@ -963,6 +983,7 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
                 <button
                   onClick={() => {
                     setFontSize(Math.min(72, fontSize + 1));
+                    applyFontSize(fontSize + 1);
                     console.log("Font size increased to:", fontSize + 1);
                   }}
                   className="flex items-center justify-center w-10 h-10 hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
@@ -976,7 +997,7 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
                     setLineSpacingOpen(!lineSpacingOpen);
                     console.log(
                       "Line spacing dropdown toggled:",
-                      !lineSpacingOpen
+                      !lineSpacingOpen,
                     );
                   }}
                   className="flex items-center justify-center w-10 h-10 hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors border-r border-neutral-dark/20"
@@ -1072,7 +1093,7 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
                   setColorPickerOpen(false);
                   console.log(
                     "Highlight color picker toggled:",
-                    !highlightPickerOpen
+                    !highlightPickerOpen,
                   );
                 }}
                 className="flex flex-col items-center justify-center px-3 py-2 border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors relative"
@@ -1146,7 +1167,7 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
                     ? editor.dispatchCommand(REMOVE_LIST_COMMAND, undefined)
                     : editor.dispatchCommand(
                         INSERT_UNORDERED_LIST_COMMAND,
-                        undefined
+                        undefined,
                       )
                 }
                 className={getButtonClass(isUnorderedList)}
@@ -1161,7 +1182,7 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
                     : () =>
                         editor.dispatchCommand(
                           INSERT_ORDERED_LIST_COMMAND,
-                          undefined
+                          undefined,
                         )
                 }
                 className={getButtonClass(isOrderedList)}

@@ -2,7 +2,9 @@ import Card from "@/components/ui/Card";
 import CustomLink from "@/components/ui/CustomLink";
 import Dropdown from "@/components/ui/Dropdown";
 import IconButton from "@/components/ui/IconButton";
+import Tags from "@/components/ui/Tags";
 
+import { FiGitBranch } from "react-icons/fi";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { IoTrashOutline } from "react-icons/io5";
 import { IoRemoveCircleOutline } from "react-icons/io5";
@@ -69,7 +71,19 @@ export default function ChapterCard({
         <div className="flex w-full md:w-auto justify-between items-center gap-4">
           <MdDragIndicator size={24} />
           <div className="space-y-1">
-            <h3 className="font-bold text-neutral-dark">{chapter.title}</h3>
+            <div className="flex gap-3">
+              <h3 className="font-bold text-neutral-dark">{chapter.title}</h3>
+              {/* Branch tag */}
+              {chapter.draft_count > 0 
+              && (
+                  <Tags className="hidden lg:flex" variant="version">
+                    <>
+                      <FiGitBranch />
+                      {`${chapter.draft_count || 0} version${chapter.draft_count === 1 ? "" : "s"}`}
+                    </>
+                  </Tags>
+                )}
+            </div>
             <p className="text-xs text-secondary-dark/70">
               {chapter.word_count} words - Last Updated{" "}
               {formatRelativeTime(new Date(chapter.updated_at))}

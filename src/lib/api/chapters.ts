@@ -1,5 +1,3 @@
-
-
 import { clientSupabase } from "@/lib/supabase/client";
 import { Tables, TablesInsert, TablesUpdate } from "../supabase/database.types";
 
@@ -34,7 +32,6 @@ export async function getRecentChapters(userId: string, limit: number) {
   return data;
 }
 
-
 export async function createChapter(chapterData: NewChapter) {
   const { data, error } = await clientSupabase
     .from("chapters")
@@ -44,7 +41,6 @@ export async function createChapter(chapterData: NewChapter) {
   if (error) throw error;
   return data[0];
 }
-
 
 export async function getChapter(chapterId: string) {
   // Check localStorage for newer unsaved content
@@ -75,7 +71,6 @@ export async function getChapter(chapterId: string) {
   return data;
 }
 
-
 export async function getBookMainChapters(bookId: string) {
   const { data, error } = await clientSupabase
     .from("chapters")
@@ -88,7 +83,6 @@ export async function getBookMainChapters(bookId: string) {
   return data;
 }
 
-
 export async function getChapterCount(bookId: string) {
   const { count, error } = await clientSupabase
     .from("chapters")
@@ -100,7 +94,6 @@ export async function getChapterCount(bookId: string) {
   if (error) throw error;
   return count;
 }
-
 
 export async function getDraftCount(mainChapterId: string) {
   const { count, error } = await clientSupabase
@@ -118,7 +111,7 @@ export async function getDraftCount(mainChapterId: string) {
 export async function updateChapter(
   chapterId: string,
   updates: UpdatedChapter,
-) : Promise<Chapter> {
+): Promise<Chapter> {
   const { data, error } = await clientSupabase
     .from("chapters")
     .update(updates)
@@ -213,5 +206,45 @@ export async function createChapterDraft(
     .select()
     .single();
 
+  // update the source chapter's draft count
+  await clientSupabase
+    .from("chapters")
+    .update({ draft_count: (source.draft_count || 0) + 1 })
+    .eq("id", sourceChapterId)
+    .eq("is_main", true);
+
   return data;
+}
+
+// deleteChapterDraft(draftId) - delete draft
+export async function deleteChapterDraft(draftId: string) {
+  // Ensure chapter is a draft - i dunno seems like a thing i should do
+
+
+  // First, get the source chapter
+  const { data: source } = await clientSupabase
+    .from("chapters")
+    .select("*")
+    .eq("id", draftId)
+    .single();
+
+  if (!source) throw new Error("Failed to create draft");
+
+  // Then Delete draft
+  const response = await clientSupabase
+    .from("chapters")
+    .delete()
+    .eq("is_main", false)
+    .eq("id", draftId);
+
+  // update the source chapter's draft count
+  if (source.branched_from_id){
+    await clientSupabase
+      .from("chapters")
+      .update({ draft_count: (source.draft_count || 0) - 1 })
+      .eq("id", source.branched_from_id)
+      .eq("is_main", true);
+  }
+  
+  return response;
 }

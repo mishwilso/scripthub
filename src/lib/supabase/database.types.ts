@@ -12,31 +12,6 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "13.0.5"
   }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       book_activity: {
@@ -251,6 +226,7 @@ export type Database = {
           branched_from_id: string | null
           content: string
           created_at: string
+          draft_count: number
           draft_name: string | null
           id: string
           is_main: boolean | null
@@ -268,6 +244,7 @@ export type Database = {
           branched_from_id?: string | null
           content?: string
           created_at?: string
+          draft_count?: number
           draft_name?: string | null
           id?: string
           is_main?: boolean | null
@@ -285,6 +262,7 @@ export type Database = {
           branched_from_id?: string | null
           content?: string
           created_at?: string
+          draft_count?: number
           draft_name?: string | null
           id?: string
           is_main?: boolean | null
@@ -610,9 +588,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {},
   },
