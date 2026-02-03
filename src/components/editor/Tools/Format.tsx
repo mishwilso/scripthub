@@ -72,17 +72,14 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
   const [highlightPickerOpen, setHighlightPickerOpen] = useState(false);
 
   // Current selections
-  // TODO: These should sync with the current selection in the editor
-  // Use editor.registerUpdateListener to detect current format state
   const [selectedHeading, setSelectedHeading] = useState("Paragraph");
   const [selectedFontStyle, setSelectedFontStyle] = useState("Georgia");
   const [selectedFontWeight, setSelectedFontWeight] = useState("Regular");
   const [fontSize, setFontSize] = useState(16);
 
   const [selectedTextColor, setSelectedTextColor] = useState("#78716C"); // Default to Black median shade
-
   const [selectedHighlightColor, setSelectedHighlightColor] =
-    useState("#FFFFFF");
+    useState("#FFFFFF"); // Default to no Highlight color
 
   // TODO: Add active states for formatting buttons (detect from selection)
   const [isBold, setIsBold] = useState(false);
@@ -452,6 +449,14 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
   };
 
   // TODO: Implement highlight/background color change handler
+  const applyHighlightColor = (colorHex: string) => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        $patchStyleText(selection, { "background-color" : colorHex});
+      }
+    })
+  }
 
   // TODO: Implement line spacing handlers
   const applySpacing = (styles: Record<string, string>) => {
