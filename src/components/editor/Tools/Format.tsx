@@ -326,8 +326,14 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
             "color",
             "#78716C",
           );
-          console.log("Selection Text Color: ", textColorValue);
           setSelectedTextColor(textColorValue);
+
+          const highlightColorValue = $getSelectionStyleValueForProperty(
+            selection,
+            "background-color",
+            "#FFFFFF"
+          );
+          setSelectedHighlightColor(highlightColorValue);
         }
       });
     });
@@ -453,7 +459,7 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
     editor.update(() => {
       const selection = $getSelection();
       if ($isRangeSelection(selection)) {
-        $patchStyleText(selection, { "background-color" : colorHex});
+        $patchStyleText(selection, { "background-color" : colorHex === '#FFFFFF' ? "" : colorHex});
       }
     })
   }
