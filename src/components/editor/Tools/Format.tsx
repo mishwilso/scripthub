@@ -688,7 +688,8 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
                         ? "Highlight removed"
                         : `Highlight color selected: ${color.name}`,
                     );
-                    setSelectedHighlightColor(color.value);
+                    // setSelectedHighlightColor(color.value);
+                    applyHighlightColor(color.value);
                   }}
                   className="relative w-6 h-6 rounded-full hover:scale-110 transition-all duration-150 flex items-center justify-center"
                   style={{
