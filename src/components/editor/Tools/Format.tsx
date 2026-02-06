@@ -1,5 +1,9 @@
+// ============================================================================
+// IMPORTS
+// ============================================================================
 import { useState, useRef, useEffect, useMemo } from "react";
 
+// ---- Icons ----
 import {
   MdFormatBold,
   MdFormatItalic,
@@ -20,8 +24,9 @@ import {
   MdFormatAlignJustify,
 } from "react-icons/md";
 import { TbTextColor, TbHighlight, TbLineHeight } from "react-icons/tb";
-
 import { FiChevronLeft, FiChevronDown, FiCheck } from "react-icons/fi";
+
+// ---- Lexical Core ----
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
   $getSelection,
@@ -43,8 +48,6 @@ import {
   $isHeadingNode,
   HeadingTagType,
 } from "@lexical/rich-text";
-import { $createCaptionNode } from "../nodes/CaptionNode";
-
 import {
   $isListNode,
   INSERT_ORDERED_LIST_COMMAND,
@@ -54,16 +57,30 @@ import {
 } from "@lexical/list";
 import { $getNearestNodeOfType } from "@lexical/utils";
 
+// ---- Custom Nodes ----
+import { $createCaptionNode } from "../nodes/CaptionNode";
+
+// ============================================================================
+// TYPES
+// ============================================================================
 type HeadingTag = "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "caption";
 
+// ============================================================================
+// MAIN COMPONENT
+// ============================================================================
 export default function Format({ isOpen }: { isOpen: boolean }) {
   const [editor] = useLexicalComposerContext();
 
+  // ==========================================================================
+  // STATE - Section Toggles
+  // ==========================================================================
   const [textOpen, setTextOpen] = useState(true);
   const [stylingOpen, setStylingOpen] = useState(false);
   const [alignmentOpen, setAlignmentOpen] = useState(false);
 
-  // Dropdown states for TEXT section
+  // ==========================================================================
+  // STATE - Dropdown Visibility
+  // ==========================================================================
   const [headingOpen, setHeadingOpen] = useState(false);
   const [fontStyleOpen, setFontStyleOpen] = useState(false);
   const [fontWeightOpen, setFontWeightOpen] = useState(false);
@@ -71,17 +88,20 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
   const [colorPickerOpen, setColorPickerOpen] = useState(false);
   const [highlightPickerOpen, setHighlightPickerOpen] = useState(false);
 
-  // Current selections
+  // ==========================================================================
+  // STATE - Current Selection Values
+  // ==========================================================================
   const [selectedHeading, setSelectedHeading] = useState("Paragraph");
   const [selectedFontStyle, setSelectedFontStyle] = useState("Georgia");
   const [selectedFontWeight, setSelectedFontWeight] = useState("Regular");
   const [fontSize, setFontSize] = useState(16);
-
-  const [selectedTextColor, setSelectedTextColor] = useState("#78716C"); // Default to Black median shade
+  const [selectedTextColor, setSelectedTextColor] = useState("#78716C");
   const [selectedHighlightColor, setSelectedHighlightColor] =
-    useState("#FFFFFF"); // Default to no Highlight color
+    useState("#FFFFFF");
 
-  // TODO: Add active states for formatting buttons (detect from selection)
+  // ==========================================================================
+  // STATE - Text Format Toggles
+  // ==========================================================================
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
@@ -92,13 +112,17 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
   const [isUnorderedList, setIsUnorderedList] = useState(false);
   const [isOrderedList, setIsOrderedList] = useState(false);
 
-  // Line and Paragragh Spacings
+  // ==========================================================================
+  // STATE - Spacing Values
+  // ==========================================================================
   const [letterSpacing, setLetterSpacing] = useState(0);
   const [lineHeight, setLineHeight] = useState(1.5);
   const [wordSpacing, setWordSpacing] = useState(0);
   const [paragraphSpacing, setParagraphSpacing] = useState(1);
 
-  // TODO: Clean up variables - some may be redundant after implementing update listener
+  // ==========================================================================
+  // CONFIGURATION OPTIONS
+  // ==========================================================================
   const headingOptions: {
     label: string;
     value: HeadingTag;
@@ -141,16 +165,9 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
     [],
   );
 
-  const spacingOptions = useMemo(
-    () => [
-      { label: "Letter Spacing", value: "letter-spacing" },
-      { label: "Line Height", value: "line-height" },
-      { label: "Word Spacing", value: "word-spacing" },
-      { label: "Paragraph Spacing", value: "margin-bottom" },
-    ],
-    [],
-  );
-
+  // ==========================================================================
+  // HELPER FUNCTIONS
+  // ==========================================================================
   const getWeightLabel = (weight: number): string => {
     return (
       fontWeightOptions.find((opt) => opt.value === weight)?.label ?? "Regular"
@@ -164,6 +181,9 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
         : "border-neutral-dark/20 hover:bg-neutral-light/30 active:bg-neutral-dark/20"
     }`;
 
+  // ==========================================================================
+  // EDITOR UPDATE LISTENER - Syncs UI state with editor selection
+  // ==========================================================================
   // TODO: Register update listener to detect current format from selection
   //         setIsBold(selection.hasFormat('bold'));
   //
@@ -339,7 +359,9 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
     });
   }, [editor, headingOptions]);
 
-  // Position state for color pickers
+  // ==========================================================================
+  // COLOR PICKER - Position State & Refs
+  // ==========================================================================
   const [textColorPickerPosition, setTextColorPickerPosition] = useState({
     top: 0,
     left: 0,
@@ -347,13 +369,14 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
   const [highlightColorPickerPosition, setHighlightColorPickerPosition] =
     useState({ top: 0, left: 0 });
 
-  // Refs for color picker positioning and click outside detection
   const textColorButtonRef = useRef<HTMLButtonElement>(null);
   const highlightColorButtonRef = useRef<HTMLButtonElement>(null);
   const textColorPickerRef = useRef<HTMLDivElement>(null);
   const highlightColorPickerRef = useRef<HTMLDivElement>(null);
 
-  // Close color pickers when clicking outside
+  // ==========================================================================
+  // COLOR PICKER - Click Outside Handler
+  // ==========================================================================
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
@@ -387,6 +410,9 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
     };
   }, [colorPickerOpen, highlightPickerOpen]);
 
+  // ==========================================================================
+  // APPLY HANDLERS - Block Type (Heading/Paragraph)
+  // ==========================================================================
   const applyHeading = (headingTag: HeadingTag) => {
     editor.update(() => {
       const selection = $getSelection();
@@ -406,7 +432,9 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
     });
   };
 
-  // TODO: Implement font family change handler
+  // ==========================================================================
+  // APPLY HANDLERS - Font Style & Weight
+  // ==========================================================================
   const applyFontStyle = (font: string) => {
     editor.update(() => {
       const selection = $getSelection();
@@ -435,6 +463,9 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
 
   const fontWeights = ["Light", "Regular", "Medium", "Semi Bold", "Bold"];
 
+  // ==========================================================================
+  // APPLY HANDLERS - Font Size
+  // ==========================================================================
   const applyFontSize = (size: number) => {
     editor.update(() => {
       const selection = $getSelection();
@@ -444,7 +475,9 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
     });
   };
 
-  // TODO: Implement text color change handler
+  // ==========================================================================
+  // APPLY HANDLERS - Text Color
+  // ==========================================================================
   const applyTextColor = (colorHex: string) => {
     editor.update(() => {
       const selection = $getSelection();
@@ -454,7 +487,9 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
     });
   };
 
-  // TODO: Implement highlight/background color change handler
+  // ==========================================================================
+  // APPLY HANDLERS - Highlight Color
+  // ==========================================================================
   const applyHighlightColor = (colorHex: string) => {
     editor.update(() => {
       const selection = $getSelection();
@@ -464,7 +499,9 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
     })
   }
 
-  // TODO: Implement line spacing handlers
+  // ==========================================================================
+  // APPLY HANDLERS - Spacing (Letter, Line, Word, Paragraph)
+  // ==========================================================================
   const applySpacing = (styles: Record<string, string>) => {
     editor.update(() => {
       const selection = $getSelection();
@@ -474,7 +511,6 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
     });
   };
 
-  // Individual handlers for each spacing control
   const handleLetterSpacingChange = (value: number) => {
     setLetterSpacing(value);
     applySpacing({ "letter-spacing": `${value}em` });
@@ -495,6 +531,9 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
     applySpacing({ "margin-bottom": `${value}em` });
   };
 
+  // ==========================================================================
+  // COLOR PALETTES DATA
+  // ==========================================================================
   const text_colors = [
     {
       name: "Purple",
@@ -561,11 +600,18 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
     { name: "White", value: "#FFFFFF" },
   ];
 
+  // ==========================================================================
+  // RENDER
+  // ==========================================================================
   return (
     <div className="flex flex-col overflow-y-auto mb-20 relative">
       <h2 className="text-xl font-semibold py-5 px-4">Format</h2>
 
-      {/* Text Color Picker Modal - Positioned absolutely */}
+      {/* ================================================================== */}
+      {/* COLOR PICKER MODALS (Fixed Position)                               */}
+      {/* ================================================================== */}
+
+      {/* Text Color Picker */}
       {colorPickerOpen && (
         <div
           ref={textColorPickerRef}
@@ -664,7 +710,7 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
         </div>
       )}
 
-      {/* Highlight Color Picker Modal - Positioned absolutely */}
+      {/* Highlight Color Picker */}
       {highlightPickerOpen && (
         <div
           ref={highlightColorPickerRef}
@@ -727,7 +773,9 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
         </div>
       )}
 
-      {/* TEXT Section */}
+      {/* ================================================================== */}
+      {/* TEXT SECTION - Heading, Font, Size, Spacing, Colors                */}
+      {/* ================================================================== */}
       <div className="border-b border-neutral-dark/10">
         <button
           onClick={() => {
@@ -1030,7 +1078,9 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
         )}
       </div>
 
-      {/* STYLING Section */}
+      {/* ================================================================== */}
+      {/* STYLING SECTION - Bold, Italic, Lists, Quote, Code, etc.         */}
+      {/* ================================================================== */}
       <div className="border-b border-neutral-dark/10">
         <button
           onClick={() => {
@@ -1044,6 +1094,7 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
         </button>
         {stylingOpen && (
           <div className="px-4 py-3 space-y-3 animate-fade-in">
+            {/* Bold, Italic, Strikethrough, Underline */}
             <div className="grid grid-cols-4 gap-2">
               <button
                 onClick={() =>
@@ -1200,7 +1251,9 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
         )}
       </div>
 
-      {/* ALIGNMENT Section */}
+      {/* ================================================================== */}
+      {/* ALIGNMENT SECTION - Left, Center, Right, Justify                 */}
+      {/* ================================================================== */}
       <div className="border-b border-neutral-dark/10">
         <button
           onClick={() => {
@@ -1254,6 +1307,9 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
   );
 }
 
+// ============================================================================
+// SPACING CONTROL COMPONENT
+// ============================================================================
 interface SpacingProps {
   label: string;
   value: number;

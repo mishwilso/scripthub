@@ -7,12 +7,12 @@
 - [x] **Font Family** — Uncomment and wire up `applyFontFamily()` so selecting a font from the dropdown actually applies it via `$patchStyleText` (line ~498)
 - [x] **Font Weight** — Uncomment and wire up `applyFontWeight()` so the weight dropdown applies via `$patchStyleText` (line ~510)
 - [x] **Text Color** — Uncomment and wire up `applyTextColor()` so picking a color applies it to the selection (line ~547)
-- [ ] **Highlight Color** — Uncomment and wire up `applyHighlightColor()` so picking a highlight applies `background-color` (line ~557)
+- [x] **Highlight Color** — Uncomment and wire up `applyHighlightColor()` so picking a highlight applies `background-color` (line ~557)
 - [x] **Line Spacing** — Uncomment and wire up `applyLineHeight`, `applyLetterSpacing`, `applyWordSpacing` handlers (line ~568). Currently the +/- buttons only `console.log`
 - [x] **Detect font-family from selection** — Sync `selectedFontStyle` state with the current selection using `$getSelectionStyleValueForProperty`
 - [x] **Detect font-weight from selection** — Sync `selectedFontWeight` state with the current selection
 - [x] **Detect text color from selection** — Sync `selectedTextColor` with the current selection's `color` style
-- [ ] **Detect highlight color from selection** — Sync `selectedHighlightColor` with the current selection's `background-color` style
+- [x] **Detect highlight color from selection** — Sync `selectedHighlightColor` with the current selection's `background-color` style
 
 ### STYLING Section
  
