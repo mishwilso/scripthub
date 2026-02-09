@@ -1,13 +1,13 @@
 // ============================================================================
 // TYPES
 // ============================================================================
-type HeadingTag = "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "caption";
+export type HeadingTag = "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "caption";
 
  
  // ==========================================================================
 // CONFIGURATION OPTIONS
 // ==========================================================================
-const headingOptions: { label: string; value: HeadingTag; size: number; weight: number;}[] = 
+export const headingOptions: { label: string; value: HeadingTag; size: number; weight: number;}[] = 
     [
         { label: "Paragraph", value: "p", size: 16, weight: 400 },
         { label: "Heading 1", value: "h1", size: 32, weight: 700 },
@@ -19,7 +19,7 @@ const headingOptions: { label: string; value: HeadingTag; size: number; weight: 
         { label: "Caption", value: "caption", size: 12, weight: 400 },
     ];
 
-const fontWeightOptions =
+export const fontWeightOptions =
     [
         { label: "Light", value: 300 },
         { label: "Regular", value: 400 },
@@ -29,7 +29,7 @@ const fontWeightOptions =
         { label: "Extra Bold", value: 800 },
     ];
 
-const fontStyleOptions =
+export const fontStyleOptions =
     [
         { label: "Georgia", value: "Georgia, serif" },
         { label: "Literata", value: "var(--font-literata), serif" },
@@ -41,7 +41,7 @@ const fontStyleOptions =
 // ==========================================================================
 // COLOR PALETTES DATA
 // ==========================================================================
-const text_colors = [
+export const text_colors = [
     {
         name: "Purple",
         value: "#C084FC",
@@ -94,7 +94,7 @@ const text_colors = [
     },
 ];
 
-const highlight_colors = [
+export const highlight_colors = [
     { name: "Purple", value: "#A855F7" },
     { name: "Blue", value: "#3B82F6" },
     { name: "Cyan", value: "#06B6D4" },
