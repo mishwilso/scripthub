@@ -11,7 +11,7 @@ interface SpacingProps {
   max?: number;
 }
 
-function SpacingControl({
+export default function SpacingControl({
   label,
   value,
   unit,

@@ -1,16 +1,14 @@
 import { useState, useRef } from "react";
 import { FiCheck } from "react-icons/fi";
 import { text_colors, highlight_colors } from "./constants";
+import { useFormatState } from "./useFormatState";
 
 interface ColorPickerProps {
   colorPickerOpen: boolean;
-  selectedTextColor: string;
-  applyTextColor: (color: string) => void;
   highlightPickerOpen: boolean;
-  selectedHighlightColor: string;
-  applyHighlightColor: (color: string) => void;
   textColorPickerPosition: { top: number; left: number };
   highlightColorPickerPosition: { top: number; left: number };
+  format: ReturnType<typeof useFormatState>;
 }
 
 interface ColorOption {
@@ -21,13 +19,10 @@ interface ColorOption {
 
 export default function ColorPicker({
   colorPickerOpen,
-  selectedTextColor,
-  applyTextColor,
   highlightPickerOpen,
-  selectedHighlightColor,
-  applyHighlightColor,
   textColorPickerPosition,
   highlightColorPickerPosition,
+  format,
 }: ColorPickerProps) {
   // ==========================================================================
   // COLOR PICKER - Position State & Refs
@@ -58,14 +53,14 @@ export default function ColorPicker({
           <div className="grid grid-cols-5 gap-2">
             {text_colors.map((color: ColorOption) => {
               const isColorFamilySelected =
-                color.shades?.includes(selectedTextColor);
+                color.shades?.includes(format.text.selectedTextColor);
               return (
                 <button
                   key={color.name}
                   onClick={() => {
                     console.log(`Text color selected:`, color.name);
                     // setSelectedTextColor(color.value);
-                    applyTextColor(color.value);
+                    format.text.applyTextColor(color.value);
                   }}
                   className="relative w-6 h-6 rounded-full hover:scale-110 transition-all duration-150 flex items-center justify-center"
                   style={{
@@ -98,24 +93,24 @@ export default function ColorPicker({
 
           {/* Shade variations - only show for selected color family */}
           {text_colors.find((c: ColorOption) =>
-            c.shades?.includes(selectedTextColor),
+            c.shades?.includes(format.text.selectedTextColor),
           ) && (
             <>
               <div className="w-full h-px bg-neutral-dark/20 my-3" />
               <div className="flex gap-2 justify-center">
                 {text_colors
                   .find((c: ColorOption) =>
-                    c.shades?.includes(selectedTextColor),
+                    c.shades?.includes(format.text.selectedTextColor),
                   )
                   ?.shades.map((shade: string, index: number) => {
-                    const isSelected = selectedTextColor === shade;
+                    const isSelected = format.text.selectedTextColor === shade;
                     return (
                       <button
                         key={index}
                         onClick={() => {
                           console.log(`Text shade selected:`, shade);
                           // setSelectedTextColor(shade);
-                          applyTextColor(shade);
+                          format.text.applyTextColor(shade);
                         }}
                         className="relative w-6 h-12 rounded-full hover:scale-110 transition-all duration-150 flex items-center justify-center"
                         style={{
@@ -159,7 +154,7 @@ export default function ColorPicker({
         >
           <div className="grid grid-cols-5 gap-2">
             {highlight_colors.map((color: ColorOption) => {
-              const isSelected = selectedHighlightColor === color.value;
+              const isSelected = format.text.selectedHighlightColor === color.value;
               const isRemoveOption = color.name === "White";
 
               return (
@@ -172,7 +167,7 @@ export default function ColorPicker({
                         : `Highlight color selected: ${color.name}`,
                     );
                     // setSelectedHighlightColor(color.value);
-                    applyHighlightColor(color.value);
+                    format.text.applyHighlightColor(color.value);
                   }}
                   className="relative w-6 h-6 rounded-full hover:scale-110 transition-all duration-150 flex items-center justify-center"
                   style={{
