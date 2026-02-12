@@ -6,11 +6,11 @@ import {
   fontWeightOptions,
 } from "./constants";
 import { useFormatState } from "./useFormatState";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { FiChevronDown } from "react-icons/fi";
 
 import SpacingControl from "./SpacingControl";
-import ColorPicker from "./ColorPicker";
+import { TextColorPicker, HighlightColorPicker } from "./ColorPicker";
 import { TbTextColor, TbHighlight, TbLineHeight } from "react-icons/tb";
 
 interface TextSectionProps {
@@ -33,30 +33,63 @@ export default function TextSection({
   const [fontStyleOpen, setFontStyleOpen] = useState(false);
   const [fontWeightOpen, setFontWeightOpen] = useState(false);
   const [lineSpacingOpen, setLineSpacingOpen] = useState(false);
-  const [colorPickerOpen, setColorPickerOpen] = useState(false);
-  const [highlightPickerOpen, setHighlightPickerOpen] = useState(false);
 
   // ==========================================================================
   // COLOR PICKER - Position State & Refs
   // ==========================================================================
-  const [textColorPickerPosition, setTextColorPickerPosition] = useState({
-    top: 0,
-    left: 0,
-  });
-  const [highlightColorPickerPosition, setHighlightColorPickerPosition] =
-    useState({ top: 0, left: 0 });
+    const [colorPickerOpen, setColorPickerOpen] = useState(false);
+    const [highlightPickerOpen, setHighlightPickerOpen] = useState(false);
+    const [textColorPickerPosition, setTextColorPickerPosition] = useState({ top: 0, left: 0 });
+    const [highlightColorPickerPosition, setHighlightColorPickerPosition] = useState({ top: 0, left: 0 });
 
-  const textColorButtonRef = useRef<HTMLButtonElement>(null);
-  const highlightColorButtonRef = useRef<HTMLButtonElement>(null);
+    const textColorButtonRef = useRef<HTMLButtonElement>(null);
+    const highlightColorButtonRef = useRef<HTMLButtonElement>(null);
+    const textColorPickerRef = useRef<HTMLDivElement>(null);
+    const highlightColorPickerRef = useRef<HTMLDivElement>(null);
+
+  // Keep click outside handler in parent
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (
+        colorPickerOpen &&
+        textColorPickerRef.current &&
+        !textColorPickerRef.current.contains(target) &&
+        textColorButtonRef.current &&
+        !textColorButtonRef.current.contains(target)
+      ) {
+        setColorPickerOpen(false);
+      }
+      if (
+        highlightPickerOpen &&
+        highlightColorPickerRef.current &&
+        !highlightColorPickerRef.current.contains(target) &&
+        highlightColorButtonRef.current &&
+        !highlightColorButtonRef.current.contains(target)
+      ) {
+        setHighlightPickerOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [colorPickerOpen, highlightPickerOpen]);
 
   return (
     <>
-      <ColorPicker
-        colorPickerOpen
-        highlightPickerOpen
-        textColorPickerPosition={textColorPickerPosition}
-        highlightColorPickerPosition={highlightColorPickerPosition}
-        format={format}
+      <TextColorPicker
+        isOpen={colorPickerOpen}
+        position={textColorPickerPosition}
+        selectedColor={format.text.selectedTextColor}
+        onColorSelect={format.text.applyTextColor}
+        pickerRef={textColorPickerRef}
+      />
+
+      <HighlightColorPicker
+        isOpen={highlightPickerOpen}
+        position={highlightColorPickerPosition}
+        selectedColor={format.text.selectedHighlightColor}
+        onColorSelect={format.text.applyHighlightColor}
+        pickerRef={highlightColorPickerRef}
       />
 
       <div className="border-b border-neutral-dark/10">
@@ -364,7 +397,9 @@ export default function TextSection({
                 <TbHighlight size={20} />
                 <div
                   className="w-6 h-1 rounded-full border-[1px] border-black"
-                  style={{ backgroundColor: format.text.selectedHighlightColor }}
+                  style={{
+                    backgroundColor: format.text.selectedHighlightColor,
+                  }}
                 ></div>
               </button>
             </div>

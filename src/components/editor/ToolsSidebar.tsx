@@ -20,7 +20,7 @@ import { MdTitle } from "react-icons/md";
 import DeveloperModal from "@/components/ui/DeveloperModal";
 
 import ToolOption from "./ToolOption";
-import Format from "./Tools/Format";
+import Format from "./Tools/Format/index";
 
 import { useState } from "react";
 
