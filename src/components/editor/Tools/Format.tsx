@@ -78,7 +78,9 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
   const [selectedFontStyle, setSelectedFontStyle] = useState("Georgia");
   const [selectedFontWeight, setSelectedFontWeight] = useState("Regular");
   const [fontSize, setFontSize] = useState(16);
+
   const [selectedTextColor, setSelectedTextColor] = useState("#78716C"); // Default to Black median shade
+
   const [selectedHighlightColor, setSelectedHighlightColor] =
     useState("#FFFFFF");
 
@@ -92,6 +94,12 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
   >("left");
   const [isUnorderedList, setIsUnorderedList] = useState(false);
   const [isOrderedList, setIsOrderedList] = useState(false);
+
+  // Line and Paragragh Spacings
+  const [letterSpacing, setLetterSpacing] = useState(0);
+  const [lineHeight, setLineHeight] = useState(1.5);
+  const [wordSpacing, setWordSpacing] = useState(0);
+  const [paragraphSpacing, setParagraphSpacing] = useState(1);
 
   // TODO: Clean up variables - some may be redundant after implementing update listener
   const headingOptions: {
@@ -132,6 +140,16 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
       { label: "Arial", value: "Arial, sans-serif" },
       { label: "Times New Roman", value: "Times New Roman, serif" },
       { label: "Courier New", value: "Courier New, monospace" },
+    ],
+    [],
+  );
+
+  const spacingOptions = useMemo(
+    () => [
+      { label: "Letter Spacing", value: "letter-spacing" },
+      { label: "Line Height", value: "line-height" },
+      { label: "Word Spacing", value: "word-spacing" },
+      { label: "Paragraph Spacing", value: "margin-bottom" },
     ],
     [],
   );
@@ -185,17 +203,17 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
           }
 
           // Set Font Style
-          const fontStyle = $getSelectionStyleValueForProperty(selection, 
-            "font-family", "",
-          )
-          setSelectedFontStyle(fontStyleOptions.find((opt) => opt.value === fontStyle)?.label ?? "Georgia");
+          const fontStyle = $getSelectionStyleValueForProperty(
+            selection,
+            "font-family",
+            "",
+          );
+          setSelectedFontStyle(
+            fontStyleOptions.find((opt) => opt.value === fontStyle)?.label ??
+              "Georgia",
+          );
 
-          // const inlineWeight = $getSelectionStyleValueForProperty(
-          //   selection,
-          //   "font-weight",
-          //   "",
-          // );
-          
+          //
 
           // Set text formats
           setIsBold(selection.hasFormat("bold"));
@@ -266,6 +284,53 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
               ),
             );
           }
+
+          // Spacing values
+
+          // Letter Spacing
+          const letterSpacingValue = $getSelectionStyleValueForProperty(
+            selection,
+            "letter-spacing",
+            "",
+          );
+          setLetterSpacing(
+            letterSpacingValue ? parseFloat(letterSpacingValue) : 0,
+          );
+
+          // Line Height
+          const lineHeightValue = $getSelectionStyleValueForProperty(
+            selection,
+            "line-height",
+            "",
+          );
+          setLineHeight(lineHeightValue ? parseFloat(lineHeightValue) : 1.5);
+
+          // Word Spacing
+          const wordSpacingValue = $getSelectionStyleValueForProperty(
+            selection,
+            "word-spacing",
+            "",
+          );
+          setWordSpacing(wordSpacingValue ? parseFloat(wordSpacingValue) : 0);
+
+          // Paragraph Spacing (margin-bottom)
+          const paragraphSpacingValue = $getSelectionStyleValueForProperty(
+            selection,
+            "margin-bottom",
+            "",
+          );
+          setParagraphSpacing(
+            paragraphSpacingValue ? parseFloat(paragraphSpacingValue) : 1,
+          );
+
+          // Text Color
+          const textColorValue = $getSelectionStyleValueForProperty(
+            selection,
+            "color",
+            "#78716C",
+          );
+          console.log("Selection Text Color: ", textColorValue);
+          setSelectedTextColor(textColorValue);
         }
       });
     });
@@ -377,10 +442,47 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
   };
 
   // TODO: Implement text color change handler
+  const applyTextColor = (colorHex: string) => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        $patchStyleText(selection, { color: colorHex });
+      }
+    });
+  };
 
   // TODO: Implement highlight/background color change handler
 
   // TODO: Implement line spacing handlers
+  const applySpacing = (styles: Record<string, string>) => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        $patchStyleText(selection, styles);
+      }
+    });
+  };
+
+  // Individual handlers for each spacing control
+  const handleLetterSpacingChange = (value: number) => {
+    setLetterSpacing(value);
+    applySpacing({ "letter-spacing": `${value}em` });
+  };
+
+  const handleLineHeightChange = (value: number) => {
+    setLineHeight(value);
+    applySpacing({ "line-height": value.toString() });
+  };
+
+  const handleWordSpacingChange = (value: number) => {
+    setWordSpacing(value);
+    applySpacing({ "word-spacing": `${value}em` });
+  };
+
+  const handleParagraphSpacingChange = (value: number) => {
+    setParagraphSpacing(value);
+    applySpacing({ "margin-bottom": `${value}em` });
+  };
 
   const text_colors = [
     {
@@ -472,7 +574,8 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
                   key={color.name}
                   onClick={() => {
                     console.log(`Text color selected:`, color.name);
-                    setSelectedTextColor(color.value);
+                    // setSelectedTextColor(color.value);
+                    applyTextColor(color.value);
                   }}
                   className="relative w-6 h-6 rounded-full hover:scale-110 transition-all duration-150 flex items-center justify-center"
                   style={{
@@ -517,7 +620,8 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
                         key={index}
                         onClick={() => {
                           console.log(`Text shade selected:`, shade);
-                          setSelectedTextColor(shade);
+                          // setSelectedTextColor(shade);
+                          applyTextColor(shade);
                         }}
                         className="relative w-6 h-12 rounded-full hover:scale-110 transition-all duration-150 flex items-center justify-center"
                         style={{
@@ -817,32 +921,43 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
             {/* Line Spacing Options */}
             {lineSpacingOpen && (
               <div className="space-y-2 pl-2 border-l-2 border-neutral-dark/20 animate-fade-in">
-                {[
-                  "Letter Spacing",
-                  "Line Height",
-                  "Word Spacing",
-                  "Paragraph Spacing",
-                ].map((spacing) => (
-                  <div key={spacing} className="flex items-center gap-2">
-                    <div className="flex border border-neutral-dark/20 rounded-md overflow-hidden">
-                      <button
-                        onClick={() => console.log(`${spacing} decreased`)}
-                        className="flex items-center justify-center w-8 h-8 hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
-                      >
-                        <span className="text-sm">−</span>
-                      </button>
-                      <button
-                        onClick={() => console.log(`${spacing} increased`)}
-                        className="flex items-center justify-center w-8 h-8 hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
-                      >
-                        <span className="text-sm">+</span>
-                      </button>
-                    </div>
-                    <span className="flex-1 text-xs text-neutral-dark">
-                      {spacing}
-                    </span>
-                  </div>
-                ))}
+                <SpacingControl
+                  label="Letter Spacing"
+                  value={letterSpacing}
+                  unit="em"
+                  onChange={handleLetterSpacingChange}
+                  step={0.01}
+                  min={-0.05}
+                  max={0.5}
+                />
+                <SpacingControl
+                  label="Line Height"
+                  value={lineHeight}
+                  unit=""
+                  onChange={handleLineHeightChange}
+                  step={0.1}
+                  min={0.8}
+                  max={3}
+                />
+                <SpacingControl
+                  label="Word Spacing"
+                  value={wordSpacing}
+                  unit="em"
+                  onChange={handleWordSpacingChange}
+                  step={0.05}
+                  min={0}
+                  max={1}
+                />
+                {/* TODO: Need Custom Node to allow for margin bottom modification */}
+                {/* <SpacingControl
+                  label="Paragraph Spacing"
+                  value={paragraphSpacing}
+                  unit="em"
+                  onChange={handleParagraphSpacingChange}
+                  step={0.25}
+                  min={0}
+                  max={4}
+                /> */}
               </div>
             )}
 
@@ -1123,6 +1238,61 @@ export default function Format({ isOpen }: { isOpen: boolean }) {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+interface SpacingProps {
+  label: string;
+  value: number;
+  unit: string;
+  onChange: (newValue: number) => void;
+  step: number;
+  min?: number;
+  max?: number;
+}
+
+function SpacingControl({
+  label,
+  value,
+  unit,
+  onChange,
+  step,
+  min = 0,
+  max = 10,
+}: SpacingProps) {
+  const handleIncrement = () => {
+    const newValue = Math.min(max, value + step);
+    onChange(newValue);
+  };
+
+  const handleDecrement = () => {
+    const newValue = Math.max(min, value - step);
+    onChange(newValue);
+  };
+
+  return (
+    <div className="flex items-center gap-2">
+      <div className="flex border border-neutral-dark/20 rounded-md overflow-hidden">
+        <button
+          onClick={handleDecrement}
+          disabled={value <= min}
+          className="flex items-center justify-center w-8 h-8 hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
+        >
+          <span className="text-sm">−</span>
+        </button>
+        <p className="text-sm flex items-center w-8 h-8 justify-center">
+          {value.toFixed(step < 1 ? 2 : 0)}
+        </p>
+        <button
+          onClick={handleIncrement}
+          disabled={value >= max}
+          className="flex items-center justify-center w-8 h-8 hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
+        >
+          <span className="text-sm">+</span>
+        </button>
+      </div>
+      <span className="flex-1 text-xs text-neutral-dark">{label}</span>
     </div>
   );
 }

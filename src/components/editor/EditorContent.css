@@ -21,7 +21,7 @@
   caret-color: #8b5a3c;
   outline: none;
   word-wrap: break-word;
-  
+  color: #78716C;
 }
 
 .editor-placeholder {
@@ -63,6 +63,7 @@
 /* Paragraph styles */
 .editor-paragraph {
   margin: 0;
+  margin-bottom: 1px;
   position: relative;
 }
 
