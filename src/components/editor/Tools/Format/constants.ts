@@ -106,3 +106,19 @@ export const highlight_colors = [
     { name: "Black", value: "#5e4c3b" },
     { name: "White", value: "#FFFFFF" },
 ];
+
+// ==========================================================================
+// HELPER FUNCTIONS
+// ==========================================================================
+export const getWeightLabel = (weight: number): string => {
+return (
+    fontWeightOptions.find((opt) => opt.value === weight)?.label ?? "Regular"
+);
+};
+
+export const getButtonClass = (isActive: boolean) =>
+`flex items-center justify-center aspect-square border rounded-md transition-colors ${
+    isActive
+    ? "bg-primary-base/20 border-primary-base"
+    : "border-neutral-dark/20 hover:bg-neutral-light/30 active:bg-neutral-dark/20"
+}`;
