@@ -15,12 +15,13 @@
   font-family: Georgia, serif;
   line-height: 1.6;
   padding: 1.5rem 7rem;
-  max-width: 100%;
+  max-width: 1024px;
   margin: 0 auto;
   min-height: 100vh;
   caret-color: #8b5a3c;
   outline: none;
   word-wrap: break-word;
+  
 }
 
 .editor-placeholder {
@@ -71,6 +72,7 @@
   font-weight: 700;
   line-height: 1.2;
   margin: 0.67em 0;
+  text-wrap: wrap;
 }
 
 .editor-heading-h2 {
@@ -78,6 +80,7 @@
   font-weight: 700;
   line-height: 1.3;
   margin: 0.5em 0;
+  text-wrap: wrap;
 }
 
 .editor-heading-h3 {
@@ -85,6 +88,7 @@
   font-weight: 700;
   line-height: 1.4;
   margin: 0.5em 0;
+  text-wrap: wrap;
 }
 
 .editor-heading-h4 {
@@ -92,6 +96,7 @@
   font-weight: 700;
   line-height: 1.4;
   margin: 0.5em 0;
+  text-wrap: wrap;
 }
 
 .editor-heading-h5 {
@@ -99,6 +104,7 @@
   font-weight: 700;
   line-height: 1.4;
   margin: 0.5em 0;
+  text-wrap: wrap;
 }
 
 .editor-heading-h6 {
@@ -106,6 +112,7 @@
   font-weight: 700;
   line-height: 1.4;
   margin: 0.5em 0;
+  text-wrap: wrap;
 }
 
 .editor-caption {
