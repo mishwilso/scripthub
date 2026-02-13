@@ -17,14 +17,12 @@ interface TextSectionProps {
   isOpen: boolean;
   onToggle: (state: boolean) => void;
   format: ReturnType<typeof useFormatState>;
-  editor: LexicalEditor;
 }
 
 export default function TextSection({
   isOpen,
   onToggle,
   format,
-  editor,
 }: TextSectionProps) {
   // ==========================================================================
   // STATE - Dropdown Visibility
@@ -37,15 +35,19 @@ export default function TextSection({
   // ==========================================================================
   // COLOR PICKER - Position State & Refs
   // ==========================================================================
-    const [colorPickerOpen, setColorPickerOpen] = useState(false);
-    const [highlightPickerOpen, setHighlightPickerOpen] = useState(false);
-    const [textColorPickerPosition, setTextColorPickerPosition] = useState({ top: 0, left: 0 });
-    const [highlightColorPickerPosition, setHighlightColorPickerPosition] = useState({ top: 0, left: 0 });
+  const [colorPickerOpen, setColorPickerOpen] = useState(false);
+  const [highlightPickerOpen, setHighlightPickerOpen] = useState(false);
+  const [textColorPickerPosition, setTextColorPickerPosition] = useState({
+    top: 0,
+    left: 0,
+  });
+  const [highlightColorPickerPosition, setHighlightColorPickerPosition] =
+    useState({ top: 0, left: 0 });
 
-    const textColorButtonRef = useRef<HTMLButtonElement>(null);
-    const highlightColorButtonRef = useRef<HTMLButtonElement>(null);
-    const textColorPickerRef = useRef<HTMLDivElement>(null);
-    const highlightColorPickerRef = useRef<HTMLDivElement>(null);
+  const textColorButtonRef = useRef<HTMLButtonElement>(null);
+  const highlightColorButtonRef = useRef<HTMLButtonElement>(null);
+  const textColorPickerRef = useRef<HTMLDivElement>(null);
+  const highlightColorPickerRef = useRef<HTMLDivElement>(null);
 
   // Keep click outside handler in parent
   useEffect(() => {
@@ -311,7 +313,6 @@ export default function TextSection({
                 <SpacingControl
                   label="Letter Spacing"
                   value={format.text.letterSpacing}
-                  unit="em"
                   onChange={format.text.applyLetterSpacing}
                   step={0.01}
                   min={-0.05}
@@ -320,7 +321,6 @@ export default function TextSection({
                 <SpacingControl
                   label="Line Height"
                   value={format.text.lineHeight}
-                  unit=""
                   onChange={format.text.applyLineHeight}
                   step={0.1}
                   min={0.8}
@@ -329,7 +329,6 @@ export default function TextSection({
                 <SpacingControl
                   label="Word Spacing"
                   value={format.text.wordSpacing}
-                  unit="em"
                   onChange={format.text.applyWordSpacing}
                   step={0.05}
                   min={0}

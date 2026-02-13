@@ -10,7 +10,7 @@ interface TextColorPickerProps {
   position: { top: number; left: number };
   selectedColor: string;
   onColorSelect: (color: string) => void;
-  pickerRef: React.RefObject<HTMLDivElement> | null;
+  pickerRef: React.RefObject<HTMLDivElement | null> ;
 }
 
 interface HighlightColorPickerProps {
@@ -18,7 +18,7 @@ interface HighlightColorPickerProps {
   position: { top: number; left: number };
   selectedColor: string;
   onColorSelect: (color: string) => void;
-  pickerRef: React.RefObject<HTMLDivElement> | null;
+  pickerRef: React.RefObject<HTMLDivElement | null>;
 }
 
 interface ColorOption {

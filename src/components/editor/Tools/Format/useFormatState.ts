@@ -7,7 +7,7 @@ import {
   $patchStyleText,
   $setBlocksType,
 } from "@lexical/selection";
-import { $isHeadingNode, $createHeadingNode } from "@lexical/rich-text";
+import { $isHeadingNode, $createHeadingNode, $createQuoteNode, $isQuoteNode } from "@lexical/rich-text";
 import { $getNearestNodeOfType } from "@lexical/utils";
 import { ListNode } from "@lexical/list";
 import { $createParagraphNode } from "lexical";
@@ -43,6 +43,11 @@ export function useFormatState(editor: LexicalEditor) {
   >("left");
   const [isUnorderedList, setIsUnorderedList] = useState(false);
   const [isOrderedList, setIsOrderedList] = useState(false);
+
+  const [isQuote, setIsQuote] = useState(false);
+  const [isCodeBlock, setIsCodeBlock] = useState(false);
+  const [isImage, setIsImage] = useState(false); 
+  const [isLink, setIsLink] = useState(false);
 
   // ==========================================================================
   // STATE - Spacing Values
@@ -313,6 +318,18 @@ export function useFormatState(editor: LexicalEditor) {
     [editor],
   );
 
+  const applyQuote = useCallback(
+    () => {
+        editor.update(() => {
+          const selection = $getSelection();
+          if ($isRangeSelection(selection)) {
+            $setBlocksType(selection, () => $createQuoteNode())
+          }
+        })
+    },
+    [editor],
+  );
+
   // ==========================================================================
   // RETURN
   // ==========================================================================
@@ -346,6 +363,10 @@ export function useFormatState(editor: LexicalEditor) {
       isStrikethrough,
       isUnorderedList,
       isOrderedList,
+      isCodeBlock,
+      isQuote,
+      isImage,
+      isLink,
     },
     // Alignment section
     alignment: {

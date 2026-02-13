@@ -18,7 +18,7 @@ const [alignmentOpen, setAlignmentOpen] = useState(false);
   
   return (
     <div>
-      <TextSection format={format} editor={editor} isOpen={textOpen} onToggle={setTextOpen} />
+      <TextSection format={format} isOpen={textOpen} onToggle={setTextOpen} />
       <StylingSection format={format} editor={editor} isOpen={stylingOpen} onToggle={setStylingOpen} />
       <AlignmentSection format={format} editor={editor} isOpen={alignmentOpen} onToggle={setAlignmentOpen} />
     </div>

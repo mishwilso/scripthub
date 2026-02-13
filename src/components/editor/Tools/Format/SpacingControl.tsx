@@ -4,7 +4,6 @@
 interface SpacingProps {
   label: string;
   value: number;
-  unit: string;
   onChange: (newValue: number) => void;
   step: number;
   min?: number;
@@ -14,7 +13,6 @@ interface SpacingProps {
 export default function SpacingControl({
   label,
   value,
-  unit,
   onChange,
   step,
   min = 0,
