@@ -7,7 +7,7 @@ import {
   $patchStyleText,
   $setBlocksType,
 } from "@lexical/selection";
-import { $isHeadingNode, $createHeadingNode, $createQuoteNode, $isQuoteNode } from "@lexical/rich-text";
+import { $isHeadingNode, $createHeadingNode, $createQuoteNode, $isQuoteNode, QuoteNode } from "@lexical/rich-text";
 import { $getNearestNodeOfType } from "@lexical/utils";
 import { ListNode } from "@lexical/list";
 import { $createParagraphNode } from "lexical";
@@ -120,6 +120,9 @@ export function useFormatState(editor: LexicalEditor) {
           setIsUnorderedList(false);
           setIsOrderedList(false);
         }
+
+        // Quote
+        setIsQuote($isQuoteNode(element));
 
         // Font size (inline or from block)
         const inlineFont = $getSelectionStyleValueForProperty(
@@ -323,11 +326,15 @@ export function useFormatState(editor: LexicalEditor) {
         editor.update(() => {
           const selection = $getSelection();
           if ($isRangeSelection(selection)) {
-            $setBlocksType(selection, () => $createQuoteNode())
+            if (isQuote) {
+              $setBlocksType(selection, () => $createParagraphNode());
+            } else {
+              $setBlocksType(selection, () => $createQuoteNode());
+            };
           }
         })
     },
-    [editor],
+    [editor, isQuote],
   );
 
   // ==========================================================================
@@ -367,6 +374,7 @@ export function useFormatState(editor: LexicalEditor) {
       isQuote,
       isImage,
       isLink,
+      applyQuote,
     },
     // Alignment section
     alignment: {

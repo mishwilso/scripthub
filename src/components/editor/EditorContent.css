@@ -180,3 +180,10 @@
 .editor-listItem {
   margin: 0.25rem 0;
 }
+
+.editor-quote {
+  border-left: 2px solid #35393b;
+  padding-left: 1rem;
+  margin: 0 1rem;
+  font-style: italic;
+}

@@ -148,16 +148,8 @@ export default function StylingSection({isOpen, onToggle, format, editor} : Styl
             {/* Quote, Code, Link, Image */}
             <div className="grid grid-cols-4 gap-2">
                 <button
-                onClick={() => console.log("Quote clicked")}
-                // TODO: onClick={() => {
-                //   editor.update(() => {
-                //     const selection = $getSelection();
-                //     if ($isRangeSelection(selection)) {
-                //       $setBlocksType(selection, () => $createQuoteNode());
-                //     }
-                //   });
-                // }}
-                className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
+                onClick={format.styling.applyQuote}
+                className={getButtonClass(format.styling.isQuote)}
                 >
                 <MdFormatQuote size={20} />
                 </button>
