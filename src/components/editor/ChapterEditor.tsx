@@ -17,7 +17,7 @@ import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
 import { ListNode, ListItemNode } from "@lexical/list";
 import { TableNode, TableCellNode, TableRowNode } from "@lexical/table";
-import { CodeNode } from "@lexical/code";
+import { CodeNode, CodeHighlightNode } from "@lexical/code";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import { TextNode, ParagraphNode } from "lexical";
@@ -185,6 +185,7 @@ export default function ChapterEditor() {
       TableRowNode,
       HorizontalRuleNode,
       CodeNode,
+      CodeHighlightNode,
       HeadingNode,
       LinkNode,
       QuoteNode,

@@ -18,6 +18,7 @@ import {
   fontWeightOptions,
 } from "./constants";
 import type { HeadingTag } from "./constants";
+import { $createCodeNode, $isCodeNode } from "@lexical/code";
 
 export function useFormatState(editor: LexicalEditor) {
   // ==========================================================================
@@ -124,6 +125,9 @@ export function useFormatState(editor: LexicalEditor) {
         // Quote
         setIsQuote($isQuoteNode(element));
 
+        // Code Block
+        setIsCodeBlock($isCodeNode(element));
+
         // Font size (inline or from block)
         const inlineFont = $getSelectionStyleValueForProperty(
           selection,
@@ -225,8 +229,13 @@ export function useFormatState(editor: LexicalEditor) {
     (font: string) => {
       editor.update(() => {
         const selection = $getSelection();
-        if ($isRangeSelection(selection))
+        if ($isRangeSelection(selection)) {
+          const element = selection.anchor.getNode().getTopLevelElementOrThrow();
+
+          if ($isCodeNode(element)) return; // Dont change code node font
+
           $patchStyleText(selection, { "font-family": font });
+        }
       });
     },
     [editor],
@@ -337,6 +346,23 @@ export function useFormatState(editor: LexicalEditor) {
     [editor, isQuote],
   );
 
+  const applyCodeBlock = useCallback(
+    () => {
+        editor.update(() => {
+          const selection = $getSelection();
+          if ($isRangeSelection(selection)) {
+            if (isCodeBlock) {
+              $setBlocksType(selection, () => $createParagraphNode());
+            } else {
+              // $patchStyleText(selection, { "font-family": "" });
+              $setBlocksType(selection, () => $createCodeNode());
+            };
+          }
+        })
+    },
+    [editor, isCodeBlock],
+  );
+
   // ==========================================================================
   // RETURN
   // ==========================================================================
@@ -375,6 +401,7 @@ export function useFormatState(editor: LexicalEditor) {
       isImage,
       isLink,
       applyQuote,
+      applyCodeBlock,
     },
     // Alignment section
     alignment: {

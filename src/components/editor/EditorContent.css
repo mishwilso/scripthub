@@ -21,7 +21,7 @@
   caret-color: #8b5a3c;
   outline: none;
   word-wrap: break-word;
-  color: #78716C;
+  color: #78716c;
 }
 
 .editor-placeholder {
@@ -186,4 +186,35 @@
   padding-left: 1rem;
   margin: 0 1rem;
   font-style: italic;
+}
+
+.editor-code * {
+  font-family: 'Courier New', Consolas, Monaco, monospace !important;
+}
+
+.editor-code {
+  background-color: #f3f4f6;
+  /* padding: 0.2rem 0.4rem; */
+  padding: 8px 8px 8px 52px;
+  /* border-radius: 4px; */
+  font-size: 13px;
+  margin: 8px 0 12px 0;
+  tab-size: 2;
+  overflow-x: auto;
+  position: relative;
+}
+
+.editor-code::before {
+  content: "1\A2\A3\A4\A5";
+  position: absolute;
+  background-color: #eee;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-right: 1px solid #ccc;
+  padding: 8px;
+  color: #777;
+  white-space: pre-wrap;
+  text-align: right;
+  min-width: 25px;
 }

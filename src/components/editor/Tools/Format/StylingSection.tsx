@@ -147,26 +147,21 @@ export default function StylingSection({isOpen, onToggle, format, editor} : Styl
 
             {/* Quote, Code, Link, Image */}
             <div className="grid grid-cols-4 gap-2">
+
                 <button
-                onClick={format.styling.applyQuote}
-                className={getButtonClass(format.styling.isQuote)}
-                >
-                <MdFormatQuote size={20} />
+                    onClick={format.styling.applyQuote}
+                    className={getButtonClass(format.styling.isQuote)}
+                    >
+                    <MdFormatQuote size={20} />
                 </button>
+
                 <button
-                onClick={() => console.log("Code block clicked")}
-                // TODO: onClick={() => {
-                //   editor.update(() => {
-                //     const selection = $getSelection();
-                //     if ($isRangeSelection(selection)) {
-                //       $setBlocksType(selection, () => $createCodeNode());
-                //     }
-                //   });
-                // }}
-                className="flex items-center justify-center aspect-square border border-neutral-dark/20 rounded-md hover:bg-neutral-light/30 active:bg-neutral-dark/20 transition-colors"
-                >
-                <MdCode size={20} />
+                    onClick={format.styling.applyCodeBlock}
+                    className={getButtonClass(format.styling.isCodeBlock)}
+                    >
+                    <MdCode size={20} />
                 </button>
+                
                 <button
                 onClick={() => console.log("Link clicked")}
                 // TODO: Open a modal/popover to enter URL, then:
