@@ -25,6 +25,11 @@ import {
 
 import { TRANSFORMERS } from "@lexical/markdown";
 
+// Filter out code block transformer - only allow inline code with single backtick
+const FILTERED_TRANSFORMERS = TRANSFORMERS.filter(t =>
+  t.type !== "multiline-element"
+);
+
 // Styles
 import "./EditorContent.css";
 
@@ -49,9 +54,9 @@ function LexicalEditor() {
       {/* Undo/Redo support */}
       <HistoryPlugin />
 
-      {/* Markdown shortcuts: **bold**, *italic*, __underline__ */}
+      {/* Markdown shortcuts: **bold**, *italic*, __underline__, `code` */}
       <MarkdownShortcutPlugin
-        transformers={[...TRANSFORMERS, STRIKTHROUGH_TRANSFORMER]}
+        transformers={[...FILTERED_TRANSFORMERS, STRIKTHROUGH_TRANSFORMER]}
       />
 
       {/* Sync content with ChapterEditorContext */}

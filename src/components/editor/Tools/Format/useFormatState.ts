@@ -18,7 +18,7 @@ import {
   fontWeightOptions,
 } from "./constants";
 import type { HeadingTag } from "./constants";
-import { $createCodeNode, $isCodeNode } from "@lexical/code";
+import { FORMAT_TEXT_COMMAND } from "lexical";
 
 export function useFormatState(editor: LexicalEditor) {
   // ==========================================================================
@@ -46,7 +46,7 @@ export function useFormatState(editor: LexicalEditor) {
   const [isOrderedList, setIsOrderedList] = useState(false);
 
   const [isQuote, setIsQuote] = useState(false);
-  const [isCodeBlock, setIsCodeBlock] = useState(false);
+  const [isCode, setIsCode] = useState(false);
   const [isImage, setIsImage] = useState(false); 
   const [isLink, setIsLink] = useState(false);
 
@@ -125,8 +125,8 @@ export function useFormatState(editor: LexicalEditor) {
         // Quote
         setIsQuote($isQuoteNode(element));
 
-        // Code Block
-        setIsCodeBlock($isCodeNode(element));
+        // Inline Code
+        setIsCode(selection.hasFormat("code"));
 
         // Font size (inline or from block)
         const inlineFont = $getSelectionStyleValueForProperty(
@@ -230,10 +230,6 @@ export function useFormatState(editor: LexicalEditor) {
       editor.update(() => {
         const selection = $getSelection();
         if ($isRangeSelection(selection)) {
-          const element = selection.anchor.getNode().getTopLevelElementOrThrow();
-
-          if ($isCodeNode(element)) return; // Dont change code node font
-
           $patchStyleText(selection, { "font-family": font });
         }
       });
@@ -346,21 +342,11 @@ export function useFormatState(editor: LexicalEditor) {
     [editor, isQuote],
   );
 
-  const applyCodeBlock = useCallback(
+  const applyCode = useCallback(
     () => {
-        editor.update(() => {
-          const selection = $getSelection();
-          if ($isRangeSelection(selection)) {
-            if (isCodeBlock) {
-              $setBlocksType(selection, () => $createParagraphNode());
-            } else {
-              // $patchStyleText(selection, { "font-family": "" });
-              $setBlocksType(selection, () => $createCodeNode());
-            };
-          }
-        })
+      editor.dispatchCommand(FORMAT_TEXT_COMMAND, "code");
     },
-    [editor, isCodeBlock],
+    [editor],
   );
 
   // ==========================================================================
@@ -396,12 +382,12 @@ export function useFormatState(editor: LexicalEditor) {
       isStrikethrough,
       isUnorderedList,
       isOrderedList,
-      isCodeBlock,
+      isCode,
       isQuote,
       isImage,
       isLink,
       applyQuote,
-      applyCodeBlock,
+      applyCode,
     },
     // Alignment section
     alignment: {

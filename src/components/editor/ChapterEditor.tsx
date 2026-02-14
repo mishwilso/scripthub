@@ -17,8 +17,8 @@ import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { AutoLinkNode, LinkNode } from "@lexical/link";
 import { ListNode, ListItemNode } from "@lexical/list";
 import { TableNode, TableCellNode, TableRowNode } from "@lexical/table";
-import { CodeNode, CodeHighlightNode } from "@lexical/code";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { CodeNode, CodeHighlightNode } from "@lexical/code";
 import { HorizontalRuleNode } from "@lexical/react/LexicalHorizontalRuleNode";
 import { TextNode, ParagraphNode } from "lexical";
 import { CaptionNode } from "./nodes/CaptionNode";
@@ -187,7 +187,6 @@ export default function ChapterEditor() {
       CodeNode,
       CodeHighlightNode,
       HeadingNode,
-      LinkNode,
       QuoteNode,
       TextNode,
       ParagraphNode,
@@ -205,12 +204,11 @@ export default function ChapterEditor() {
           onClose={() => setMobileSidebarOpen(null)}
         />
 
-        <div className="flex flex-col flex-1 min-w-0 h-full relative">
+        <div className="flex flex-col flex-1 min-w-0 h-full">
           <div
-            className="left-0 right-0 transition-transform duration-300 z-10 bg-white-base"
+            className="shrink-0 z-10 bg-white-base overflow-hidden transition-all duration-300"
             style={{
-              transform: showHeader ? "0" : "-100%",
-              position: showHeader ? "relative" : "absolute",
+              maxHeight: showHeader ? "200px" : "0px",
             }}
           >
             <EditorHeader
@@ -220,7 +218,11 @@ export default function ChapterEditor() {
             />
           </div>
 
-          <div className="flex-1 overflow-y-auto" onScroll={handleScroll}>
+          <div
+            className="flex-1 overflow-y-auto"
+            style={{ overflowAnchor: "none" }}
+            onScroll={handleScroll}
+          >
             <EditorContent />
           </div>
 

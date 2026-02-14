@@ -156,8 +156,8 @@ export default function StylingSection({isOpen, onToggle, format, editor} : Styl
                 </button>
 
                 <button
-                    onClick={format.styling.applyCodeBlock}
-                    className={getButtonClass(format.styling.isCodeBlock)}
+                    onClick={format.styling.applyCode}
+                    className={getButtonClass(format.styling.isCode)}
                     >
                     <MdCode size={20} />
                 </button>
