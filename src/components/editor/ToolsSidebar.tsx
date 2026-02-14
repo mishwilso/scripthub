@@ -85,6 +85,21 @@ export function ToolsDetails({
 
   const [activeView, setActiveView] = useState<string>('menu');
 
+  const handleToggle = () => {
+    if (activeView !== 'menu') {
+      setActiveView('menu');
+    }
+    onToggle?.();
+  }
+
+  const handleViewChange = (view: string) => {
+    if (view !== 'menu') {
+      if (!isOpen){
+        handleToggle?.();
+      }
+      setActiveView(view);
+    }
+  }
 
   return (
     <nav className="flex flex-col w-full h-full">
@@ -113,7 +128,7 @@ export function ToolsDetails({
         {/* Toggle button - shows on sidebar hover */}
         {!isMobile && onToggle && (
           <button
-            onClick={onToggle}
+            onClick={handleToggle}
             className={`flex items-center justify-center w-8 h-8 rounded-md hover:bg-neutral-light transition-all shrink-0 ${
               isOpen
                 ? "opacity-0 group-hover/toolsbar:opacity-100"
@@ -131,7 +146,7 @@ export function ToolsDetails({
 
       {/* Content Area */}
       <div className="flex flex-col flex-1 h-full">
-        {activeView === 'menu' && <ToolMenu onSelectTool={setActiveView} isOpen={isOpen}/>}
+        {activeView === 'menu' && <ToolMenu onSelectTool={handleViewChange} isOpen={isOpen}/>}
         {activeView === 'format' && <Format isOpen={isOpen} />}
         {activeView !== 'menu' && activeView !=='format' && <Placeholder isOpen={isOpen} />}
       </div>

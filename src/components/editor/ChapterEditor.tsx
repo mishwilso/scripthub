@@ -37,7 +37,6 @@ export default function ChapterEditor() {
 
   // Header visibility state for scroll behavior
   const [showHeader, setShowHeader] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
 
   // Toggle functions for desktop
   const toggleLeftSidebar = () => setLeftSidebarOpen(!leftSidebarOpen);
@@ -85,22 +84,15 @@ export default function ChapterEditor() {
     return () => window.removeEventListener("keydown", handleKeyCombination);
   }, [saveContent]);
 
-  // Handle scroll to show/hide header
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const currentScrollY = e.currentTarget.scrollTop;
-
-    if (currentScrollY < 10) {
-      // At the top, always show header
-      setShowHeader(true);
-    } else if (currentScrollY > lastScrollY) {
+  // Handle wheel to show/hide header (works even without scrollable content)
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (e.deltaY > 0) {
       // Scrolling down, hide header
       setShowHeader(false);
-    } else if (currentScrollY < lastScrollY) {
+    } else if (e.deltaY < 0) {
       // Scrolling up, show header
       setShowHeader(true);
     }
-
-    setLastScrollY(currentScrollY);
   };
 
   // Edicator Plugin
@@ -221,7 +213,7 @@ export default function ChapterEditor() {
           <div
             className="flex-1 overflow-y-auto"
             style={{ overflowAnchor: "none" }}
-            onScroll={handleScroll}
+            onWheel={handleWheel}
           >
             <EditorContent />
           </div>
