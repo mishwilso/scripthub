@@ -19,6 +19,7 @@ import {
 } from "./constants";
 import type { HeadingTag } from "./constants";
 import { FORMAT_TEXT_COMMAND } from "lexical";
+import { TOGGLE_LINK_COMMAND } from "@lexical/link";
 
 export function useFormatState(editor: LexicalEditor) {
   // ==========================================================================
@@ -349,6 +350,20 @@ export function useFormatState(editor: LexicalEditor) {
     [editor],
   );
 
+  const applyLink = useCallback(
+    (url: string) => {
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, url);
+    },
+    [editor],
+  );
+
+  const removeLink = useCallback(
+    () => {
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
+    },
+    [editor],
+  );
+
   // ==========================================================================
   // RETURN
   // ==========================================================================
@@ -373,6 +388,7 @@ export function useFormatState(editor: LexicalEditor) {
       applyLetterSpacing,
       applyLineHeight,
       applyWordSpacing,
+
     },
     // Styling section
     styling: {
@@ -388,10 +404,14 @@ export function useFormatState(editor: LexicalEditor) {
       isLink,
       applyQuote,
       applyCode,
+      applyLink,
+      removeLink,
+
     },
     // Alignment section
     alignment: {
       currentAlignment,
+
     },
   };
 }

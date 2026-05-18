@@ -16,8 +16,8 @@
 
 ### STYLING Section
  
-- [ ] **Quote button** — Replace `console.log` with `$setBlocksType(selection, () => $createQuoteNode())` (line ~1213). Add toggle-off logic and active state detection
-- [ ] **Code block button** — Replace `console.log` with `$setBlocksType(selection, () => $createCodeNode())` (line ~1227). Requires `$createCodeNode` import and `CodeNode` registration
+- [x] **Quote button** — Replace `console.log` with `$setBlocksType(selection, () => $createQuoteNode())` (line ~1213). Add toggle-off logic and active state detection
+- [x] **Code block button** — Replace `console.log` with `$setBlocksType(selection, () => $createCodeNode())` (line ~1227). Requires `$createCodeNode` import and `CodeNode` registration
 - [ ] **Link button** — Replace `console.log` with a URL input modal/popover, then `editor.dispatchCommand(TOGGLE_LINK_COMMAND, url)` (line ~1241). Detect if already a link for toggle-off
 - [ ] **Clear formatting button** — Implement `clearFormatting()` to strip bold/italic/underline/strikethrough + reset color, background-color, font-size, font-family, font-weight via `$patchStyleText` (line ~1251)
 - [ ] **Image button** — Open a file picker or URL modal, then insert a custom `ImageNode` (line ~1262). Requires custom Lexical node implementation

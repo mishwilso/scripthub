@@ -1,4 +1,4 @@
-import { LexicalEditor } from "lexical";
+import { $getSelection, $isRangeSelection, LexicalEditor } from "lexical";
 import { useFormatState } from "./useFormatState";
 import { getButtonClass } from "./constants";
 
@@ -30,6 +30,8 @@ import {
   INSERT_UNORDERED_LIST_COMMAND,
   REMOVE_LIST_COMMAND,
 } from "@lexical/list";
+import { useEffect, useRef, useState } from "react";
+import { LinkModal } from "./LinkModal";
 
 
 interface StylingSectionProps {
@@ -41,9 +43,69 @@ interface StylingSectionProps {
 
 export default function StylingSection({isOpen, onToggle, format, editor} : StylingSectionProps){
 
+    const [linkModalOpen, setLinkModalOpen] = useState(false);
+    const [linkModalPosition, setLinkModalPosition] = useState({ top: 0, left: 0 });
+    const [url, setUrl] = useState("");
+    const linkModalRef = useRef<HTMLDivElement>(null);
+
+    // Keep click outside handler in parent
+    useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+        const target = event.target as Node;
+        if (linkModalOpen && 
+            linkModalRef.current && 
+            !linkModalRef.current.contains(target)
+        ) {
+        setLinkModalOpen(false);
+        }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [linkModalOpen]);
+
+    const openLinkModal = () => {
+        editor.getEditorState().read(() => {
+            const selection = $getSelection();
+            if ($isRangeSelection(selection)) {
+                const nativeSelection = window.getSelection();
+                const range = nativeSelection?.getRangeAt(0);
+
+                if (range) {
+                    const rect = range.getBoundingClientRect();
+                    setLinkModalPosition({
+                        top: rect.bottom + window.scrollY + 8,
+                        left: rect.left + window.scrollX,
+                    });
+                }
+            }
+        });
+
+        setLinkModalOpen(true);
+    };
+
+    const handleLinkSubmit = (url: string) => {
+        format.styling.applyLink(url);
+        setLinkModalOpen(false);
+    }
 
     return (
-        
+        <>
+
+            <LinkModal
+                isOpen={linkModalOpen}
+                position={linkModalPosition}
+                onSubmit={handleLinkSubmit}
+                isLink={format.styling.isLink}
+                url={url}
+                setUrl={setUrl}
+                onRemove={() => {
+                    format.styling.removeLink();
+                    setLinkModalOpen(false);
+                }}
+                linkModalRef={linkModalRef}
+            />
+
+
         <div className="border-b border-neutral-dark/10">
         {/* ================================================================== */}
         {/* STYLING SECTION - Bold, Italic, Lists, Quote, Code, etc.         */}
@@ -163,7 +225,7 @@ export default function StylingSection({isOpen, onToggle, format, editor} : Styl
                 </button>
                 
                 <button
-                onClick={() => console.log("Link clicked")}
+                onClick={openLinkModal}
                 // TODO: Open a modal/popover to enter URL, then:
                 // editor.dispatchCommand(TOGGLE_LINK_COMMAND, url);
                 // If already a link, use: editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
@@ -203,5 +265,7 @@ export default function StylingSection({isOpen, onToggle, format, editor} : Styl
             </div>
         )}
         </div>
+
+        </>
     )
 }

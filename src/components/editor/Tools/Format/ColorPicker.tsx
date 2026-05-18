@@ -17,7 +17,7 @@ interface HighlightColorPickerProps {
   isOpen: boolean;
   position: { top: number; left: number };
   selectedColor: string;
-  onColorSelect: (color: string) => void;
+  onColorSelect: (color: string) => void; 
   pickerRef: React.RefObject<HTMLDivElement | null>;
 }
 
